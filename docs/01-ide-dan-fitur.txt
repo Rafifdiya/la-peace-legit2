@@ -1,0 +1,116 @@
+IDE PROJECT VENTURE CREATION
+Web Arsip & Ensiklopedia Jajanan Tradisional (Berbasis Komunitas)
+=================================================================
+
+MASALAH
+Banyak jajanan tradisional sulit ditemukan karena penjualnya semakin sedikit
+dan tidak memiliki generasi penerus.
+
+IDE UTAMA
+Website katalog & ensiklopedia jajanan tradisional. Fokus pada informasi,
+pengarsipan, dan crowdsourcing: penjual atau komunitas makanan bisa
+mengupload resep, foto, atau video tutorial pembuatan jajanan tradisional.
+
+Isi tiap jajanan:
+- Sejarah / cerita / asal-usul
+- Resep dasar (opsional)
+- Tutorial step-by-step (opsional)
+- Lokasi penjual (opsional): link Google Maps, nama jalan/pasar, atau gambar
+  peta. Bukan live location (privasi).
+
+
+-----------------------------------------------------------------
+A. MVP (WAJIB ADA UNTUK EXPO)
+-----------------------------------------------------------------
+1. Auth & profil user
+   - Login Google/email
+   - Profil kontributor: nama, daerah, daftar kontribusi
+
+2. Halaman jajanan
+   - Nama, foto, nama lain per daerah
+     (contoh: klepon = kelepon = onde-onde di Jawa Barat)
+   - Asal daerah, sejarah/cerita
+   - Resep & langkah (opsional)
+   - Video: embed YouTube/TikTok (jangan upload video mentah, storage mahal)
+
+3. Form upload/kontribusi
+   - Field wajib minimal: nama, foto, daerah
+   - Sisanya opsional supaya orang tidak malas mengisi
+
+4. Search + filter
+   - Nama, daerah/provinsi, bahan utama
+   - Cara masak (kukus/goreng/bakar), rasa (manis/gurih)
+
+5. Moderasi (wajib karena crowdsourcing)
+   - Status kiriman: pending -> disetujui -> ditolak
+   - Tombol lapor konten
+   - Tanpa ini web akan penuh spam/duplikat
+
+6. Lokasi penjual (opsional)
+   - Input link Google Maps atau nama jalan/pasar
+   - Tampil sebagai kartu "bisa ditemukan di..."
+
+
+-----------------------------------------------------------------
+B. FITUR LANJUTAN (PEMBEDA DARI BLOG RESEP BIASA)
+-----------------------------------------------------------------
+7.  Peta Nusantara: klik provinsi -> muncul jajanan khas daerah itu
+    (visual paling menarik untuk demo expo)
+8.  Label kelangkaan: umum / mulai langka / hampir punah
+    (dari input user + voting komunitas)
+9.  Banyak versi resep per jajanan
+    (contoh: "versi Mbah Sri, Solo"; hindari debat resep paling benar)
+10. Interaksi komunitas: like/simpan, komentar,
+    "saya sudah coba resep ini" + foto hasil
+11. "Saya tahu penjualnya": user lain bisa menambah lokasi penjual
+12. Request jajanan: "ada yang tahu resep kue X?", komunitas menjawab
+    (fitur yang bikin arsip terus tumbuh)
+
+
+-----------------------------------------------------------------
+C. NICE TO HAVE (ROADMAP DI PITCH)
+-----------------------------------------------------------------
+13. Gamifikasi: badge kontributor, leaderboard per daerah
+14. Edit kolaboratif + riwayat revisi ala Wikipedia
+15. Dua bahasa (ID/EN) untuk turis
+16. Export resep ke PDF / kartu resep
+17. Verifikasi kontributor "penjual asli" (centang)
+
+
+-----------------------------------------------------------------
+D. ETIKA & ATURAN KONTEN
+-----------------------------------------------------------------
+- Kontributor centang persetujuan: konten milik sendiri / sudah ada izin,
+  lisensi misalnya CC BY-SA
+- Foto penjual/orang lain harus ada izin
+- Alamat cukup lokasi usaha, jangan rumah pribadi
+
+
+-----------------------------------------------------------------
+E. REVENUE (TETAP PERLU UNTUK VENTURE CREATION)
+-----------------------------------------------------------------
+- Sponsor/iklan brand bahan kue lokal
+- Kerja sama pemda/dinas pariwisata (digitalisasi kuliner daerah)
+- Produk turunan: e-book resep kurasi, kartu edukasi
+- Fitur premium nanti: kursus video dari penjual asli,
+  penjual dapat bagi hasil
+
+
+-----------------------------------------------------------------
+F. TECH STACK (SEMUA ADA FREE TIER)
+-----------------------------------------------------------------
+- Next.js (frontend + backend)
+- Supabase (auth, database, storage foto, role admin/moderator)
+- Leaflet (peta Indonesia, gratis)
+- Vercel (deploy)
+
+
+-----------------------------------------------------------------
+G. URUTAN KERJA
+-----------------------------------------------------------------
+1. Schema database + desain halaman (Figma)
+2. Halaman jajanan + search
+   (isi 20-30 data awal sendiri supaya tidak kosong saat expo)
+3. Auth + form upload + moderasi
+4. Peta Nusantara + komentar/like
+5. Polish, deploy, seed data

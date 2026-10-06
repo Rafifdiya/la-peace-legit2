@@ -1,0 +1,245 @@
+SURVEI & WAWANCARA - WEB ARSIP JAJANAN TRADISIONAL
+=================================================================
+
+
+=================================================================
+BAGIAN 1: GOOGLE FORM (SURVEI ONLINE)
+=================================================================
+Target: 30-50 responden. Estimasi isi: 3-5 menit.
+
+Judul form:
+Survei Jajanan Tradisional Indonesia
+
+Deskripsi form:
+Halo! Kami mahasiswa [nama kampus] yang sedang mengembangkan website arsip
+jajanan tradisional Indonesia untuk mata kuliah Venture Creation. Survei ini
+hanya 3-5 menit. Data hanya digunakan untuk keperluan tugas dan tidak
+disebarluaskan. Terima kasih!
+
+
+--- Section 1: Profil Responden ---
+
+1. Usia (pilihan ganda)
+   - < 18 tahun
+   - 18-24 tahun
+   - 25-34 tahun
+   - 35-44 tahun
+   - >= 45 tahun
+
+2. Status / pekerjaan (pilihan ganda)
+   - Pelajar / mahasiswa
+   - Karyawan
+   - Wiraswasta / pedagang
+   - Ibu / bapak rumah tangga
+   - Lainnya: ___
+
+3. Domisili, kota/kabupaten (jawaban singkat)
+
+4. Asal daerah / suku, jika berbeda dengan domisili (jawaban singkat, opsional)
+
+
+--- Section 2: Kebiasaan & Masalah ---
+
+5. Seberapa sering kamu membeli/makan jajanan tradisional? (pilihan ganda)
+   - Hampir setiap hari
+   - Beberapa kali seminggu
+   - Beberapa kali sebulan
+   - Jarang
+   - Tidak pernah
+
+6. Di mana biasanya kamu membeli jajanan tradisional? (kotak centang)
+   - Pasar tradisional
+   - Pedagang keliling / gerobak
+   - Toko kue
+   - Aplikasi online (GoFood, GrabFood, ShopeeFood, dll.)
+   - Acara / hajatan
+   - Buatan sendiri / keluarga
+   - Lainnya: ___
+
+7. Pernahkah kamu ingin makan jajanan tradisional tertentu tapi sulit
+   menemukannya? (pilihan ganda)
+   - Sering
+   - Kadang-kadang
+   - Jarang
+   - Tidak pernah
+
+8. Jika pernah, jajanan apa yang sulit kamu temukan? (jawaban singkat, opsional)
+
+9. Menurutmu, apa penyebab jajanan tradisional semakin sulit ditemukan?
+   (kotak centang)
+   - Penjualnya makin sedikit / sudah tua
+   - Tidak ada generasi penerus
+   - Kalah bersaing dengan makanan modern
+   - Kurang promosi / tidak dikenal anak muda
+   - Resepnya tidak terdokumentasi
+   - Lainnya: ___
+
+
+--- Section 3: Pencarian Informasi ---
+
+10. Jika ingin tahu resep atau sejarah jajanan tradisional, di mana kamu
+    mencarinya? (kotak centang)
+    - Google
+    - YouTube
+    - TikTok / Instagram
+    - Cookpad / web resep
+    - Tanya keluarga / orang tua
+    - Belum pernah mencari
+    - Lainnya: ___
+
+11. Seberapa mudah menemukan informasi lengkap (resep, sejarah, asal daerah)
+    tentang jajanan tradisional? (skala 1-5)
+    1 = Sangat sulit, 5 = Sangat mudah
+
+12. Pernahkah kamu membuat jajanan tradisional sendiri? (pilihan ganda)
+    - Sering
+    - Pernah beberapa kali
+    - Belum pernah, tapi ingin mencoba
+    - Belum pernah dan tidak tertarik
+
+
+--- Section 4: Ketertarikan pada Website ---
+
+Penjelasan singkat (tampilkan sebagai teks deskripsi):
+Kami berencana membuat website arsip jajanan tradisional. Isinya: sejarah
+dan asal daerah, resep, tutorial, foto/video, dan lokasi penjual. Pengguna
+juga bisa mengunggah resep atau info jajanan sendiri.
+
+13. Seberapa tertarik kamu menggunakan website seperti ini? (skala 1-5)
+    1 = Tidak tertarik, 5 = Sangat tertarik
+
+14. Fitur apa yang paling kamu butuhkan? Pilih maksimal 3. (kotak centang)
+    - Resep & langkah pembuatan
+    - Video tutorial
+    - Sejarah & asal-usul jajanan
+    - Lokasi penjual yang masih ada
+    - Peta jajanan per daerah
+    - Info jajanan yang hampir punah
+    - Komentar & diskusi komunitas
+    - Request resep jajanan tertentu
+
+15. Apakah kamu bersedia mengunggah resep, foto, atau info jajanan
+    tradisional ke website ini? (pilihan ganda)
+    - Ya, bersedia
+    - Mungkin
+    - Tidak
+
+16. Jika tidak/mungkin, apa alasannya? (kotak centang, opsional)
+    - Tidak punya waktu
+    - Tidak tahu resep
+    - Resep keluarga / rahasia
+    - Ribet / malas mengisi
+    - Lainnya: ___
+
+17. Apakah kamu tahu penjual jajanan tradisional yang masih berjualan di
+    sekitarmu? (pilihan ganda)
+    - Ya
+    - Tidak
+
+18. Masukan atau ide untuk website ini (paragraf, opsional)
+
+19. Bersediakah kamu dihubungi untuk wawancara singkat atau uji coba website?
+    Jika ya, tulis nomor WA / email. (jawaban singkat, opsional)
+
+
+=================================================================
+BAGIAN 2: PANDUAN WAWANCARA
+=================================================================
+Target: 3-5 orang. Durasi: 10-20 menit per orang.
+
+Tips:
+- Minta izin dulu sebelum merekam / foto.
+- Tanya "ceritakan..." atau "kenapa...", hindari pertanyaan ya/tidak.
+- Jangan menjual ide terlalu awal. Dengarkan dulu masalah mereka, baru
+  tanyakan pendapat tentang website di akhir.
+- Catat kutipan menarik untuk bahan pitch.
+
+
+--- A. Untuk PENJUAL JAJANAN TRADISIONAL ---
+
+Pembuka
+1. Sudah berapa lama Bapak/Ibu berjualan jajanan ini?
+2. Jajanan apa saja yang dijual? Mana yang paling laku?
+3. Dari mana belajar membuatnya? (turun-temurun, belajar sendiri, dll.)
+
+Kondisi usaha
+4. Bagaimana kondisi penjualan sekarang dibanding dulu?
+5. Siapa saja pembeli Bapak/Ibu? Banyak anak muda yang beli?
+6. Apa kesulitan terbesar dalam berjualan sekarang?
+7. Apakah masih banyak penjual jajanan serupa di sekitar sini?
+
+Regenerasi
+8. Apakah ada anak, keluarga, atau orang lain yang akan meneruskan usaha ini?
+9. Jika tidak, kenapa menurut Bapak/Ibu?
+10. Apakah Bapak/Ibu mau mengajarkan resepnya ke orang lain?
+    Atau resepnya rahasia?
+
+Teknologi & promosi
+11. Apakah Bapak/Ibu memakai HP / WhatsApp / media sosial untuk jualan?
+12. Pernah jualan lewat aplikasi online (GoFood, dll.)? Kenapa ya/tidak?
+
+Tentang website (di akhir)
+13. Kalau ada website yang mencatat jajanan dan lokasi jualan Bapak/Ibu,
+    apakah boleh dicantumkan?
+14. Apakah boleh resep dasar atau cara membuatnya dicatat di website?
+    Bagian mana yang boleh dan tidak boleh?
+15. Apakah boleh kami foto / video proses pembuatannya?
+
+Penutup
+16. Ada pesan untuk anak muda tentang jajanan tradisional?
+
+
+--- B. Untuk PENCINTA KULINER / ORANG YANG SUKA MEMASAK ---
+
+Pembuka
+1. Seberapa sering kamu makan atau membuat jajanan tradisional?
+2. Jajanan tradisional apa yang paling kamu suka? Kenapa?
+
+Pengalaman & masalah
+3. Ceritakan pengalaman terakhir kamu mencari jajanan tradisional tertentu.
+   Ketemu atau tidak?
+4. Ada jajanan masa kecil yang sekarang sudah sulit ditemukan?
+   Apa yang kamu lakukan?
+5. Kalau ingin membuat jajanan tradisional, kamu cari resepnya di mana?
+6. Apa yang kurang dari sumber-sumber itu? (Cookpad, YouTube, Google, dll.)
+
+Kebiasaan berbagi
+7. Pernah membagikan resep atau foto masakan di internet? Di mana?
+8. Apa yang membuat kamu mau (atau tidak mau) membagikan resep?
+9. Apakah keluargamu punya resep jajanan turun-temurun?
+   Mau dibagikan atau tidak?
+
+Tentang website (di akhir, setelah dijelaskan singkat)
+10. Menurutmu, apa yang membuat website seperti ini berguna?
+11. Fitur apa yang paling penting buat kamu?
+12. Apa yang bisa membuat kamu malas memakainya?
+13. Kamu mau ikut mengunggah konten? Apa yang bisa membuatmu tertarik?
+    (badge, nama tercantum, komunitas, dll.)
+
+Penutup
+14. Ada saran lain untuk kami?
+
+
+=================================================================
+BAGIAN 3: CATATAN HASIL WAWANCARA (TEMPLATE)
+=================================================================
+Nama / inisial      :
+Tipe                : Penjual / Pencinta kuliner
+Tanggal & lokasi    :
+Pewawancara         :
+
+Temuan utama (3-5 poin):
+-
+-
+-
+
+Masalah yang disebutkan:
+-
+
+Kutipan menarik (untuk pitch):
+"..."
+
+Izin dicantumkan di website? (ya/tidak, bagian mana):
+
+Ide / masukan fitur:
+-

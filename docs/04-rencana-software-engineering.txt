@@ -1,0 +1,352 @@
+RENCANA SOFTWARE ENGINEERING - JEJAK JAJAN
+(Web Arsip Jajanan Tradisional Berbasis Komunitas)
+=================================================================
+Nama "Jejak Jajan" masih usulan; ganti jika tim memilih nama lain.
+Dokumen ini mengacu pada prinsip Software Engineering (problem
+definition, SDLC, requirement engineering, risiko & keamanan, testing
+4 level, version control). Disimpan di repo: docs/
+
+
+=================================================================
+1. PROBLEM DEFINITION
+=================================================================
+Masalah
+Jajanan tradisional semakin sulit ditemukan karena penjualnya berkurang
+dan tidak memiliki generasi penerus. Resep, cara membuat, dan ceritanya
+sebagian besar hanya diwariskan lisan, sehingga ikut hilang ketika
+penjualnya berhenti.
+
+Siapa yang terdampak
+- Penjual jajanan tradisional: pasar menyempit, pengetahuan tidak
+  diteruskan.
+- Masyarakat / pencinta kuliner: sulit menemukan jajanan dan resepnya.
+- Budaya daerah: kehilangan bagian dari warisan kuliner.
+
+Dampak jika dibiarkan
+- Jajanan punah tanpa dokumentasi; resep tidak bisa dibuat ulang.
+
+Upaya yang sudah ada & kekurangannya
+- Cookpad / blog resep: resep umum, tidak fokus jajanan langka, tanpa
+  cerita/asal daerah, tanpa info lokasi penjual.
+- YouTube / TikTok: tersebar, sulit dicari, tidak terstruktur.
+- Google Maps: tidak menandai jenis jajanan yang dijual pedagang kecil.
+
+Bukti (diisi setelah riset)
+[ ] Hasil survei Google Form (Q7: sulit menemukan; Q15: mau upload)
+[ ] Hasil wawancara penjual & pencinta kuliner (kutipan)
+[ ] Artikel / data pendukung (berita jajanan langka, data UMKM)
+
+Tema: Foods + Art and Culture.
+
+
+=================================================================
+2. MODEL SDLC: AGILE (SCRUM)
+=================================================================
+Alasan memilih Scrum
+- Fitur dibangun bertahap; tiap sprint menghasilkan versi yang bisa
+  dicoba.
+- Hasil survei & uji pengguna bisa langsung mengubah prioritas.
+- Deadline expo tetap; scope fleksibel (fitur prioritas dulu).
+
+Peran
+- Product Owner : [nama] - prioritas fitur, wakil suara pengguna,
+                  pitch bisnis
+- Scrum Master  : [nama] - jadwal sprint, hapus hambatan, jaga proses
+- Dev Team      : [nama-nama] - desain, frontend, backend, testing
+(Tim kecil boleh rangkap; semua anggota tetap menulis kode.)
+
+Event Scrum
+- Sprint: 2 minggu
+- Sprint Planning (awal sprint): pilih user story dari backlog
+- Daily/Weekly Standup (via grup chat, 2-3x seminggu):
+  kemarin apa, hari ini apa, ada hambatan apa
+- Sprint Review (akhir sprint): demo hasil ke tim / teman
+- Sprint Retrospective: apa yang baik, apa yang diperbaiki
+
+Artefak
+- Product Backlog : GitHub Issues (label: user-story, bug, docs, test)
+- Sprint Backlog  : GitHub Projects board, kolom
+                    Backlog | To Do | In Progress | Review | Done
+- Increment       : versi web ter-deploy di Vercel tiap akhir sprint
+
+Fase & tools pendukung
+| Fase            | Kegiatan                         | Tools                      |
+|-----------------|----------------------------------|----------------------------|
+| Requirement     | survei, wawancara, user story    | Google Form, GitHub Issues |
+| Design          | sitemap, flow, UI, schema DB     | AI desain, dbdiagram.io    |
+| Development     | coding per fitur                 | VS Code, Next.js, Supabase |
+| Testing         | unit, integration, system, UAT   | Vitest, Playwright         |
+| Deployment      | deploy otomatis tiap merge       | Vercel, GitHub             |
+| Review/Feedback | demo, retrospektif, perbaikan    | GitHub Projects, grup chat |
+
+Rencana sprint (sesuaikan dengan tanggal expo)
+- Sprint 0 (persiapan): repo, board, survei & wawancara, desain UI,
+  schema DB, setup Next.js + Supabase + Vercel, CI dasar
+- Sprint 1: katalog, search & filter, detail jajanan, seed 20-30 data
+- Sprint 2: login, form upload multi-step, upload foto, moderasi admin
+- Sprint 3: lokasi terlihat + konfirmasi, vote kelangkaan, laporan
+- Sprint 4: komentar/simpan/request (jika sempat), UAT, perbaikan bug,
+  persiapan expo
+Setiap sprint: testing dikerjakan bersamaan, bukan di akhir.
+
+
+=================================================================
+3. REQUIREMENT ENGINEERING
+=================================================================
+Proses: elicitation (survei, wawancara) -> analisis & prioritas
+(MoSCoW) -> spesifikasi (user story + acceptance criteria) ->
+validasi (review mockup ke pengguna).
+
+Prioritas MoSCoW
+- Must   : katalog, search/filter, detail, login, upload, moderasi
+- Should : lokasi terlihat + konfirmasi, vote kelangkaan, laporan konten
+- Could  : komentar, simpan, request, "saya sudah coba", badge
+- Won't (sekarang): matching penerus, pembayaran, aplikasi mobile
+
+3.1 Kebutuhan fungsional (user story)
+Format: Sebagai <role>, saya ingin <aksi>, supaya <manfaat>.
+
+US-01 Cari jajanan [Must]
+Sebagai user, saya ingin mencari jajanan berdasarkan nama atau nama lain,
+supaya cepat menemukan jajanan yang saya ingat.
+AC: - hasil muncul untuk nama utama & nama lain (tidak case-sensitive)
+    - hanya konten berstatus approved yang tampil
+    - jika kosong, tampil pesan + tombol request/tambah
+
+US-02 Filter katalog [Must]
+Sebagai user, saya ingin memfilter berdasarkan provinsi, kategori, dan
+kelangkaan, supaya bisa menjelajah jajanan per daerah.
+AC: - filter bisa dikombinasikan
+    - filter tersimpan di URL (bisa dibagikan)
+
+US-03 Lihat detail [Must]
+Sebagai user, saya ingin melihat cerita, resep, langkah, dan lokasi
+terlihat, supaya bisa mengenal & membuat jajanan itu.
+AC: - section kosong disembunyikan atau diberi ajakan kontribusi
+    - video embed tampil; link tidak valid tidak merusak halaman
+
+US-04 Login [Must]
+Sebagai user, saya ingin login dengan Google/email, supaya bisa
+berkontribusi.
+AC: - aksi kontribusi tanpa login mengarahkan ke halaman masuk
+    - setelah login kembali ke halaman sebelumnya
+
+US-05 Upload jajanan [Must]
+Sebagai user login, saya ingin mengunggah jajanan baru lewat form
+bertahap, supaya jajanan yang saya tahu terarsipkan.
+AC: - wajib: nama, min. 1 foto, provinsi, kategori; lainnya opsional
+    - sistem menampilkan jajanan mirip sebelum submit (cegah duplikat)
+    - foto maks. 2 MB, format jpg/png/webp
+    - wajib centang persetujuan konten & izin
+    - setelah kirim, status = pending
+
+US-06 Tambah resep & langkah [Must]
+Sebagai user login, saya ingin menambah versi resep dengan langkah,
+foto, dan video per langkah, supaya orang lain bisa mengikuti.
+AC: - langkah bisa ditambah, dihapus, diurutkan ulang
+    - video hanya menerima link YouTube/TikTok/Instagram
+
+US-07 Moderasi [Must]
+Sebagai admin, saya ingin menyetujui atau menolak kiriman dengan alasan,
+supaya konten tetap akurat dan bebas spam.
+AC: - tolak wajib mengisi alasan; alasan terlihat oleh pengirim
+    - setiap aksi tercatat di moderation_logs
+    - hanya role admin yang bisa membuka /admin
+
+US-08 Lokasi terlihat [Should]
+Sebagai user login, saya ingin melaporkan lokasi jajanan terlihat,
+supaya orang lain tahu di mana bisa membelinya.
+AC: - isian: nama tempat, area, jenis, link Maps (opsional)
+    - wajib centang "lokasi usaha/tempat publik"
+    - masuk moderasi sebelum tampil
+
+US-09 Konfirmasi lokasi [Should]
+Sebagai user login, saya ingin menandai lokasi "masih ada" atau "sudah
+tidak ada", supaya informasi lokasi tetap terkini.
+AC: - "masih ada" memperbarui last_confirmed_at
+    - lokasi > 6 bulan tanpa konfirmasi diberi tanda
+    - 1 user 1 konfirmasi per lokasi per hari
+
+US-10 Vote kelangkaan [Should]
+Sebagai user login, saya ingin memberi suara tingkat kelangkaan, supaya
+label kelangkaan mencerminkan pendapat komunitas.
+AC: - 1 user 1 suara per jajanan, bisa diganti
+    - label = suara terbanyak; tampil jika min. 3 suara
+    - seri -> pilih tingkat yang lebih langka
+
+US-11 Lapor konten [Should]
+Sebagai user login, saya ingin melaporkan konten salah/tidak pantas,
+supaya admin bisa meninjau.
+AC: - wajib memilih alasan
+    - laporan muncul di dashboard admin
+
+US-12 Status kiriman [Must]
+Sebagai user login, saya ingin melihat status kiriman saya, supaya tahu
+apakah disetujui atau ditolak beserta alasannya.
+
+US-13..   Komentar, simpan, request, "saya sudah coba" [Could]
+          (ditulis detail saat masuk sprint)
+
+3.2 Kebutuhan non-fungsional
+- Performa  : halaman utama termuat < 3 detik di koneksi 4G
+- Responsif : nyaman di layar HP 360 px ke atas (mobile-first)
+- Keamanan  : lihat bagian 5
+- Usability : user baru bisa upload jajanan < 5 menit tanpa panduan
+- Ketersediaan: deploy di Vercel; cadangan video demo untuk expo
+- Privasi   : tidak menyimpan alamat rumah pribadi; data penjual
+              tampil hanya dengan izin
+- Aksesibilitas: kontras warna cukup, teks alternatif pada foto
+
+
+=================================================================
+4. RISK REGISTER
+=================================================================
+Skala: Kemungkinan (K) & Dampak (D) = Rendah / Sedang / Tinggi
+
+| ID | Risiko                              | K  | D  | Mitigasi                                        |
+|----|-------------------------------------|----|----|-------------------------------------------------|
+| R1 | Konten kosong saat expo (cold start)| T  | T  | Tim isi 20-30 data awal; ajak komunitas kuliner |
+| R2 | Spam / konten tidak akurat          | S  | T  | Moderasi wajib, fitur lapor, rate limit         |
+| R3 | Duplikat jajanan                    | T  | S  | Cek kemiripan nama sebelum submit; admin merge  |
+| R4 | Scope creep (fitur terlalu banyak)  | T  | T  | MoSCoW; Must selesai dulu; Could = roadmap      |
+| R5 | Anggota kurang aktif / tidak merata | S  | T  | Assign issue per orang; cek di sprint review    |
+| R6 | Konflik merge kode                  | S  | S  | Branch per fitur kecil, PR cepat, pull rutin    |
+| R7 | Batas free tier Supabase/Vercel     | R  | S  | Kompres foto, video via embed, pantau kuota     |
+| R8 | Masalah hak cipta / izin foto resep | S  | T  | Centang persetujuan, lisensi CC BY-SA, takedown |
+| R9 | Privasi penjual                     | S  | T  | Hanya lokasi usaha publik, wajib izin           |
+| R10| Internet / server bermasalah di expo| S  | T  | Video demo cadangan, hotspot, data offline      |
+| R11| Tim belum familiar Next.js/Supabase | S  | S  | Sprint 0 untuk belajar + contoh proyek kecil    |
+| R12| Kebocoran API key / kredensial      | R  | T  | .env tidak di-commit; key di env Vercel         |
+
+
+=================================================================
+5. KEAMANAN: KERENTANAN & MITIGASI
+=================================================================
+| Kerentanan                         | Mitigasi                                     |
+|------------------------------------|----------------------------------------------|
+| Akses data tanpa izin              | Supabase Row Level Security di semua tabel   |
+| User biasa mengakses fitur admin   | Cek role di server & RLS, bukan hanya UI     |
+| XSS lewat cerita/komentar          | Render teks sebagai teks biasa, sanitasi     |
+|                                    | input; jangan pakai dangerouslySetInnerHTML  |
+| Upload file berbahaya / terlalu    | Validasi tipe & ukuran di client + storage   |
+| besar                              | policy; kompres gambar                       |
+| Link video berbahaya               | Whitelist domain YouTube/TikTok/Instagram    |
+| Spam vote / konfirmasi / komentar  | Unique constraint per user, rate limit       |
+| Kebocoran secret key               | .env di .gitignore; service key hanya server |
+| Data pribadi penjual terekspos     | Hanya lokasi publik; field izin wajib        |
+| Akun palsu massal                  | Login Google / verifikasi email              |
+
+
+=================================================================
+6. RENCANA TESTING (4 LEVEL, BERJALAN TIAP SPRINT)
+=================================================================
+| Level       | Apa yang diuji                         | Tools               | Siapa / kapan        |
+|-------------|----------------------------------------|---------------------|----------------------|
+| Unit        | fungsi kecil: hitung label kelangkaan, | Vitest              | Developer, saat buat |
+|             | validasi form, slug, cek link video,   |                     | fitur                |
+|             | status "mungkin sudah tidak ada"       |                     |                      |
+| Integration | komponen + database: upload tersimpan, | Vitest + React      | Developer, sebelum   |
+|             | RLS menolak akses tanpa izin, vote     | Testing Library +   | PR di-merge          |
+|             | unik per user                          | Supabase lokal      |                      |
+| System      | alur lengkap di browser: cari -> detail| Playwright          | Tester tim, akhir    |
+|             | upload -> moderasi -> tampil; tampilan |                     | sprint               |
+|             | HP & desktop                           |                     |                      |
+| Acceptance  | user asli mencoba skenario (cari,      | Skenario tertulis + | 5-10 responden survei|
+| (UAT)       | upload, vote); cocok dengan acceptance | form feedback       | (Q19), Sprint 3-4    |
+|             | criteria di user story                 |                     |                      |
+
+Otomasi: GitHub Actions menjalankan lint + unit + integration test di
+setiap pull request. PR tidak boleh di-merge jika test gagal.
+
+Contoh test case
+| ID    | Story | Skenario                               | Langkah                          | Hasil diharapkan                 |
+|-------|-------|----------------------------------------|----------------------------------|----------------------------------|
+| TC-01 | US-01 | Cari dengan nama lain                  | ketik "kelepon"                  | muncul "Klepon"                  |
+| TC-02 | US-05 | Upload tanpa foto                      | isi nama, kosongkan foto, kirim  | error "minimal 1 foto"           |
+| TC-03 | US-05 | Foto > 2 MB                            | pilih foto 5 MB                  | ditolak dengan pesan             |
+| TC-04 | US-07 | User biasa buka /admin                 | login user biasa, buka /admin    | diarahkan / akses ditolak        |
+| TC-05 | US-10 | Vote 2 kali                            | vote "langka" lalu "punah"       | tetap 1 suara (nilai terakhir)   |
+| TC-06 | US-10 | Label < 3 suara                        | 2 user vote                      | label belum tampil               |
+| TC-07 | US-09 | Lokasi kedaluwarsa                     | last_confirmed 7 bulan lalu      | tanda "mungkin sudah tidak ada"  |
+| TC-08 | US-06 | Link video bukan whitelist             | masukkan link situs lain         | ditolak                          |
+| TC-09 | -     | XSS di cerita                          | isi "<script>alert(1)</script>"  | tampil sebagai teks, tidak jalan |
+
+Format test report (per sprint, simpan di docs/testing/sprint-N.md)
+- Sprint & tanggal, versi/commit yang diuji
+- Ringkasan: jumlah test case, lulus, gagal, dilewati
+- Tabel: ID | Level | Hasil | Catatan | Link issue bug
+- Bug ditemukan & status perbaikan
+- Kesimpulan & rencana sprint berikutnya
+
+
+=================================================================
+7. VERSION CONTROL (GIT & GITHUB)
+=================================================================
+Repo: jejak-jajan (private dulu), semua anggota sebagai collaborator.
+
+Branch (GitHub Flow)
+- main          : selalu stabil, otomatis deploy ke Vercel
+- feature/<nama>: satu fitur kecil, mis. feature/vote-kelangkaan
+- fix/<nama>    : perbaikan bug
+- docs/<nama>   : dokumentasi
+
+Alur kerja
+1. Ambil issue dari board, assign ke diri sendiri
+2. git pull origin main -> buat branch baru dari main
+3. Commit kecil & sering, pesan jelas
+4. Push -> buka Pull Request, tulis "Closes #<nomor issue>"
+5. Minimal 1 anggota lain review & approve; test CI harus lulus
+6. Merge ke main, hapus branch
+
+Aturan
+- Proteksi branch main: wajib PR + 1 approval + CI lulus, tidak boleh
+  push langsung
+- Format commit (Conventional Commits):
+  feat: tambah vote kelangkaan
+  fix: perbaiki validasi ukuran foto
+  docs: tambah test report sprint 1
+  test: unit test hitung label kelangkaan
+- Konflik merge: pull main ke branch sendiri, selesaikan di VS Code,
+  jalankan test, lalu push. Jika ragu, diskusikan dengan pemilik kode.
+- Jangan commit .env, node_modules, atau file rahasia
+- Semua anggota commit rutin tiap minggu (kontribusi terlihat di
+  GitHub Insights)
+
+Struktur repo awal
+jejak-jajan/
+  README.md
+  .gitignore
+  docs/
+    01-ide-dan-fitur.txt
+    02-survei-wawancara.txt
+    03-desain.txt
+    04-rencana-software-engineering.txt
+    testing/
+  (kode Next.js menyusul di Sprint 0)
+
+
+=================================================================
+8. KERANGKA LAPORAN (OPSIONAL, TEMPLATE PKM-KC)
+=================================================================
+1. Pendahuluan: masalah, tujuan, manfaat
+2. Model SDLC: Scrum + alasan
+3. Penjelasan fase + tools pendukung
+4. Requirement: user story, non-fungsional, MoSCoW
+5. Development: arsitektur, stack, tangkapan layar
+6. Testing: rencana, test case, test report per sprint
+7. Riset: survei, wawancara, analisis pesaing
+8. Kesimpulan
+9. Hasil: web ter-deploy, metrik (jumlah data, user, feedback UAT)
+
+
+=================================================================
+9. CHECKLIST SPRINT 0
+=================================================================
+[ ] Buat repo jejak-jajan + invite anggota + proteksi branch main
+[ ] Upload README + docs/
+[ ] Buat GitHub Projects board + label issue
+[ ] Ubah user story US-01..US-12 jadi GitHub Issues
+[ ] Tentukan peran Scrum (PO, SM, Dev)
+[ ] Sebar survei, jadwalkan wawancara
+[ ] Generate desain UI
+[ ] Setup Next.js + Supabase + Vercel + GitHub Actions (lint + test)

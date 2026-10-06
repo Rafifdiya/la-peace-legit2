@@ -1,0 +1,334 @@
+DOKUMEN DESAIN - WEB ARSIP JAJANAN TRADISIONAL (REVISI 1)
+=================================================================
+Nama kerja: "Arsip Jajanan" (ganti dengan nama brand nanti)
+Catatan: sesuaikan lagi setelah hasil survei keluar.
+
+Perubahan revisi 1:
+- Role disederhanakan jadi User & Admin.
+- Halaman Peta Nusantara dihapus. Lokasi sekarang per jajanan:
+  section "Terakhir Terlihat di..." di halaman detail.
+- Tambah video per langkah (link embed), voting kelangkaan, dan konfirmasi
+  "masih ada" untuk lokasi.
+
+Referensi struktur: mirip Cookpad (katalog -> detail -> upload), tapi fokus
+ke arsip & eksplorasi jajanan tradisional: cerita/sejarah, kelangkaan hasil
+voting, lokasi terkini, dan request jajanan langka.
+
+
+=================================================================
+1. ROLE PENGGUNA
+=================================================================
+User
+- Belum login: lihat beranda, katalog, detail, request, profil orang.
+- Sudah login: + upload jajanan/resep/langkah, tambah lokasi terlihat,
+  konfirmasi lokasi masih ada, voting kelangkaan, komentar, simpan,
+  lapor, buat request.
+
+Admin
+- Semua hak user + setujui/tolak kiriman, tangani laporan, edit data.
+
+
+=================================================================
+2. SITEMAP
+=================================================================
+/                      Beranda
+/katalog               Katalog + search + filter
+/jajanan/[slug]        Detail jajanan (termasuk lokasi terlihat)
+/request               Daftar request resep/jajanan
+/upload                Form kontribusi (perlu login)
+/masuk                 Login / daftar
+/profil/[username]     Profil user
+/profil/saya           Profil sendiri: kontribusi, status kiriman, tersimpan
+/admin                 Dashboard moderasi (admin saja)
+/tentang               Tentang project + aturan kontribusi + lisensi
+
+
+=================================================================
+3. USER FLOW
+=================================================================
+Flow A - Mencari jajanan
+Beranda -> ketik di search / klik kategori / klik chip provinsi
+-> Katalog (hasil + filter) -> Detail jajanan
+-> baca cerita, resep, ikuti langkah (foto/video), lihat "Terakhir Terlihat di"
+-> (opsional) simpan / komentar / vote kelangkaan -> diminta login jika belum
+
+Flow B - Upload jajanan baru
+Klik "Kontribusi" -> login jika belum
+-> Cek dulu: "Jajanan ini sudah ada?" (search, cegah duplikat)
+   -> Sudah ada: tambah versi resep / lokasi terlihat / foto ke jajanan itu
+   -> Belum ada: isi form jajanan baru
+-> Step 1 Info dasar (wajib): nama, foto, daerah asal, kategori
+-> Step 2 Cerita/narasi (opsional)
+-> Step 3 Resep: bahan (opsional)
+-> Step 4 Langkah pembuatan (opsional): tiap langkah = teks + foto
+          (opsional) + link video (opsional)
+-> Step 5 Lokasi terlihat (opsional)
+-> Step 6 Vote kelangkaan (opsional)
+-> Review -> centang persetujuan konten & izin -> Kirim
+-> Status "Menunggu moderasi" -> notifikasi disetujui/ditolak di profil
+
+Flow C - Lapor & konfirmasi lokasi terlihat
+Detail jajanan -> section "Terakhir Terlihat di"
+-> "Saya lihat di tempat lain" -> isi lokasi -> masuk moderasi
+-> atau di lokasi yang sudah ada: "Masih ada" / "Sudah tidak ada"
+-> tanggal "terakhir dikonfirmasi" ter-update
+
+Flow D - Vote kelangkaan
+Detail jajanan -> "Menurutmu seberapa langka jajanan ini?"
+-> pilih: Umum / Mulai langka / Hampir punah / Punah
+-> 1 user 1 suara per jajanan, boleh diganti
+-> label tampil setelah min. 3 suara
+
+Flow E - Moderasi (admin)
+Dashboard admin -> daftar kiriman pending
+-> buka kiriman -> Setujui / Tolak (wajib isi alasan) / Edit kecil
+-> tab Laporan -> tinjau konten dilaporkan -> sembunyikan / abaikan
+
+Flow F - Request jajanan
+Halaman Request -> "Ada yang tahu resep kue X?" -> user lain menjawab
+dengan link ke jajanan yang sudah ada atau upload baru
+-> request ditandai "terjawab"
+
+
+=================================================================
+4. ISI TIAP HALAMAN (WIREFRAME TEKS)
+=================================================================
+
+[BERANDA]
+- Navbar: logo, Katalog, Request, tombol "Kontribusi", Masuk/avatar
+- Hero: judul + tagline + search bar besar
+  Tagline contoh: "Simpan cerita dan resep jajanan tradisional sebelum hilang."
+- Statistik kecil: jumlah jajanan, provinsi, kontributor
+- Section "Hampir Punah": kartu jajanan berlabel merah (hasil voting)
+- Section "Jelajahi per Daerah": chip provinsi -> ke katalog terfilter
+- Section "Baru Ditambahkan": grid kartu
+- Section "Baru Terlihat": jajanan yang baru dilaporkan lokasinya
+- CTA: "Tahu resep jajanan langka? Bagikan di sini" -> Kontribusi
+- Footer: tentang, aturan kontribusi, lisensi, kontak
+
+[KARTU JAJANAN] (komponen dipakai ulang)
+- Foto, nama, asal daerah, label kelangkaan, ikon (ada resep / ada video /
+  ada lokasi terlihat)
+
+[KATALOG]
+- Search bar
+- Filter (sidebar di desktop, bottom sheet di HP):
+  provinsi, kategori (kue basah, kue kering, gorengan, minuman, dll.),
+  bahan utama, cara masak, rasa, kelangkaan,
+  "punya resep", "punya video", "punya lokasi terlihat"
+- Urutkan: terbaru, terpopuler, A-Z, paling langka
+- Grid kartu + pagination / load more
+- Kosong: "Belum ada. Request atau tambahkan jajanan ini!"
+
+[DETAIL JAJANAN]
+- Galeri foto
+- Nama + nama lain per daerah, asal daerah, kategori
+- Label kelangkaan + jumlah suara + tombol "Vote kelangkaan"
+- Tombol: Simpan, Bagikan, Lapor
+- Section:
+  1. Cerita & Narasi
+  2. Resep (bisa banyak versi; pilih versi, tiap versi ada nama kontributor)
+     - Bahan (daftar)
+     - Langkah bernomor; tiap langkah: teks + foto (opsional)
+       + video embed (opsional)
+     - Video lengkap (opsional)
+     - Tombol "Saya sudah coba" + foto hasil
+  3. Terakhir Terlihat di
+     - Daftar lokasi, urut dari yang paling baru dikonfirmasi.
+       Tiap kartu: nama tempat (mis. "Pasar Palmerah"), area
+       (mis. "Palmerah, Jakarta Barat"), jenis (kios tetap / pedagang
+       keliling / acara musiman), "terakhir dikonfirmasi 2 minggu lalu",
+       tombol "Buka di Google Maps", tombol "Masih ada" / "Sudah tidak ada"
+     - Lokasi > 6 bulan tanpa konfirmasi: tanda "mungkin sudah tidak ada"
+     - Mini map kecil berisi pin lokasi jajanan ini saja (opsional)
+     - Tombol "Saya lihat di tempat lain"
+  4. Komentar
+- Info kontributor + tanggal
+- Jajanan serupa / dari daerah yang sama
+
+[FORM UPLOAD] (multi-step, progress bar di atas, simpan draft otomatis)
+- Step 1 Info dasar (wajib): nama, foto (min 1), provinsi/daerah asal,
+  kategori
+- Step 2 Cerita (opsional): nama lain, cerita/narasi/sejarah, sumber info
+- Step 3 Resep (opsional): judul versi, bahan (tambah baris), porsi,
+  waktu, tingkat kesulitan
+- Step 4 Langkah (opsional): tombol "Tambah langkah"; tiap langkah:
+  instruksi, foto (opsional), link video (opsional); link video lengkap
+- Step 5 Lokasi terlihat (opsional): nama tempat, area/kecamatan/kota,
+  jenis lokasi, link Google Maps, kapan terlihat, centang "lokasi usaha
+  publik / penjual sudah memberi izin"
+- Step 6 Vote kelangkaan (opsional)
+- Review -> centang persetujuan & lisensi -> Kirim
+
+Catatan video: pakai link embed (YouTube, TikTok, Instagram), bukan upload
+file. Upload video mahal di storage dan berat di HP.
+
+[PROFIL]
+- Avatar, nama, daerah, badge, jumlah kontribusi
+- Tab: Kontribusi, Tersimpan, Status kiriman (pending/disetujui/ditolak +
+  alasan) - dua tab terakhir hanya di profil sendiri
+
+[REQUEST]
+- Daftar request (terbuka / terjawab), tombol "Buat request"
+- Detail request: jawaban berupa link jajanan / komentar
+
+[ADMIN]
+- Statistik: pending, laporan, total jajanan
+- Tabel kiriman pending (jajanan, resep, foto, lokasi): preview, setujui,
+  tolak + alasan
+- Tabel laporan
+- Kelola kategori
+
+
+=================================================================
+5. SCHEMA DATABASE (SUPABASE / POSTGRES)
+=================================================================
+Status konten: pending | approved | rejected | hidden
+Kelangkaan: umum | mulai_langka | hampir_punah | punah
+
+profiles
+- id (uuid, = auth.users.id), username (unik), nama_tampil, avatar_url,
+  daerah, bio, role (user | admin), created_at
+
+provinces
+- id, nama, kode
+
+categories
+- id, nama (kue basah, kue kering, gorengan, minuman, ...)
+
+snacks (jajanan)
+- id, slug (unik), nama, nama_lain (text[]), province_id, daerah_detail,
+  category_id, deskripsi_singkat, cerita, sumber_info,
+  cara_masak (text[]), rasa (text[]), bahan_utama (text[]),
+  cover_url, status, created_by, created_at, updated_at
+
+snack_photos
+- id, snack_id, url, caption, uploaded_by, status, created_at
+
+recipes (banyak versi per jajanan)
+- id, snack_id, judul_versi ("versi Mbah Sri, Solo"), bahan (jsonb list),
+  porsi, waktu_menit, kesulitan (mudah|sedang|sulit), video_url,
+  status, created_by, created_at
+
+recipe_steps
+- id, recipe_id, urutan, instruksi, foto_url (opsional),
+  video_url (opsional)
+
+sightings (lokasi terlihat)
+- id, snack_id, nama_tempat, area (kecamatan/kota), province_id,
+  jenis (kios_tetap | keliling | musiman), maps_url,
+  lat, lng (opsional, untuk mini map), tanggal_terlihat,
+  last_confirmed_at, izin_publik (bool), status, created_by, created_at
+
+sighting_confirmations
+- id, sighting_id, user_id, masih_ada (bool), created_at
+  -> setiap "Masih ada" update sightings.last_confirmed_at
+  -> banyak "Sudah tidak ada" berturut-turut = tandai tidak aktif
+
+rarity_votes
+- user_id, snack_id, nilai (kelangkaan), created_at, updated_at
+  (PK gabungan user_id + snack_id = 1 user 1 suara)
+  -> label = suara terbanyak, tampil jika min. 3 suara
+
+comments
+- id, snack_id, user_id, isi, created_at
+
+saves (bookmark)
+- user_id, snack_id, created_at  (PK gabungan)
+
+tries ("saya sudah coba")
+- id, recipe_id, user_id, foto_url, catatan, created_at
+
+requests
+- id, judul, deskripsi, province_id (opsional), status (open|answered),
+  answered_snack_id (opsional), created_by, created_at
+
+reports
+- id, target_type (snack|recipe|sighting|comment|photo), target_id,
+  alasan, status (open|resolved), reported_by, created_at
+
+moderation_logs
+- id, target_type, target_id, aksi (approve|reject|hide), alasan,
+  admin_id, created_at
+
+Relasi utama:
+snacks 1-N snack_photos, recipes, sightings, rarity_votes, comments
+recipes 1-N recipe_steps, tries
+sightings 1-N sighting_confirmations
+profiles 1-N semua konten (created_by)
+
+Keamanan (Row Level Security Supabase):
+- Publik hanya bisa baca konten status = approved.
+- User bisa baca/edit kiriman miliknya sendiri yang masih pending.
+- User hanya bisa ubah vote & konfirmasi miliknya sendiri.
+- Hanya admin bisa ubah status dan baca semua.
+- Storage foto: batasi ukuran (mis. 2 MB) dan tipe (jpg/png/webp).
+- Jangan simpan alamat rumah pribadi; hanya lokasi usaha/tempat publik.
+
+Untuk MVP cukup: profiles, provinces, categories, snacks, snack_photos,
+recipes, recipe_steps, sightings, rarity_votes, reports.
+Sisanya menyusul.
+
+
+=================================================================
+6. GAYA VISUAL (UNTUK AI DESAIN)
+=================================================================
+- Nuansa: hangat, tradisional tapi modern dan bersih. Bukan kuno.
+- Warna: krem/off-white (latar), cokelat gula aren (utama), hijau daun
+  pandan (aksen), merah bata (label hampir punah).
+- Font: serif untuk judul (kesan arsip/budaya), sans-serif untuk isi.
+- Motif: sentuhan batik/anyaman tipis sebagai ornamen, jangan ramai.
+- Foto makanan jadi pusat perhatian: kartu besar, sudut membulat.
+- Mobile-first: mayoritas pengunjung expo pakai HP.
+
+
+=================================================================
+7. PROMPT AI DESAIN (SALIN, SESUAIKAN)
+=================================================================
+Prompt dasar (tempel di awal setiap prompt supaya gaya konsisten):
+"Desain web app 'Arsip Jajanan', ensiklopedia jajanan tradisional
+Indonesia berbasis komunitas. Gaya hangat, tradisional tapi modern dan
+bersih. Warna: latar krem #FAF6EE, utama cokelat gula aren #7A4A2A, aksen
+hijau pandan #4F7C3A, label bahaya merah bata #B5452B. Judul font serif,
+isi sans-serif. Ornamen motif batik tipis. Kartu foto besar dengan sudut
+membulat. Bahasa Indonesia. Mobile-first, sediakan juga versi desktop."
+
+Prompt per halaman (tambahkan setelah prompt dasar):
+1. Beranda: "Buat halaman beranda: navbar, hero dengan tagline 'Simpan
+   cerita dan resep jajanan tradisional sebelum hilang' dan search bar
+   besar, statistik kecil, section Hampir Punah, section Jelajahi per
+   Daerah berupa chip provinsi, section Baru Ditambahkan, section Baru
+   Terlihat, CTA kontribusi, footer."
+2. Katalog: "Buat halaman katalog dengan search, filter (provinsi,
+   kategori, bahan, cara masak, rasa, kelangkaan, punya resep/video/
+   lokasi), urutkan, dan grid kartu jajanan. Kartu: foto, nama, daerah
+   asal, label kelangkaan, ikon ada resep/video/lokasi."
+3. Detail: "Buat halaman detail jajanan: galeri foto, nama dan nama lain,
+   daerah asal, label kelangkaan dengan jumlah suara dan tombol vote,
+   tombol simpan/bagikan/lapor. Section Cerita; Resep (pilih versi, bahan,
+   langkah bernomor yang masing-masing punya foto dan video kecil);
+   'Terakhir Terlihat di' berisi kartu lokasi (nama tempat, area, jenis
+   lokasi, 'terakhir dikonfirmasi 2 minggu lalu', tombol Google Maps,
+   tombol Masih ada / Sudah tidak ada) dan mini map kecil; Komentar."
+4. Upload: "Buat form kontribusi multi-step dengan progress bar: Info
+   Dasar, Cerita, Resep, Langkah (bisa tambah langkah, tiap langkah ada
+   foto dan link video), Lokasi Terlihat, Vote Kelangkaan, Review. Field
+   opsional diberi label 'opsional'."
+5. Profil: "Buat halaman profil user: avatar, badge, jumlah kontribusi,
+   tab Kontribusi, Tersimpan, Status Kiriman."
+6. Admin: "Buat dashboard moderasi: kartu statistik, tabel kiriman
+   pending dengan tombol setujui/tolak, tabel laporan."
+
+Tips: generate komponen kartu jajanan dan navbar dulu, lalu pakai sebagai
+referensi di halaman lain supaya konsisten.
+
+
+=================================================================
+8. CHECKLIST TAHAP DESAIN
+=================================================================
+[ ] Sepakati sitemap & user flow di tim
+[ ] Generate desain 6 halaman (mobile + desktop)
+[ ] Tes desain ke 3-5 teman: bisa cari jajanan? bisa paham cara upload?
+[ ] Revisi desain
+[ ] Finalisasi schema database
+[ ] Siapkan 20-30 data awal sesuai field di schema
