@@ -1,187 +1,221 @@
-DOKUMEN DESAIN - WEB ARSIP JAJANAN TRADISIONAL (REVISI 1)
+DOKUMEN DESAIN - JEJAK JAJAN (REVISI 2)
 =================================================================
-Nama kerja: "Arsip Jajanan" (ganti dengan nama brand nanti)
-Catatan: sesuaikan lagi setelah hasil survei keluar.
+Nama web: "Jejak Jajan" (mengikuti desain Figma)
+Figma: https://www.figma.com/design/Zv9aKixdQk3xa38y0xMfcg/Jejak-Jajan-%E2%80%94-UI-Design
+  - Page "Design System": warna, tipografi, spacing, komponen
+  - Page "Desktop": layar desktop 1440px (prioritas development)
+  - Page "Mobile": layar mobile
 
-Perubahan revisi 1:
-- Role disederhanakan jadi User & Admin.
-- Halaman Peta Nusantara dihapus. Lokasi sekarang per jajanan:
-  section "Terakhir Terlihat di..." di halaman detail.
-- Tambah video per langkah (link embed), voting kelangkaan, dan konfirmasi
+Perubahan revisi 2 (setelah review Figma):
+- Nama web jadi "Jejak Jajan".
+- Desain Figma jadi acuan utama tampilan. Data di Figma (angka statistik,
+  nama, foto) hanya contoh, bukan acuan.
+- Development tahap awal = TEMPLATE DASAR: bangun semua halaman & komponen
+  sesuai Figma dengan data dummy dulu, baru disambung ke Supabase.
+- Prioritas desktop dulu, lalu mobile (komponen mobile sudah ada di Figma).
+- Halaman per provinsi digabung ke katalog: /katalog?provinsi=<slug>.
+- Login berupa overlay (modal), bukan halaman penuh. /masuk tetap ada
+  sebagai fallback (mis. dari link langsung).
+- Tambah notifikasi (ikon lonceng di navbar -> dropdown).
+- "Kapan terlihat" disimpan sebagai tanggal (pilih bulan & tahun).
+- Koordinat mini map opsional; diisi lewat pin di peta kecil di form.
+- Ikon kartu (resep/video/lokasi) hanya tampil jika datanya ada.
+- Akun admin terpisah dari akun user biasa; admin tidak boleh menyetujui
+  kirimannya sendiri.
+
+Perubahan revisi 1 (tetap berlaku):
+- Role User & Admin. Tidak ada halaman peta Nusantara penuh; lokasi per
+  jajanan di section "Terakhir Terlihat di".
+- Video per langkah via link embed, vote kelangkaan, konfirmasi
   "masih ada" untuk lokasi.
 
-Referensi struktur: mirip Cookpad (katalog -> detail -> upload), tapi fokus
-ke arsip & eksplorasi jajanan tradisional: cerita/sejarah, kelangkaan hasil
-voting, lokasi terkini, dan request jajanan langka.
+Referensi struktur: mirip Cookpad (katalog -> detail -> upload), pembeda:
+cerita/asal daerah, kelangkaan hasil voting, lokasi terkini, request.
 
 
 =================================================================
 1. ROLE PENGGUNA
 =================================================================
 User
-- Belum login: lihat beranda, katalog, detail, request, profil orang.
-- Sudah login: + upload jajanan/resep/langkah, tambah lokasi terlihat,
-  konfirmasi lokasi masih ada, voting kelangkaan, komentar, simpan,
-  lapor, buat request.
+- Belum login: lihat beranda, katalog, detail, request, profil orang,
+  tentang.
+- Sudah login: + upload jajanan/resep/langkah/foto, tambah lokasi
+  terlihat, konfirmasi lokasi, voting kelangkaan, komentar, simpan,
+  "saya sudah coba", lapor, buat/jawab request, notifikasi.
+- Aksi yang perlu login saat belum login -> muncul overlay Masuk,
+  setelah login kembali ke halaman/aksi semula.
 
 Admin
-- Semua hak user + setujui/tolak kiriman, tangani laporan, edit data.
+- Semua hak user + setujui/tolak kiriman, tangani laporan, edit kecil,
+  kelola kategori.
+- Link "Admin" muncul di menu avatar jika role = admin.
 
 
 =================================================================
 2. SITEMAP
 =================================================================
 /                      Beranda
-/katalog               Katalog + search + filter
-/jajanan/[slug]        Detail jajanan (termasuk lokasi terlihat)
-/request               Daftar request resep/jajanan
-/upload                Form kontribusi (perlu login)
-/masuk                 Login / daftar
-/profil/[username]     Profil user
-/profil/saya           Profil sendiri: kontribusi, status kiriman, tersimpan
-/admin                 Dashboard moderasi (admin saja)
+/katalog               Katalog + search + filter + urutkan
+                       (query: ?q= &provinsi= &kategori= &urut= dst.)
+/jajanan/[slug]        Detail jajanan (1 template untuk semua jajanan)
+/request               Daftar request (tab Terbuka / Terjawab)
+/request/[id]          Detail request + jawaban
+/upload                Form kontribusi (perlu login): cek duplikat -> 7 langkah
+/masuk                 Fallback login (utamanya overlay)
+/profil/[username]     Profil publik user (tab Kontribusi saja)
+/profil/saya           Profil sendiri: Kontribusi, Tersimpan, Status kiriman
+/admin                 Dashboard moderasi (tab Kiriman, Laporan, Kategori)
 /tentang               Tentang project + aturan kontribusi + lisensi
+
+Overlay (modal, bukan halaman): Masuk, Cari, Urutkan, Bagikan, Lapor,
+Lokasi baru, Tambah foto, Buat request, Jawab request, Edit profil,
+Keluar dari form, Pratinjau kiriman, Tolak kiriman, Tambah kategori,
+Notifikasi (dropdown).
+Toast: notifikasi singkat setelah aksi (tautan disalin, laporan terkirim,
+kiriman disetujui/ditolak, dll.).
 
 
 =================================================================
 3. USER FLOW
 =================================================================
 Flow A - Mencari jajanan
-Beranda -> ketik di search / klik kategori / klik chip provinsi
--> Katalog (hasil + filter) -> Detail jajanan
--> baca cerita, resep, ikuti langkah (foto/video), lihat "Terakhir Terlihat di"
--> (opsional) simpan / komentar / vote kelangkaan -> diminta login jika belum
+Beranda -> search / chip provinsi / "Lihat semua"
+-> Katalog (filter + urutkan) -> Detail jajanan
+-> baca cerita, resep, langkah, "Terakhir Terlihat di"
+-> (opsional) simpan / komentar / vote -> overlay Masuk jika belum login
 
 Flow B - Upload jajanan baru
-Klik "Kontribusi" -> login jika belum
--> Cek dulu: "Jajanan ini sudah ada?" (search, cegah duplikat)
-   -> Sudah ada: tambah versi resep / lokasi terlihat / foto ke jajanan itu
-   -> Belum ada: isi form jajanan baru
--> Step 1 Info dasar (wajib): nama, foto, daerah asal, kategori
--> Step 2 Cerita/narasi (opsional)
--> Step 3 Resep: bahan (opsional)
--> Step 4 Langkah pembuatan (opsional): tiap langkah = teks + foto
-          (opsional) + link video (opsional)
--> Step 5 Lokasi terlihat (opsional)
--> Step 6 Vote kelangkaan (opsional)
--> Review -> centang persetujuan konten & izin -> Kirim
--> Status "Menunggu moderasi" -> notifikasi disetujui/ditolak di profil
+Klik "Kontribusi" -> overlay Masuk jika belum login
+-> Cek duplikat: ketik nama -> daftar hasil mirip
+   -> "Tambah ke sini": tambah versi resep / lokasi / foto ke jajanan itu
+   -> "Buat jajanan baru": masuk form
+-> 1 Info dasar (wajib) -> 2 Cerita -> 3 Resep -> 4 Langkah pembuatan
+-> 5 Lokasi terlihat -> 6 Vote kelangkaan -> 7 Review & kirim (wajib)
+   (langkah 2-6 opsional, tombol "Lanjut / lewati"; draft tersimpan otomatis)
+-> layar Mengirim -> layar Terkirim ("Menunggu moderasi")
+-> hasil moderasi muncul di notifikasi + tab Status kiriman
+-> ditolak: alasan tampil + tombol "Perbaiki & kirim ulang"
 
-Flow C - Lapor & konfirmasi lokasi terlihat
-Detail jajanan -> section "Terakhir Terlihat di"
--> "Saya lihat di tempat lain" -> isi lokasi -> masuk moderasi
--> atau di lokasi yang sudah ada: "Masih ada" / "Sudah tidak ada"
--> tanggal "terakhir dikonfirmasi" ter-update
+Flow C - Lokasi terlihat
+Detail -> section "Terakhir Terlihat di"
+-> "Saya lihat di tempat lain" -> overlay Lokasi baru -> moderasi
+-> di kartu lokasi: "Masih ada" / "Sudah tidak ada"
+-> "Masih ada" update tanggal terakhir dikonfirmasi
 
 Flow D - Vote kelangkaan
-Detail jajanan -> "Menurutmu seberapa langka jajanan ini?"
--> pilih: Umum / Mulai langka / Hampir punah / Punah
--> 1 user 1 suara per jajanan, boleh diganti
--> label tampil setelah min. 3 suara
+Detail -> panel "Menurutmu seberapa langka?"
+-> Umum / Mulai langka / Hampir punah / Punah
+-> 1 user 1 suara, bisa diganti; label tampil setelah min. 3 suara
+-> seri -> pilih yang lebih langka
 
 Flow E - Moderasi (admin)
-Dashboard admin -> daftar kiriman pending
--> buka kiriman -> Setujui / Tolak (wajib isi alasan) / Edit kecil
--> tab Laporan -> tinjau konten dilaporkan -> sembunyikan / abaikan
+/admin tab Kiriman -> Lihat (overlay Pratinjau) -> Setujui / Tolak
+(overlay Tolak, wajib alasan) / edit kecil
+-> tab Laporan -> sembunyikan konten / abaikan
+-> tab Kategori -> tambah / ubah kategori
+-> semua aksi tercatat di moderation_logs
 
-Flow F - Request jajanan
-Halaman Request -> "Ada yang tahu resep kue X?" -> user lain menjawab
-dengan link ke jajanan yang sudah ada atau upload baru
--> request ditandai "terjawab"
+Flow F - Request
+/request -> "Buat request" (overlay) -> user lain "Jawab"
+(link ke jajanan yang ada atau upload baru) -> status Terjawab
 
 
 =================================================================
-4. ISI TIAP HALAMAN (WIREFRAME TEKS)
+4. ISI TIAP HALAMAN (RINGKAS, DETAIL LIHAT FIGMA)
 =================================================================
+Semua halaman: Navbar (atas) + Footer (bawah).
+Navbar desktop: logo, Beranda, Katalog, Request, Tentang, search kecil,
+  [Masuk] atau [lonceng + avatar], tombol "+ Kontribusi".
 
 [BERANDA]
-- Navbar: logo, Katalog, Request, tombol "Kontribusi", Masuk/avatar
-- Hero: judul + tagline + search bar besar
-  Tagline contoh: "Simpan cerita dan resep jajanan tradisional sebelum hilang."
-- Statistik kecil: jumlah jajanan, provinsi, kontributor
-- Section "Hampir Punah": kartu jajanan berlabel merah (hasil voting)
-- Section "Jelajahi per Daerah": chip provinsi -> ke katalog terfilter
-- Section "Baru Ditambahkan": grid kartu
-- Section "Baru Terlihat": jajanan yang baru dilaporkan lokasinya
-- CTA: "Tahu resep jajanan langka? Bagikan di sini" -> Kontribusi
-- Footer: tentang, aturan kontribusi, lisensi, kontak
-
-[KARTU JAJANAN] (komponen dipakai ulang)
-- Foto, nama, asal daerah, label kelangkaan, ikon (ada resep / ada video /
-  ada lokasi terlihat)
+Hero (tagline + search + saran "Coba: ..."), 4 StatCard (jajanan,
+provinsi, kontributor, lokasi), Hampir Punah, Jelajahi per Daerah (chip
+provinsi -> /katalog?provinsi=), Baru Ditambahkan, Baru Terlihat, CTA.
 
 [KATALOG]
-- Search bar
-- Filter (sidebar di desktop, bottom sheet di HP):
-  provinsi, kategori (kue basah, kue kering, gorengan, minuman, dll.),
-  bahan utama, cara masak, rasa, kelangkaan,
-  "punya resep", "punya video", "punya lokasi terlihat"
-- Urutkan: terbaru, terpopuler, A-Z, paling langka
-- Grid kartu + pagination / load more
-- Kosong: "Belum ada. Request atau tambahkan jajanan ini!"
+Judul + jumlah hasil, search, tombol Urutkan (terbaru, terpopuler, A-Z,
+paling langka), sidebar Filter (provinsi, kategori, bahan utama, cara
+masak, rasa, kelangkaan, punya resep/video/lokasi), grid SnackCard
+3 kolom, load more. Kosong: ajakan request / tambah jajanan.
 
 [DETAIL JAJANAN]
-- Galeri foto
-- Nama + nama lain per daerah, asal daerah, kategori
-- Label kelangkaan + jumlah suara + tombol "Vote kelangkaan"
-- Tombol: Simpan, Bagikan, Lapor
-- Section:
-  1. Cerita & Narasi
-  2. Resep (bisa banyak versi; pilih versi, tiap versi ada nama kontributor)
-     - Bahan (daftar)
-     - Langkah bernomor; tiap langkah: teks + foto (opsional)
-       + video embed (opsional)
-     - Video lengkap (opsional)
-     - Tombol "Saya sudah coba" + foto hasil
-  3. Terakhir Terlihat di
-     - Daftar lokasi, urut dari yang paling baru dikonfirmasi.
-       Tiap kartu: nama tempat (mis. "Pasar Palmerah"), area
-       (mis. "Palmerah, Jakarta Barat"), jenis (kios tetap / pedagang
-       keliling / acara musiman), "terakhir dikonfirmasi 2 minggu lalu",
-       tombol "Buka di Google Maps", tombol "Masih ada" / "Sudah tidak ada"
-     - Lokasi > 6 bulan tanpa konfirmasi: tanda "mungkin sudah tidak ada"
-     - Mini map kecil berisi pin lokasi jajanan ini saja (opsional)
-     - Tombol "Saya lihat di tempat lain"
-  4. Komentar
-- Info kontributor + tanggal
-- Jajanan serupa / dari daerah yang sama
+Kiri: foto utama (+ thumbnail galeri jika > 1 foto, bisa menyusul).
+Kanan: kategori, nama, nama lain, asal daerah, Simpan/Bagikan/Lapor,
+panel RarityVote, info pengirim.
+Tab: Cerita | Resep | Lokasi (n) | Komentar (n)
+- Cerita & narasi + sumber
+- Resep: pilih versi, porsi/waktu/kesulitan, Bahan, Langkah (RecipeStep:
+  teks + foto + video opsional), Video lengkap, "Saya sudah coba"
+- Lokasi (kolom kanan): MiniMap, SightingCard (fresh/stale/confirmed/
+  reported), "Saya lihat di tempat lain"
+- Komentar
+Bawah: "Dari [provinsi] juga".
 
-[FORM UPLOAD] (multi-step, progress bar di atas, simpan draft otomatis)
-- Step 1 Info dasar (wajib): nama, foto (min 1), provinsi/daerah asal,
-  kategori
-- Step 2 Cerita (opsional): nama lain, cerita/narasi/sejarah, sumber info
-- Step 3 Resep (opsional): judul versi, bahan (tambah baris), porsi,
-  waktu, tingkat kesulitan
-- Step 4 Langkah (opsional): tombol "Tambah langkah"; tiap langkah:
-  instruksi, foto (opsional), link video (opsional); link video lengkap
-- Step 5 Lokasi terlihat (opsional): nama tempat, area/kecamatan/kota,
-  jenis lokasi, link Google Maps, kapan terlihat, centang "lokasi usaha
-  publik / penjual sudah memberi izin"
-- Step 6 Vote kelangkaan (opsional)
-- Review -> centang persetujuan & lisensi -> Kirim
-
-Catatan video: pakai link embed (YouTube, TikTok, Instagram), bukan upload
-file. Upload video mahal di storage dan berat di HP.
+[UPLOAD]
+Layar cek duplikat -> form: stepper kiri (7 langkah), form tengah,
+panel bantuan kanan (tips + aturan konten). Tombol Kembali, Keluar,
+Lanjut / lewati. Lalu layar Mengirim & Terkirim.
 
 [PROFIL]
-- Avatar, nama, daerah, badge, jumlah kontribusi
-- Tab: Kontribusi, Tersimpan, Status kiriman (pending/disetujui/ditolak +
-  alasan) - dua tab terakhir hanya di profil sendiri
+Header: avatar, nama, @username, daerah, bio, badge, StatCard
+(kontribusi, lokasi, resep dicoba), Edit profil (profil sendiri).
+Tab: Kontribusi | Tersimpan* | Status kiriman*  (*profil sendiri saja)
 
 [REQUEST]
-- Daftar request (terbuka / terjawab), tombol "Buat request"
-- Detail request: jawaban berupa link jajanan / komentar
+Tab Terbuka/Terjawab, kartu request, Buat request. Detail: jawaban.
 
 [ADMIN]
-- Statistik: pending, laporan, total jajanan
-- Tabel kiriman pending (jajanan, resep, foto, lokasi): preview, setujui,
-  tolak + alasan
-- Tabel laporan
-- Kelola kategori
+4 StatCard (menunggu, laporan terbuka, total jajanan, disetujui minggu
+ini), tab Kiriman | Laporan | Kategori, tabel dengan Setujui/Tolak/Lihat.
+
+[TENTANG]
+Tentang project, aturan kontribusi, lisensi (CC BY-SA 4.0), kontak.
 
 
 =================================================================
-5. SCHEMA DATABASE (SUPABASE / POSTGRES)
+5. KOMPONEN (NAMA SAMA DENGAN FIGMA)
+=================================================================
+Dasar   : Button (primary/secondary/ghost/accent/danger, S/M), Chip,
+          Input (text/textarea/select + error), Checkbox, SearchBar,
+          Avatar, Tab, Icon (Lucide), Toast, Modal, Ornament/Kawung
+Layout  : Navbar, Footer, BottomNav (mobile), SectionHeader
+Jajanan : SnackCard (large/compact), RarityBadge, RarityOption,
+          RarityVote, PhotoPlaceholder, SaveToggle, StatCard
+Detail  : RecipeStep, VideoEmbed, MiniMap, SightingCard, SightingRow,
+          CommentItem
+Upload  : UploadProgress, StepItem, UploadTile
+Profil  : SubmissionRow, StatusPill
+Admin   : AdminTableRow
+
+Aturan:
+- SnackCard: ikon Resep/Video/Lokasi tampil hanya jika datanya ada.
+- RarityBadge: < 3 suara -> "Belum cukup suara".
+- SightingCard: stale jika last_confirmed_at > 6 bulan.
+
+
+=================================================================
+6. GAYA VISUAL / DESIGN TOKEN
+=================================================================
+Ambil langsung dari variabel Figma (jangan hardcode warna di komponen).
+Warna utama:
+  bg/page #FAF6EE   bg/surface #FFFFFF   bg/subtle #F3EBDD
+  brand   #7A4A2A   brand-hover #5F3A21   accent #4F7C3A
+  danger  #B5452B   text/primary #2B211B   text/secondary #6B5D52
+  border/default #E8DCC6
+Rarity: umum (hijau muda), mulai_langka (kuning), hampir_punah
+  (merah bata, teks putih), punah (cokelat gelap #3A302A), unknown (krem)
+Font: Fraunces SemiBold (judul), Plus Jakarta Sans (isi) - Google Fonts
+Skala: Display 56/34, H1 40/28, H2 24, H3 20, H4 17, Body 18/16/14,
+  Label 16/14/12, Caption 12, Overline 11
+Spacing: 4, 8, 12, 16, 20, 24, 32, 40, 48, 64, 80
+Radius : 8 (sm), 12 (md), 16 (lg), 24 (xl), full
+Shadow : Card, Raised, Sheet
+Desktop: lebar frame 1440px, konten max ~1200px.
+Rencana: token -> CSS variables + tailwind theme.
+
+
+=================================================================
+7. SCHEMA DATABASE (SUPABASE / POSTGRES)
 =================================================================
 Status konten: pending | approved | rejected | hidden
 Kelangkaan: umum | mulai_langka | hampir_punah | punah
@@ -191,144 +225,113 @@ profiles
   daerah, bio, role (user | admin), created_at
 
 provinces
-- id, nama, kode
+- id, nama, slug, kode
 
 categories
-- id, nama (kue basah, kue kering, gorengan, minuman, ...)
+- id, nama, slug
 
-snacks (jajanan)
+snacks
 - id, slug (unik), nama, nama_lain (text[]), province_id, daerah_detail,
   category_id, deskripsi_singkat, cerita, sumber_info,
   cara_masak (text[]), rasa (text[]), bahan_utama (text[]),
   cover_url, status, created_by, created_at, updated_at
 
 snack_photos
-- id, snack_id, url, caption, uploaded_by, status, created_at
+- id, snack_id, url, caption, kredit, uploaded_by, status, created_at
 
-recipes (banyak versi per jajanan)
-- id, snack_id, judul_versi ("versi Mbah Sri, Solo"), bahan (jsonb list),
-  porsi, waktu_menit, kesulitan (mudah|sedang|sulit), video_url,
-  status, created_by, created_at
+recipes
+- id, snack_id, judul_versi, bahan (jsonb), porsi, waktu_menit,
+  kesulitan (mudah|sedang|sulit), video_url, status, created_by,
+  created_at
 
 recipe_steps
-- id, recipe_id, urutan, instruksi, foto_url (opsional),
-  video_url (opsional)
+- id, recipe_id, urutan, instruksi, foto_url, video_url
 
-sightings (lokasi terlihat)
-- id, snack_id, nama_tempat, area (kecamatan/kota), province_id,
+sightings
+- id, snack_id, nama_tempat, area, province_id,
   jenis (kios_tetap | keliling | musiman), maps_url,
-  lat, lng (opsional, untuk mini map), tanggal_terlihat,
-  last_confirmed_at, izin_publik (bool), status, created_by, created_at
+  lat, lng (opsional, dari pin di form), tanggal_terlihat (date;
+  dari pilihan bulan & tahun, disimpan tanggal 1), last_confirmed_at,
+  izin_publik (bool), status, created_by, created_at
 
 sighting_confirmations
 - id, sighting_id, user_id, masih_ada (bool), created_at
-  -> setiap "Masih ada" update sightings.last_confirmed_at
-  -> banyak "Sudah tidak ada" berturut-turut = tandai tidak aktif
 
 rarity_votes
-- user_id, snack_id, nilai (kelangkaan), created_at, updated_at
-  (PK gabungan user_id + snack_id = 1 user 1 suara)
-  -> label = suara terbanyak, tampil jika min. 3 suara
+- user_id, snack_id, nilai, created_at, updated_at (PK user_id+snack_id)
 
 comments
-- id, snack_id, user_id, isi, created_at
+- id, snack_id, user_id, isi, status, created_at
 
-saves (bookmark)
-- user_id, snack_id, created_at  (PK gabungan)
+saves
+- user_id, snack_id, created_at (PK gabungan)
 
-tries ("saya sudah coba")
+tries
 - id, recipe_id, user_id, foto_url, catatan, created_at
 
 requests
-- id, judul, deskripsi, province_id (opsional), status (open|answered),
-  answered_snack_id (opsional), created_by, created_at
+- id, judul, deskripsi, province_id, status (open|answered),
+  answered_snack_id, created_by, created_at
+
+request_answers
+- id, request_id, user_id, snack_id (opsional), isi, created_at
+
+notifications
+- id, user_id, tipe (approved|rejected|request_answered|...),
+  target_type, target_id, pesan, dibaca (bool), created_at
 
 reports
 - id, target_type (snack|recipe|sighting|comment|photo), target_id,
   alasan, status (open|resolved), reported_by, created_at
 
 moderation_logs
-- id, target_type, target_id, aksi (approve|reject|hide), alasan,
+- id, target_type, target_id, aksi (approve|reject|hide|edit), alasan,
   admin_id, created_at
 
-Relasi utama:
-snacks 1-N snack_photos, recipes, sightings, rarity_votes, comments
-recipes 1-N recipe_steps, tries
-sightings 1-N sighting_confirmations
-profiles 1-N semua konten (created_by)
+Keamanan (RLS Supabase):
+- Publik hanya baca konten status = approved.
+- User baca/edit kiriman sendiri yang masih pending/rejected.
+- User hanya ubah vote, konfirmasi, simpan, notifikasi miliknya.
+- Hanya admin ubah status; admin tidak boleh moderasi kiriman sendiri.
+- Storage foto: maks 2 MB, jpg/png/webp.
+- Hanya lokasi usaha/tempat publik, bukan alamat rumah.
 
-Keamanan (Row Level Security Supabase):
-- Publik hanya bisa baca konten status = approved.
-- User bisa baca/edit kiriman miliknya sendiri yang masih pending.
-- User hanya bisa ubah vote & konfirmasi miliknya sendiri.
-- Hanya admin bisa ubah status dan baca semua.
-- Storage foto: batasi ukuran (mis. 2 MB) dan tipe (jpg/png/webp).
-- Jangan simpan alamat rumah pribadi; hanya lokasi usaha/tempat publik.
-
-Untuk MVP cukup: profiles, provinces, categories, snacks, snack_photos,
-recipes, recipe_steps, sightings, rarity_votes, reports.
-Sisanya menyusul.
+MVP: profiles, provinces, categories, snacks, snack_photos, recipes,
+recipe_steps, sightings, rarity_votes, reports. Sisanya menyusul.
 
 
 =================================================================
-6. GAYA VISUAL (UNTUK AI DESAIN)
+8. RENCANA DEVELOPMENT TAMPILAN (TEMPLATE DASAR)
 =================================================================
-- Nuansa: hangat, tradisional tapi modern dan bersih. Bukan kuno.
-- Warna: krem/off-white (latar), cokelat gula aren (utama), hijau daun
-  pandan (aksen), merah bata (label hampir punah).
-- Font: serif untuk judul (kesan arsip/budaya), sans-serif untuk isi.
-- Motif: sentuhan batik/anyaman tipis sebagai ornamen, jangan ramai.
-- Foto makanan jadi pusat perhatian: kartu besar, sudut membulat.
-- Mobile-first: mayoritas pengunjung expo pakai HP.
+Tujuan: web "kosongan" yang tampilannya sama dengan Figma, isi data
+dummy (file JSON/TS lokal), belum tersambung database.
 
+Urutan:
+1. Setup Next.js + Tailwind, pasang font & design token (bagian 6).
+2. Komponen dasar: Button, Chip, Input, Checkbox, SearchBar, Avatar,
+   Tab, Modal, Toast, Icon.
+3. Layout: Navbar (guest/login), Footer.
+4. Komponen jajanan: SnackCard, RarityBadge, StatCard, SectionHeader.
+5. Halaman: Beranda -> Katalog -> Detail -> Upload -> Profil ->
+   Request -> Tentang -> Admin.
+6. Overlay Masuk & overlay lain.
+7. Responsive mobile (ikuti page Mobile di Figma).
+8. Sambung ke Supabase per halaman (sprint berikutnya).
 
-=================================================================
-7. PROMPT AI DESAIN (SALIN, SESUAIKAN)
-=================================================================
-Prompt dasar (tempel di awal setiap prompt supaya gaya konsisten):
-"Desain web app 'Arsip Jajanan', ensiklopedia jajanan tradisional
-Indonesia berbasis komunitas. Gaya hangat, tradisional tapi modern dan
-bersih. Warna: latar krem #FAF6EE, utama cokelat gula aren #7A4A2A, aksen
-hijau pandan #4F7C3A, label bahaya merah bata #B5452B. Judul font serif,
-isi sans-serif. Ornamen motif batik tipis. Kartu foto besar dengan sudut
-membulat. Bahasa Indonesia. Mobile-first, sediakan juga versi desktop."
-
-Prompt per halaman (tambahkan setelah prompt dasar):
-1. Beranda: "Buat halaman beranda: navbar, hero dengan tagline 'Simpan
-   cerita dan resep jajanan tradisional sebelum hilang' dan search bar
-   besar, statistik kecil, section Hampir Punah, section Jelajahi per
-   Daerah berupa chip provinsi, section Baru Ditambahkan, section Baru
-   Terlihat, CTA kontribusi, footer."
-2. Katalog: "Buat halaman katalog dengan search, filter (provinsi,
-   kategori, bahan, cara masak, rasa, kelangkaan, punya resep/video/
-   lokasi), urutkan, dan grid kartu jajanan. Kartu: foto, nama, daerah
-   asal, label kelangkaan, ikon ada resep/video/lokasi."
-3. Detail: "Buat halaman detail jajanan: galeri foto, nama dan nama lain,
-   daerah asal, label kelangkaan dengan jumlah suara dan tombol vote,
-   tombol simpan/bagikan/lapor. Section Cerita; Resep (pilih versi, bahan,
-   langkah bernomor yang masing-masing punya foto dan video kecil);
-   'Terakhir Terlihat di' berisi kartu lokasi (nama tempat, area, jenis
-   lokasi, 'terakhir dikonfirmasi 2 minggu lalu', tombol Google Maps,
-   tombol Masih ada / Sudah tidak ada) dan mini map kecil; Komentar."
-4. Upload: "Buat form kontribusi multi-step dengan progress bar: Info
-   Dasar, Cerita, Resep, Langkah (bisa tambah langkah, tiap langkah ada
-   foto dan link video), Lokasi Terlihat, Vote Kelangkaan, Review. Field
-   opsional diberi label 'opsional'."
-5. Profil: "Buat halaman profil user: avatar, badge, jumlah kontribusi,
-   tab Kontribusi, Tersimpan, Status Kiriman."
-6. Admin: "Buat dashboard moderasi: kartu statistik, tabel kiriman
-   pending dengan tombol setujui/tolak, tabel laporan."
-
-Tips: generate komponen kartu jajanan dan navbar dulu, lalu pakai sebagai
-referensi di halaman lain supaya konsisten.
+Catatan:
+- Angka, nama, foto di Figma = contoh. Data asli dari 20-30 data awal tim.
+- Foto contoh dari Wikimedia Commons wajib cantumkan kredit/lisensi.
 
 
 =================================================================
-8. CHECKLIST TAHAP DESAIN
+9. CHECKLIST TAHAP DESAIN
 =================================================================
-[ ] Sepakati sitemap & user flow di tim
-[ ] Generate desain 6 halaman (mobile + desktop)
-[ ] Tes desain ke 3-5 teman: bisa cari jajanan? bisa paham cara upload?
-[ ] Revisi desain
+[x] Sitemap & user flow
+[x] Design system di Figma (warna, font, komponen)
+[x] Layar desktop semua halaman + overlay
+[x] Layar mobile (belum direview)
+[ ] Tambahan desain kecil: profil publik, tab Kategori admin, galeri foto
+[ ] Review page Mobile
+[ ] Tes prototype ke 3-5 teman (Flow A & B)
 [ ] Finalisasi schema database
-[ ] Siapkan 20-30 data awal sesuai field di schema
+[ ] Siapkan 20-30 data awal sesuai schema
