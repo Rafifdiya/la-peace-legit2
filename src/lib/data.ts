@@ -1,5 +1,6 @@
 // Lapisan akses data. Sekarang membaca data dummy; nanti cukup ganti isi fungsi
 // ini dengan query Supabase (mis. .range(from, to) untuk pagination).
+import { currentUsername, reports, requests, submissions, users } from "@/data/dummy";
 import { snacks } from "@/data/snacks";
 import type { Page, Snack, SnackCardData } from "./types";
 
@@ -76,4 +77,45 @@ export async function getStats() {
 
 export async function getRelated(snack: Snack, limit = 3): Promise<SnackCardData[]> {
   return snacks.filter((s) => s.provinsi === snack.provinsi && s.slug !== snack.slug).slice(0, limit).map(toCard);
+}
+
+// ---------- Request, profil, admin (dummy) ----------
+
+export async function getRequests(status: "terbuka" | "terjawab") {
+  return requests
+    .filter((r) => (status === "terjawab" ? r.jawaban.length > 0 : r.jawaban.length === 0))
+    .sort((a, b) => b.tanggal.localeCompare(a.tanggal));
+}
+
+export async function getRequest(id: string) {
+  return requests.find((r) => r.id === id);
+}
+
+export async function getUser(username: string) {
+  return users.find((u) => u.username === username);
+}
+
+/** Template: user yang dianggap sedang login. Nanti dari Supabase Auth. */
+export async function getCurrentUser() {
+  return users.find((u) => u.username === currentUsername)!;
+}
+
+export async function getCards(slugs: string[]): Promise<SnackCardData[]> {
+  return slugs.map((s) => snacks.find((x) => x.slug === s)).filter((s): s is Snack => !!s).map(toCard);
+}
+
+export async function getSubmissions(oleh?: string) {
+  return submissions.filter((s) => !oleh || s.oleh === oleh);
+}
+
+export async function getReports() {
+  return reports;
+}
+
+export async function getRequestIds() {
+  return requests.map((r) => r.id);
+}
+
+export async function getUsernames() {
+  return users.map((u) => u.username);
 }

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BadgeCheck, ExternalLink, MapPin, Share2, Bookmark, Flag } from "lucide-react";
+import { LoginButton } from "@/components/LoginButton";
 import { MiniMapLazy } from "@/components/map/MiniMapLazy";
 import { RarityBadge } from "@/components/RarityBadge";
 import { SnackCard } from "@/components/SnackCard";
@@ -45,16 +46,16 @@ export default async function DetailPage({ params }: PageProps<"/jajanan/[slug]"
           <p>{snack.deskripsi}</p>
           <div className="flex gap-2 text-sm">
             {([[Bookmark, "Simpan"], [Share2, "Bagikan"], [Flag, "Lapor"]] as const).map(([Icon, label]) => (
-              <button key={label} className="flex items-center gap-1 rounded-full border border-line bg-surface px-3 py-1.5 hover:border-brand">
+              <LoginButton key={label} className="flex items-center gap-1 rounded-full border border-line bg-surface px-3 py-1.5 hover:border-brand">
                 <Icon size={14} aria-hidden /> {label}
-              </button>
+              </LoginButton>
             ))}
           </div>
           <div className="rounded-lg border border-line bg-surface p-4 text-sm">
             <p className="font-semibold">Menurutmu seberapa langka?</p>
             <div className="mt-2 flex flex-wrap gap-2">
               {["Umum", "Mulai langka", "Hampir punah", "Punah"].map((r) => (
-                <button key={r} className="rounded-full border border-line px-3 py-1 hover:border-brand">{r}</button>
+                <LoginButton key={r} className="rounded-full border border-line px-3 py-1 hover:border-brand">{r}</LoginButton>
               ))}
             </div>
           </div>
@@ -110,8 +111,8 @@ export default async function DetailPage({ params }: PageProps<"/jajanan/[slug]"
                 )}
                 <div className="flex gap-2 pt-2 text-sm">
                   <span className="text-ink-2">Sudah coba resep ini?</span>
-                  <button className="rounded-full border border-line px-3 py-1 hover:border-accent">Berhasil</button>
-                  <button className="rounded-full border border-line px-3 py-1 hover:border-danger">Kurang berhasil</button>
+                  <LoginButton className="rounded-full border border-line px-3 py-1 hover:border-accent">Berhasil</LoginButton>
+                  <LoginButton className="rounded-full border border-line px-3 py-1 hover:border-danger">Kurang berhasil</LoginButton>
                 </div>
               </>
             ) : (
@@ -139,12 +140,12 @@ export default async function DetailPage({ params }: PageProps<"/jajanan/[slug]"
                 {s.orderUrl && <a href={s.orderUrl} target="_blank" rel="noopener noreferrer" className="text-accent underline">Pesan online</a>}
               </div>
               <div className="flex gap-2">
-                <button className="rounded-full border border-line px-3 py-1 hover:border-accent">Masih ada</button>
-                <button className="rounded-full border border-line px-3 py-1 hover:border-danger">Sudah tidak ada</button>
+                <LoginButton className="rounded-full border border-line px-3 py-1 hover:border-accent">Masih ada</LoginButton>
+                <LoginButton className="rounded-full border border-line px-3 py-1 hover:border-danger">Sudah tidak ada</LoginButton>
               </div>
             </div>
           ))}
-          <button className="w-full rounded-full border border-brand py-2 text-sm text-brand">Saya lihat di tempat lain</button>
+          <LoginButton className="w-full rounded-full border border-brand py-2 text-sm text-brand">Saya lihat di tempat lain</LoginButton>
         </aside>
       </div>
 

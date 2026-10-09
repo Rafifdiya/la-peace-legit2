@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Fraunces, Plus_Jakarta_Sans } from "next/font/google";
+import { BottomNav } from "@/components/BottomNav";
 import { Footer } from "@/components/Footer";
+import { LoginDialog } from "@/components/LoginDialog";
 import { Navbar } from "@/components/Navbar";
 import "./globals.css";
 
@@ -31,10 +33,12 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="id" className={`${fraunces.variable} ${jakarta.variable} antialiased`}>
-      <body className="flex min-h-screen flex-col">
+      <body className="flex min-h-screen flex-col pb-16 md:pb-0">
         <Navbar />
         <main className="mx-auto w-full max-w-[1200px] flex-1 px-4">{children}</main>
         <Footer />
+        <BottomNav />
+        <LoginDialog />
       </body>
     </html>
   );
