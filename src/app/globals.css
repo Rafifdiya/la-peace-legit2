@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+/* Design token dari Figma "Jejak Jajan" (docs/03 bagian 6) */
+@theme {
+  --color-page: #faf6ee;
+  --color-surface: #ffffff;
+  --color-subtle: #f3ebdd;
+  --color-brand: #7a4a2a;
+  --color-brand-hover: #5f3a21;
+  --color-accent: #4f7c3a;
+  --color-danger: #b5452b;
+  --color-ink: #2b211b;
+  --color-ink-2: #6b5d52;
+  --color-line: #e8dcc6;
+
+  --color-rarity-umum: #d9ead0;
+  --color-rarity-mulai: #f6dd8a;
+  --color-rarity-hampir: #b5452b;
+  --color-rarity-punah: #3a302a;
+  --color-rarity-unknown: #f3ebdd;
+
+  --font-display: var(--font-fraunces), Georgia, serif;
+  --font-sans: var(--font-jakarta), system-ui, sans-serif;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+
+  /* Bayangan tipis saja: shadow & blur besar berat di HP low-end */
+  --shadow-card: 0 1px 2px rgb(43 33 27 / 0.06), 0 1px 3px rgb(43 33 27 / 0.08);
+}
+
+body {
+  background: var(--color-page);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+/* Kartu di luar layar tidak di-render dulu -> hemat RAM & CPU di list panjang */
+.cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 340px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

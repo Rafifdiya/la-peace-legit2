@@ -1,0 +1,60 @@
+RINGKASAN PROJECT - JEJAK JAJAN
+=================================================================
+Update terakhir: 9 Oktober 2026
+
+APA INI
+Web arsip/ensiklopedia jajanan tradisional Indonesia berbasis
+komunitas. Siapa pun bisa menambah jajanan: cerita asal-usul, resep,
+langkah pembuatan, dan lokasi terakhir terlihat.
+
+MASALAH
+Jajanan tradisional makin sulit ditemukan: penjual makin sedikit dan
+tidak punya penerus. Resep & ceritanya bisa hilang.
+
+SOLUSI
+Arsip online yang diisi bareng-bareng (crowdsourcing), dimoderasi admin.
+
+PEMBEDA (vs Cookpad / TikTok / blog resep)
+- Cerita & asal daerah, bukan resep saja
+- Label kelangkaan hasil vote komunitas (umum s/d punah)
+- Lokasi "Terakhir Terlihat di" + konfirmasi "Masih ada / Sudah tidak ada"
+- Request jajanan: "ada yang tahu resep kue X?"
+
+FITUR UTAMA (MVP UNTUK EXPO)
+1. Beranda, katalog + search + filter (provinsi, kategori, kelangkaan)
+2. Detail jajanan: cerita, resep (banyak versi), langkah, lokasi + mini map,
+   komentar
+3. Upload jajanan (7 langkah, hanya info dasar yang wajib)
+4. Vote kelangkaan (1 user 1 suara, tampil min. 3 suara)
+5. Login (Google/email), profil kontributor
+6. Moderasi admin: setujui/tolak kiriman, tangani laporan
+7. Request jajanan
+
+TAMBAHAN DARI FEEDBACK PRESENTASI 1
+- Link "Pesan online" (GoFood/GrabFood/WA) di kartu lokasi
+- Penilaian resep Berhasil / Kurang berhasil
+- Badge Terverifikasi (resep dari penjual asli / diuji tim)
+- Filter kata kasar
+
+ROLE
+- User belum login : lihat semua konten
+- User login       : upload, vote, komentar, simpan, lapor, request
+- Admin            : moderasi
+
+MODEL BISNIS (MASIH PERLU DIPERKUAT - feedback utama dosen)
+- Sponsor brand bahan kue lokal
+- Kerja sama pemda / dinas pariwisata
+- Produk turunan: e-book resep, kartu edukasi
+- Nanti: kursus premium dari penjual asli (bagi hasil)
+
+TEKNOLOGI
+Next.js + Supabase (auth, database, foto) + Leaflet (mini map) + Vercel.
+Desain di Figma "Jejak Jajan" (desktop dulu, lalu mobile).
+
+STATUS
+- Selesai: ide, dokumen (docs/01-05), desain Figma, presentasi progress 1
+- Berikutnya: model bisnis, mulai development (template UI + data dummy)
+
+DOKUMEN DETAIL
+docs/01 ide & fitur, 02 survei, 03 desain, 04 rencana SE,
+05 feedback presentasi 1
