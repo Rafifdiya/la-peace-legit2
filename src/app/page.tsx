@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Search } from "lucide-react";
 import { SnackCard } from "@/components/SnackCard";
+import { StatCard } from "@/components/StatCard";
 import { getProvinces, getSnackPage, getStats } from "@/lib/data";
 
 export default async function Beranda() {
@@ -33,12 +34,7 @@ export default async function Beranda() {
       </section>
 
       <section className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        {statList.map(([label, n]) => (
-          <div key={label} className="rounded-lg border border-line bg-surface p-5 text-center">
-            <p className="font-display text-3xl font-semibold text-brand">{n}</p>
-            <p className="text-sm text-ink-2">{label}</p>
-          </div>
-        ))}
+        {statList.map(([label, n]) => <StatCard key={label} label={label} value={n} />)}
       </section>
 
       <Section judul="Hampir Punah" href="/katalog?urut=langka">

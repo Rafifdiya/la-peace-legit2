@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, UserRound } from "lucide-react";
+import { LoginButton } from "./LoginButton";
 
 const menu = [
   { href: "/", label: "Beranda" },
@@ -29,12 +30,14 @@ export function Navbar() {
           <Search size={16} className="text-ink-2" aria-hidden />
           <input name="q" placeholder="Cari jajanan..." aria-label="Cari jajanan" className="w-40 bg-transparent text-sm outline-none" />
         </form>
-        <Link href="/masuk" className="text-sm hover:text-brand sm:ml-0 ml-auto">
-          Masuk
+        <LoginButton className="ml-auto text-sm hover:text-brand sm:ml-0">Masuk</LoginButton>
+        {/* Template: link profil selalu tampil. Nanti hanya saat sudah login (+ link Admin jika role admin). */}
+        <Link href="/profil/saya" aria-label="Profil saya" className="hidden rounded-full bg-subtle p-2 hover:text-brand md:block">
+          <UserRound size={18} />
         </Link>
         <Link
           href="/upload"
-          className="flex items-center gap-1 rounded-full bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-hover"
+          className="hidden items-center gap-1 rounded-full bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-hover sm:flex"
         >
           <Plus size={16} aria-hidden /> Kontribusi
         </Link>
