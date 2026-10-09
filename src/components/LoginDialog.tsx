@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 
 const EVENT = "jj:open-login";
 
@@ -14,6 +15,26 @@ export function openLogin() {
 // fokus & tombol Esc sudah ditangani browser.
 export function LoginDialog() {
   const ref = useRef<HTMLDialogElement>(null);
+  const [tahap, setTahap] = useState<"isi" | "kirim" | "terkirim">("isi");
+  const [error, setError] = useState("");
+
+  async function kirimLink(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const email = new FormData(e.currentTarget).get("email") as string;
+    setTahap("kirim");
+    setError("");
+    const next = encodeURIComponent(location.pathname + location.search);
+    const { error } = await createClient().auth.signInWithOtp({
+      email,
+      options: { emailRedirectTo: `${location.origin}/auth/callback?next=${next}` },
+    });
+    if (error) {
+      setError(error.status === 429 ? "Terlalu banyak percobaan. Coba lagi beberapa menit lagi." : "Gagal mengirim link. Coba lagi.");
+      setTahap("isi");
+    } else {
+      setTahap("terkirim");
+    }
+  }
 
   useEffect(() => {
     const open = () => ref.current?.showModal();
@@ -39,19 +60,20 @@ export function LoginDialog() {
             <X size={20} />
           </button>
         </div>
-        <button className="w-full rounded-full border border-line py-2.5 font-semibold hover:border-brand">
-          Masuk dengan Google
-        </button>
-        <div className="flex items-center gap-3 text-xs text-ink-2">
-          <span className="h-px flex-1 bg-line" /> atau <span className="h-px flex-1 bg-line" />
-        </div>
-        <form method="dialog" className="space-y-3">
-          <input type="email" required placeholder="Email" aria-label="Email" className="w-full rounded-sm border border-line px-3 py-2" />
-          <button className="w-full rounded-full bg-brand py-2.5 font-semibold text-white hover:bg-brand-hover">
-            Kirim link masuk
-          </button>
-        </form>
-        <p className="text-center text-xs text-ink-2">Template: login belum aktif (menunggu Supabase).</p>
+        {/* Login Google menyusul */}
+        {tahap === "terkirim" ? (
+          <p role="status" className="rounded-sm bg-subtle p-3 text-sm">
+            Link masuk sudah dikirim. Cek email kamu (juga folder Spam), lalu klik link-nya di browser ini.
+          </p>
+        ) : (
+          <form onSubmit={kirimLink} className="space-y-3">
+            <input name="email" type="email" required autoComplete="email" placeholder="Email" aria-label="Email" className="w-full rounded-sm border border-line px-3 py-2" />
+            {error && <p role="alert" className="text-sm text-red-700">{error}</p>}
+            <button disabled={tahap === "kirim"} className="w-full rounded-full bg-brand py-2.5 font-semibold text-white hover:bg-brand-hover disabled:opacity-60">
+              {tahap === "kirim" ? "Mengirim..." : "Kirim link masuk"}
+            </button>
+          </form>
+        )}
       </div>
     </dialog>
   );
