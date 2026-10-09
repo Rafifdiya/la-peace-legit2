@@ -1,0 +1,99 @@
+FEEDBACK PRESENTASI PROGRESS 1 (8 OKTOBER 2026)
+=================================================================
+Sumber: dosen + teman sekelas saat presentasi progress (demo Figma).
+Tema paling sering: CARA MENDAPAT KEUNTUNGAN (dosen + 3 teman).
+
+
+=================================================================
+1. FEEDBACK GRID
+=================================================================
+[HAL YANG BAGUS]
+- Tidak ada pujian tersurat. Banyaknya pertanyaan soal moderasi dan
+  resep menunjukkan audiens paham idenya dan tertarik.
+
+[SARAN]
+S1. Pikirkan sumber keuntungan, misalnya subscription (dosen)
+S2. Fitur verifikasi / rating agar info komunitas lebih terpercaya
+S3. Fitur beli jajanan via pengiriman seperti GoFood (2 orang)
+
+[KRITIK (TERSIRAT)]
+K1. Model bisnis / keuntungan belum jelas
+K2. Cari di TikTok lebih cepat daripada membuka web
+K3. Resep sejenis sudah banyak di internet
+K4. Data komunitas rawan salah, iseng, atau kasar
+K5. Penjual kebanyakan sudah tua, sulit dijangkau
+
+[PERTANYAAN]
+P1.  Ada pengiriman, atau pembeli harus datang ke lokasi?
+P2.  Kenapa orang tidak cari di TikTok saja? Income dari mana?
+P3.  Ada filter nama / kata kasar? (contoh: kue ape dijuluki kata tidak
+     pantas)
+P4.  Apa kriteria resep bisa masuk katalog?
+P5.  Bagaimana menjangkau penjual yang sudah tua?
+P6.  Kenapa user mau pakai, padahal resep sudah banyak di internet?
+P7.  Bagaimana tahu masakannya pasti enak?
+P8.  Bagaimana menggeneralisasi resep yang disesuaikan selera?
+P9.  Bagaimana pemasarannya supaya orang tidak cari di medsos?
+P10. Bagaimana tahu resepnya pasti berhasil? Revenue dari mana?
+P11. Bagaimana menangani info yang sengaja dibuat salah?
+
+
+=================================================================
+2. JAWABAN PER TEMA
+=================================================================
+Tema A - Keuntungan (S1, K1, P2, P10)
+- Arsip tetap gratis (tidak dikunci subscription), karena misinya
+  melestarikan dan kontribusi komunitas butuh akses terbuka.
+- Sumber pendapatan:
+  1. Sponsor brand bahan kue lokal (banner, resep bersponsor berlabel)
+  2. Link afiliasi bahan & alat (marketplace)
+  3. Kerja sama pemda / dinas pariwisata (data & promosi kuliner daerah)
+  4. Produk turunan: e-book resep, kartu edukasi
+  5. Kelas / workshop premium bersama penjual, bagi hasil ke penjual
+  6. Opsional freemium: fitur tambahan (unduh resep PDF, koleksi tanpa
+     batas), isi arsip tetap gratis
+- Perlu slide model bisnis di presentasi berikutnya.
+
+Tema B - Pengiriman (S3, P1)
+- Tidak membangun sistem pengiriman sendiri (terlalu berat, bukan fokus).
+- Kartu lokasi diberi link "Pesan online" (GoFood / GrabFood /
+  ShopeeFood / WhatsApp) jika penjual punya. Peluang afiliasi.
+
+Tema C - Kenapa bukan TikTok / medsos (K2, K3, P2, P6, P9)
+- Konten medsos cepat tenggelam dan tidak terstruktur. Jejak Jajan:
+  resep lengkap + cerita + label kelangkaan + lokasi terkonfirmasi di
+  satu tempat, mudah dicari kembali.
+- Medsos dipakai sebagai pintu masuk pemasaran: konten rutin
+  "jajanan hampir punah minggu ini" dengan link ke web.
+
+Tema D - Kepercayaan & akurasi resep (S2, K4, P4, P7, P8, P10, P11)
+Sudah ada di desain:
+- Moderasi admin sebelum tampil, tombol Lapor
+- Banyak versi resep per jajanan (tidak perlu digeneralisasi)
+- "Saya sudah coba" + foto hasil
+Tambahan baru:
+- Penilaian resep "Berhasil / Kurang berhasil" per versi resep
+- Badge "Terverifikasi" (dari penjual asli / sudah diuji tim)
+- Kriteria masuk katalog ditulis di halaman Tentang
+- Riwayat & kontributor tiap versi ditampilkan
+
+Tema E - Kata kasar (K4, P3)
+- Daftar kata terlarang: kiriman yang mengandung kata itu otomatis
+  ditandai untuk ditinjau admin. Nama lokal yang sah tetap bisa
+  disetujui admin.
+
+Tema F - Penjual lansia (K5, P5)
+- Penjual tidak harus memakai web sendiri. Yang mendokumentasikan adalah
+  komunitas (pembeli, mahasiswa, keluarga penjual) dengan izin penjual.
+- Rencana: kunjungan tim ke 2-3 penjual untuk data awal.
+
+
+=================================================================
+3. TINDAK LANJUT
+=================================================================
+[ ] Buat slide model bisnis (presentasi berikutnya)
+[ ] Tambah ke docs/03-desain.txt: link pesan online, penilaian resep,
+    badge terverifikasi, filter kata kasar, kriteria katalog
+[ ] Buat GitHub Issues untuk fitur baru di atas
+[ ] Tulis kriteria masuk katalog di halaman Tentang
+[ ] Rencana konten medsos sederhana untuk pemasaran

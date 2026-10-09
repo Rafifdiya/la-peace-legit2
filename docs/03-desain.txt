@@ -1,10 +1,18 @@
-DOKUMEN DESAIN - JEJAK JAJAN (REVISI 2)
+DOKUMEN DESAIN - JEJAK JAJAN (REVISI 3)
 =================================================================
 Nama web: "Jejak Jajan" (mengikuti desain Figma)
 Figma: https://www.figma.com/design/Zv9aKixdQk3xa38y0xMfcg/Jejak-Jajan-%E2%80%94-UI-Design
   - Page "Design System": warna, tipografi, spacing, komponen
   - Page "Desktop": layar desktop 1440px (prioritas development)
   - Page "Mobile": layar mobile
+
+Perubahan revisi 3 (feedback presentasi progress 1, lihat docs/05):
+- Kartu lokasi: link "Pesan online" (GoFood/GrabFood/ShopeeFood/WA)
+  jika penjual punya. Tidak ada sistem pengiriman sendiri.
+- Penilaian resep "Berhasil / Kurang berhasil" per versi resep.
+- Badge "Terverifikasi" untuk resep dari penjual asli / diuji tim.
+- Filter kata kasar: kiriman berisi kata terlarang ditandai untuk admin.
+- Kriteria masuk katalog ditulis di halaman Tentang.
 
 Perubahan revisi 2 (setelah review Figma):
 - Nama web jadi "Jejak Jajan".
@@ -145,9 +153,10 @@ panel RarityVote, info pengirim.
 Tab: Cerita | Resep | Lokasi (n) | Komentar (n)
 - Cerita & narasi + sumber
 - Resep: pilih versi, porsi/waktu/kesulitan, Bahan, Langkah (RecipeStep:
-  teks + foto + video opsional), Video lengkap, "Saya sudah coba"
+  teks + foto + video opsional), Video lengkap, "Saya sudah coba",
+  penilaian Berhasil / Kurang berhasil, badge Terverifikasi
 - Lokasi (kolom kanan): MiniMap, SightingCard (fresh/stale/confirmed/
-  reported), "Saya lihat di tempat lain"
+  reported) + link "Pesan online" jika ada, "Saya lihat di tempat lain"
 - Komentar
 Bawah: "Dari [provinsi] juga".
 
@@ -169,7 +178,14 @@ Tab Terbuka/Terjawab, kartu request, Buat request. Detail: jawaban.
 ini), tab Kiriman | Laporan | Kategori, tabel dengan Setujui/Tolak/Lihat.
 
 [TENTANG]
-Tentang project, aturan kontribusi, lisensi (CC BY-SA 4.0), kontak.
+Tentang project, aturan kontribusi, kriteria masuk katalog, lisensi
+(CC BY-SA 4.0), kontak.
+Kriteria masuk katalog:
+- Jajanan tradisional Indonesia (bukan kreasi modern / fusion)
+- Ada nama dan asal daerah
+- Foto milik sendiri atau berlisensi bebas (cantumkan kredit)
+- Tidak mengandung kata kasar, SARA, atau promosi berlebihan
+- Lokasi hanya tempat usaha / publik
 
 
 =================================================================
@@ -190,7 +206,9 @@ Admin   : AdminTableRow
 Aturan:
 - SnackCard: ikon Resep/Video/Lokasi tampil hanya jika datanya ada.
 - RarityBadge: < 3 suara -> "Belum cukup suara".
-- SightingCard: stale jika last_confirmed_at > 6 bulan.
+- SightingCard: stale jika last_confirmed_at > 6 bulan; tombol
+  "Pesan online" hanya jika order_url ada.
+- Badge Terverifikasi tampil jika recipes.verified = true.
 
 
 =================================================================
@@ -241,8 +259,8 @@ snack_photos
 
 recipes
 - id, snack_id, judul_versi, bahan (jsonb), porsi, waktu_menit,
-  kesulitan (mudah|sedang|sulit), video_url, status, created_by,
-  created_at
+  kesulitan (mudah|sedang|sulit), video_url, verified (bool),
+  status, created_by, created_at
 
 recipe_steps
 - id, recipe_id, urutan, instruksi, foto_url, video_url
@@ -252,6 +270,7 @@ sightings
   jenis (kios_tetap | keliling | musiman), maps_url,
   lat, lng (opsional, dari pin di form), tanggal_terlihat (date;
   dari pilihan bulan & tahun, disimpan tanggal 1), last_confirmed_at,
+  order_url (opsional, link GoFood/GrabFood/ShopeeFood/WA),
   izin_publik (bool), status, created_by, created_at
 
 sighting_confirmations
@@ -267,7 +286,11 @@ saves
 - user_id, snack_id, created_at (PK gabungan)
 
 tries
-- id, recipe_id, user_id, foto_url, catatan, created_at
+- id, recipe_id, user_id, berhasil (bool), foto_url, catatan,
+  created_at  (= penilaian "Berhasil / Kurang berhasil")
+
+banned_words
+- id, kata  (kiriman yang mengandung kata ini ditandai untuk admin)
 
 requests
 - id, judul, deskripsi, province_id, status (open|answered),
