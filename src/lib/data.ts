@@ -1,8 +1,9 @@
-// Lapisan akses data. Sekarang membaca data dummy; nanti cukup ganti isi fungsi
-// ini dengan query Supabase (mis. .range(from, to) untuk pagination).
+// Lapisan akses data. Jajanan (katalog & detail) dari Supabase; request, profil,
+// dan admin masih data dummy sampai fiturnya disambung.
+import { cacheLife, cacheTag } from "next/cache";
 import { currentUsername, reports, requests, submissions, users } from "@/data/dummy";
-import { snacks } from "@/data/snacks";
-import type { Page, Snack, SnackCardData } from "./types";
+import { createPublicClient } from "./supabase/public";
+import type { Page, Rarity, Recipe, Sighting, Snack, SnackCardData } from "./types";
 
 export const PAGE_SIZE = 9;
 
@@ -13,70 +14,238 @@ export type SnackFilter = {
   urut?: "terbaru" | "az" | "langka";
 };
 
-const rarityRank = { punah: 4, hampir_punah: 3, mulai_langka: 2, umum: 1, unknown: 0 };
+// Kolom ringkas dari view snack_cards (lihat migration 0003)
+const CARD_COLUMNS =
+  "slug, nama, provinsi, kategori, deskripsi_singkat, cover_url, rarity, jumlah_vote, punya_resep, punya_video, punya_lokasi";
 
-export function toCard(s: Snack): SnackCardData {
+type CardRow = {
+  slug: string;
+  nama: string;
+  provinsi: string | null;
+  kategori: string | null;
+  deskripsi_singkat: string | null;
+  cover_url: string | null;
+  rarity: string | null;
+  jumlah_vote: number;
+  punya_resep: boolean;
+  punya_video: boolean;
+  punya_lokasi: boolean;
+};
+
+function toCard(r: CardRow): SnackCardData {
   return {
-    slug: s.slug,
-    nama: s.nama,
-    provinsi: s.provinsi,
-    kategori: s.kategori,
-    deskripsi: s.deskripsi,
-    cover: s.cover,
-    rarity: s.rarity,
-    jumlahVote: s.jumlahVote,
-    punyaResep: !!s.resep,
-    punyaVideo: !!s.resep?.videoUrl,
-    punyaLokasi: s.sightings.length > 0,
+    slug: r.slug,
+    nama: r.nama,
+    provinsi: r.provinsi ?? "",
+    kategori: r.kategori ?? "",
+    deskripsi: r.deskripsi_singkat ?? "",
+    cover: r.cover_url ?? undefined,
+    rarity: (r.rarity as Rarity | null) ?? "unknown",
+    jumlahVote: r.jumlah_vote,
+    punyaResep: r.punya_resep,
+    punyaVideo: r.punya_video,
+    punyaLokasi: r.punya_lokasi,
   };
 }
 
-export async function getSnackPage(filter: SnackFilter, page = 1, size = PAGE_SIZE): Promise<Page<SnackCardData>> {
-  const q = filter.q?.trim().toLowerCase();
-  let list = snacks.filter(
-    (s) =>
-      (!q || s.nama.toLowerCase().includes(q) || s.namaLain.some((n) => n.toLowerCase().includes(q))) &&
-      (!filter.provinsi || s.provinsiSlug === filter.provinsi) &&
-      (!filter.kategori || s.kategori === filter.kategori),
-  );
-
-  if (filter.urut === "az") list = [...list].sort((a, b) => a.nama.localeCompare(b.nama));
-  else if (filter.urut === "langka") list = [...list].sort((a, b) => rarityRank[b.rarity] - rarityRank[a.rarity]);
-  else list = [...list].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
-
-  const from = (page - 1) * size;
-  const items = list.slice(from, from + size).map(toCard);
-  return { items, total: list.length, nextPage: from + size < list.length ? page + 1 : null };
+/** Lempar error supaya halaman error tampil, bukan katalog kosong yang menyesatkan. */
+function cek<T>(res: { data: unknown; error: { message: string } | null }): T {
+  if (res.error) throw new Error(`Supabase: ${res.error.message}`);
+  return res.data as T;
 }
 
+export async function getSnackPage(filter: SnackFilter, page = 1, size = PAGE_SIZE): Promise<Page<SnackCardData>> {
+  "use cache";
+  cacheLife("minutes");
+  cacheTag("jajanan");
+
+  let query = createPublicClient().from("snack_cards").select(CARD_COLUMNS, { count: "exact" });
+  // Buang karakter khusus PostgREST/LIKE supaya input user tidak merusak query
+  const q = filter.q?.toLowerCase().replace(/[%_,()*\\]/g, " ").trim();
+  if (q) query = query.ilike("cari", `%${q}%`);
+  if (filter.provinsi) query = query.eq("provinsi_slug", filter.provinsi);
+  if (filter.kategori) query = query.eq("kategori", filter.kategori);
+
+  if (filter.urut === "az") query = query.order("nama");
+  else if (filter.urut === "langka") query = query.order("rarity_rank", { ascending: false }).order("nama");
+  else query = query.order("created_at", { ascending: false });
+
+  const from = (page - 1) * size;
+  const res = await query.range(from, from + size - 1);
+  const rows = cek<CardRow[]>(res);
+  const total = res.count ?? rows.length;
+  return { items: rows.map(toCard), total, nextPage: from + size < total ? page + 1 : null };
+}
+
+type DetailRow = {
+  slug: string;
+  nama: string;
+  nama_lain: string[];
+  deskripsi_singkat: string | null;
+  cerita: string | null;
+  cover_url: string | null;
+  created_at: string;
+  provinces: { nama: string; slug: string } | null;
+  categories: { nama: string } | null;
+  recipes: {
+    judul_versi: string;
+    bahan: string[];
+    porsi: number | null;
+    waktu_menit: number | null;
+    kesulitan: Recipe["kesulitan"] | null;
+    video_url: string | null;
+    verified: boolean;
+    created_at: string;
+    recipe_steps: { urutan: number; instruksi: string }[];
+  }[];
+  sightings: {
+    id: string;
+    nama_tempat: string;
+    area: string;
+    jenis: Sighting["jenis"];
+    maps_url: string | null;
+    lat: number | null;
+    lng: number | null;
+    tanggal_terlihat: string | null;
+    last_confirmed_at: string | null;
+    order_url: string | null;
+    created_at: string;
+  }[];
+};
+
 export async function getSnack(slug: string): Promise<Snack | undefined> {
-  return snacks.find((s) => s.slug === slug);
+  "use cache";
+  cacheLife("minutes");
+  cacheTag("jajanan", `jajanan-${slug}`);
+
+  const supabase = createPublicClient();
+  const [detail, label] = await Promise.all([
+    supabase
+      .from("snacks")
+      .select(
+        `slug, nama, nama_lain, deskripsi_singkat, cerita, cover_url, created_at,
+         provinces (nama, slug), categories (nama),
+         recipes (judul_versi, bahan, porsi, waktu_menit, kesulitan, video_url, verified, created_at, recipe_steps (urutan, instruksi)),
+         sightings (id, nama_tempat, area, jenis, maps_url, lat, lng, tanggal_terlihat, last_confirmed_at, order_url, created_at)`,
+      )
+      .eq("slug", slug)
+      .eq("status", "approved")
+      .eq("recipes.status", "approved")
+      .eq("sightings.status", "approved")
+      .maybeSingle(),
+    supabase.from("snack_cards").select("rarity, jumlah_vote").eq("slug", slug).maybeSingle(),
+  ]);
+
+  const s = cek<DetailRow | null>(detail);
+  if (!s) return undefined;
+  const l = cek<{ rarity: string | null; jumlah_vote: number } | null>(label);
+
+  // Resep terverifikasi dulu, lalu versi paling awal
+  const r = [...s.recipes].sort(
+    (a, b) => Number(b.verified) - Number(a.verified) || a.created_at.localeCompare(b.created_at),
+  )[0];
+
+  return {
+    slug: s.slug,
+    nama: s.nama,
+    namaLain: s.nama_lain,
+    provinsi: s.provinces?.nama ?? "",
+    provinsiSlug: s.provinces?.slug ?? "",
+    kategori: s.categories?.nama ?? "",
+    deskripsi: s.deskripsi_singkat ?? "",
+    cerita: s.cerita ?? "",
+    cover: s.cover_url ?? undefined,
+    rarity: (l?.rarity as Rarity | null) ?? "unknown",
+    jumlahVote: l?.jumlah_vote ?? 0,
+    resep: r && {
+      judulVersi: r.judul_versi,
+      porsi: r.porsi ?? 0,
+      waktuMenit: r.waktu_menit ?? 0,
+      kesulitan: r.kesulitan ?? "sedang",
+      bahan: r.bahan,
+      langkah: [...r.recipe_steps].sort((a, b) => a.urutan - b.urutan).map((x) => x.instruksi),
+      verified: r.verified,
+      videoUrl: r.video_url ?? undefined,
+    },
+    sightings: s.sightings.map((g) => ({
+      id: g.id,
+      tempat: g.nama_tempat,
+      area: g.area,
+      jenis: g.jenis,
+      terakhirDikonfirmasi: (g.last_confirmed_at ?? g.tanggal_terlihat ?? g.created_at).slice(0, 10),
+      lat: g.lat ?? undefined,
+      lng: g.lng ?? undefined,
+      mapsUrl: g.maps_url ?? undefined,
+      orderUrl: g.order_url ?? undefined,
+    })),
+    createdAt: s.created_at.slice(0, 10),
+  };
 }
 
 export async function getAllSlugs(): Promise<string[]> {
-  return snacks.map((s) => s.slug);
+  "use cache";
+  cacheLife("minutes");
+  cacheTag("jajanan");
+  const rows = cek<{ slug: string }[]>(await createPublicClient().from("snack_cards").select("slug"));
+  return rows.map((r) => r.slug);
 }
 
 export async function getProvinces(): Promise<{ nama: string; slug: string }[]> {
-  const map = new Map(snacks.map((s) => [s.provinsiSlug, s.provinsi]));
-  return [...map].map(([slug, nama]) => ({ slug, nama })).sort((a, b) => a.nama.localeCompare(b.nama));
+  "use cache";
+  cacheLife("days");
+  return cek(await createPublicClient().from("provinces").select("nama, slug").order("nama"));
 }
 
 export async function getCategories(): Promise<string[]> {
-  return [...new Set(snacks.map((s) => s.kategori))].sort();
+  "use cache";
+  cacheLife("hours");
+  const rows = cek<{ nama: string }[]>(await createPublicClient().from("categories").select("nama").order("nama"));
+  return rows.map((r) => r.nama);
 }
 
 export async function getStats() {
+  "use cache";
+  cacheLife("minutes");
+  cacheTag("jajanan");
+
+  const supabase = createPublicClient();
+  const [kartu, kontributor, lokasi] = await Promise.all([
+    supabase.from("snack_cards").select("provinsi"),
+    supabase.from("profiles").select("id", { count: "exact", head: true }),
+    supabase.from("sightings").select("id", { count: "exact", head: true }),
+  ]);
+  const rows = cek<{ provinsi: string | null }[]>(kartu);
   return {
-    jajanan: snacks.length,
-    provinsi: new Set(snacks.map((s) => s.provinsi)).size,
-    kontributor: 12,
-    lokasi: snacks.reduce((n, s) => n + s.sightings.length, 0),
+    jajanan: rows.length,
+    provinsi: new Set(rows.map((r) => r.provinsi).filter(Boolean)).size,
+    kontributor: kontributor.count ?? 0,
+    lokasi: lokasi.count ?? 0,
   };
 }
 
 export async function getRelated(snack: Snack, limit = 3): Promise<SnackCardData[]> {
-  return snacks.filter((s) => s.provinsi === snack.provinsi && s.slug !== snack.slug).slice(0, limit).map(toCard);
+  "use cache";
+  cacheLife("minutes");
+  cacheTag("jajanan");
+  const rows = cek<CardRow[]>(
+    await createPublicClient()
+      .from("snack_cards")
+      .select(CARD_COLUMNS)
+      .eq("provinsi_slug", snack.provinsiSlug)
+      .neq("slug", snack.slug)
+      .limit(limit),
+  );
+  return rows.map(toCard);
+}
+
+export async function getCards(slugs: string[]): Promise<SnackCardData[]> {
+  "use cache";
+  cacheLife("minutes");
+  cacheTag("jajanan");
+  if (slugs.length === 0) return [];
+  const rows = cek<CardRow[]>(await createPublicClient().from("snack_cards").select(CARD_COLUMNS).in("slug", slugs));
+  // Jaga urutan sesuai input
+  return slugs.map((s) => rows.find((r) => r.slug === s)).filter((r): r is CardRow => !!r).map(toCard);
 }
 
 // ---------- Request, profil, admin (dummy) ----------
@@ -98,10 +267,6 @@ export async function getUser(username: string) {
 /** Template: user yang dianggap sedang login. Nanti dari Supabase Auth. */
 export async function getCurrentUser() {
   return users.find((u) => u.username === currentUsername)!;
-}
-
-export async function getCards(slugs: string[]): Promise<SnackCardData[]> {
-  return slugs.map((s) => snacks.find((x) => x.slug === s)).filter((s): s is Snack => !!s).map(toCard);
 }
 
 export async function getSubmissions(oleh?: string) {
