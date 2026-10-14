@@ -22,14 +22,22 @@ export default async function Beranda() {
   return (
     <div className="space-y-14 py-10">
       <section className="space-y-5 text-center">
+        <p className="-rotate-2 font-hand text-2xl text-brand sm:text-3xl">
+          <span className="ketik">dari dapur nenek, untuk generasi berikutnya</span>
+        </p>
         <h1 className="font-display text-4xl font-semibold sm:text-6xl">Jejak jajan yang hampir hilang</h1>
-        <p className="mx-auto max-w-xl text-ink-2">
+        <p className="mx-auto max-w-2xl text-[1.32rem] text-ink">
           Arsip jajanan tradisional Indonesia dari komunitas: cerita, resep, dan di mana terakhir terlihat.
         </p>
-        <form action="/katalog" className="mx-auto flex max-w-lg items-center gap-2 rounded-full border border-line bg-surface px-4 py-3">
-          <Search size={18} className="text-ink-2" aria-hidden />
-          <input name="q" placeholder="Cari klepon, kue ape, lupis..." aria-label="Cari jajanan" className="flex-1 bg-transparent outline-none" />
-          <button className="rounded-full bg-brand px-4 py-1.5 text-sm font-semibold text-white">Cari</button>
+        {/* Cari + pilih daerah dalam satu kotak (pengganti daftar tombol provinsi) */}
+        <form action="/katalog" className="mx-auto flex max-w-[50.4rem] flex-wrap items-center gap-[0.6rem] rounded-3xl border border-line bg-surface px-[1.2rem] py-[0.9rem] sm:flex-nowrap sm:rounded-full">
+          <Search size={22} className="text-ink" aria-hidden />
+          <input name="q" placeholder="Cari klepon, kue ape, lupis..." aria-label="Cari jajanan" className="min-w-0 flex-1 bg-transparent text-[1.32rem] outline-none placeholder:text-ink/80" />
+          <select name="provinsi" aria-label="Daerah" defaultValue="" className="w-full rounded-full border border-line bg-surface px-[0.9rem] py-[0.45rem] text-[1.155rem] sm:w-[13.2rem]">
+            <option value="">Semua daerah</option>
+            {provinsi.map((p) => <option key={p.slug} value={p.slug}>{p.nama}</option>)}
+          </select>
+          <button className="w-full rounded-full bg-brand px-[1.2rem] py-[0.45rem] text-[1.155rem] font-semibold text-white sm:w-auto">Cari</button>
         </form>
       </section>
 
@@ -41,24 +49,13 @@ export default async function Beranda() {
         {langka.items.map((s) => <SnackCard key={s.slug} snack={s} />)}
       </Section>
 
-      <section className="space-y-4">
-        <h2 className="font-display text-2xl font-semibold">Jelajahi per Daerah</h2>
-        <div className="flex flex-wrap gap-2">
-          {provinsi.map((p) => (
-            <Link key={p.slug} href={`/katalog?provinsi=${p.slug}`} className="rounded-full border border-line bg-surface px-3 py-1.5 text-sm hover:border-brand">
-              {p.nama}
-            </Link>
-          ))}
-        </div>
-      </section>
-
       <Section judul="Baru Ditambahkan" href="/katalog">
         {baru.items.map((s) => <SnackCard key={s.slug} snack={s} />)}
       </Section>
 
       <section className="rounded-xl bg-brand p-8 text-center text-white">
         <h2 className="font-display text-2xl font-semibold">Tahu jajanan yang belum ada?</h2>
-        <p className="mt-2 text-white/80">Bagikan cerita, resep, atau lokasi penjualnya.</p>
+        <p className="mt-2 font-hand text-2xl text-white/90">Bagikan cerita, resep, atau lokasi penjualnya.</p>
         <Link href="/upload" className="mt-4 inline-block rounded-full bg-white px-5 py-2 font-semibold text-brand">
           Mulai kontribusi
         </Link>
@@ -72,7 +69,7 @@ function Section({ judul, href, children }: { judul: string; href: string; child
     <section className="space-y-4">
       <div className="flex items-end justify-between">
         <h2 className="font-display text-2xl font-semibold">{judul}</h2>
-        <Link href={href} className="text-sm text-brand hover:underline">Lihat semua</Link>
+        <Link href={href} className="text-[1.155rem] font-semibold text-brand underline underline-offset-4 hover:text-brand-hover">Lihat semua</Link>
       </div>
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{children}</div>
     </section>

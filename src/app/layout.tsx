@@ -1,9 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Plus_Jakarta_Sans } from "next/font/google";
+import { Caveat, Fraunces, Plus_Jakarta_Sans } from "next/font/google";
 import { BottomNav } from "@/components/BottomNav";
 import { Footer } from "@/components/Footer";
 import { LoginDialog } from "@/components/LoginDialog";
 import { Navbar } from "@/components/Navbar";
+import { Sidebar } from "@/components/Sidebar";
 import "./globals.css";
 
 // Font di-host sendiri oleh Next.js, hanya ketebalan yang dipakai
@@ -21,6 +22,14 @@ const jakarta = Plus_Jakarta_Sans({
   display: "swap",
 });
 
+// Aksen tulisan tangan: hanya untuk teks pendek (tagline, kutipan), bukan paragraf
+const caveat = Caveat({
+  variable: "--font-caveat",
+  subsets: ["latin"],
+  weight: ["600", "700"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: { default: "Jejak Jajan", template: "%s · Jejak Jajan" },
   description: "Arsip jajanan tradisional Indonesia dari komunitas: cerita, resep, dan lokasi terakhir terlihat.",
@@ -32,11 +41,14 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="id" className={`${fraunces.variable} ${jakarta.variable} antialiased`}>
-      <body className="flex min-h-screen flex-col pb-16 md:pb-0">
-        <Navbar />
-        <main className="mx-auto w-full max-w-[1200px] flex-1 px-4">{children}</main>
-        <Footer />
+    <html lang="id" className={`${fraunces.variable} ${jakarta.variable} ${caveat.variable} antialiased`}>
+      <body className="flex min-h-screen pb-16 md:pb-0">
+        <Sidebar />
+        <div className="flex min-w-0 flex-1 flex-col">
+          <Navbar />
+          <main className="mx-auto w-full max-w-[1200px] flex-1 px-4">{children}</main>
+          <Footer />
+        </div>
         <BottomNav />
         <LoginDialog />
       </body>
