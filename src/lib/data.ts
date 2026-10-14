@@ -1,7 +1,6 @@
-// Lapisan akses data. Jajanan (katalog & detail) dari Supabase; request, profil,
-// dan admin masih data dummy sampai fiturnya disambung.
+// Lapisan akses data jajanan publik (katalog & detail) dari Supabase.
+// Request, profil, laporan: lihat komunitas.ts. Kiriman & sesi: kiriman.ts.
 import { cacheLife, cacheTag } from "next/cache";
-import { currentUsername, reports, requests, submissions, users } from "@/data/dummy";
 import { createPublicClient } from "./supabase/public";
 import type { Page, Rarity, Recipe, Sighting, Snack, SnackCardData } from "./types";
 
@@ -246,41 +245,4 @@ export async function getCards(slugs: string[]): Promise<SnackCardData[]> {
   const rows = cek<CardRow[]>(await createPublicClient().from("snack_cards").select(CARD_COLUMNS).in("slug", slugs));
   // Jaga urutan sesuai input
   return slugs.map((s) => rows.find((r) => r.slug === s)).filter((r): r is CardRow => !!r).map(toCard);
-}
-
-// ---------- Request, profil, admin (dummy) ----------
-
-export async function getRequests(status: "terbuka" | "terjawab") {
-  return requests
-    .filter((r) => (status === "terjawab" ? r.jawaban.length > 0 : r.jawaban.length === 0))
-    .sort((a, b) => b.tanggal.localeCompare(a.tanggal));
-}
-
-export async function getRequest(id: string) {
-  return requests.find((r) => r.id === id);
-}
-
-export async function getUser(username: string) {
-  return users.find((u) => u.username === username);
-}
-
-/** Template: user yang dianggap sedang login. Nanti dari Supabase Auth. */
-export async function getCurrentUser() {
-  return users.find((u) => u.username === currentUsername)!;
-}
-
-export async function getSubmissions(oleh?: string) {
-  return submissions.filter((s) => !oleh || s.oleh === oleh);
-}
-
-export async function getReports() {
-  return reports;
-}
-
-export async function getRequestIds() {
-  return requests.map((r) => r.id);
-}
-
-export async function getUsernames() {
-  return users.map((u) => u.username);
 }

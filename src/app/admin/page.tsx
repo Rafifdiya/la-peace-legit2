@@ -1,16 +1,18 @@
 import type { Metadata } from "next";
+import { connection } from "next/server";
 import { Suspense } from "react";
-import { TriangleAlert } from "lucide-react";
+import { LoginButton } from "@/components/LoginButton";
 import { StatCard } from "@/components/StatCard";
-import { StatusPill } from "@/components/StatusPill";
 import { Tabs } from "@/components/Tabs";
-import { getCategories, getReports, getStats, getSubmissions } from "@/lib/data";
+import { getCategories, getStats } from "@/lib/data";
+import { getLaporan } from "@/lib/komunitas";
 import { formatTanggal } from "@/lib/format";
-import { RejectButton } from "./RejectButton";
+import { getKirimanAdmin, getSesi } from "@/lib/kiriman";
+import { KirimanList } from "./KirimanList";
 
 export const metadata: Metadata = { title: "Admin", robots: { index: false } };
 
-// Template: belum ada cek role. Nanti hanya role admin yang boleh masuk.
+// Hanya role admin. Cek ulang juga dilakukan di database (RLS + fungsi moderasi).
 export default function AdminPage({ searchParams }: PageProps<"/admin">) {
   return (
     <div className="space-y-8 py-10">
@@ -25,9 +27,20 @@ export default function AdminPage({ searchParams }: PageProps<"/admin">) {
 const btn = "rounded-full border border-line px-3 py-1 hover:border-brand";
 
 async function Isi({ searchParams }: Pick<PageProps<"/admin">, "searchParams">) {
+  await connection(); // halaman per-request (sesi login), bukan prerender
+  const sesi = await getSesi();
+  if (!sesi.user) {
+    return (
+      <p className="text-ink-2">
+        Halaman ini khusus admin. <LoginButton className="text-brand underline">Masuk</LoginButton>
+      </p>
+    );
+  }
+  if (!sesi.admin) return <p className="text-ink-2">Halaman ini khusus admin.</p>;
+
   const t = (await searchParams).tab;
   const tab = t === "laporan" || t === "kategori" ? t : "kiriman";
-  const [kiriman, laporan, kategori, stats] = await Promise.all([getSubmissions(), getReports(), getCategories(), getStats()]);
+  const [kiriman, laporan, kategori, stats] = await Promise.all([getKirimanAdmin(), getLaporan(), getCategories(), getStats()]);
   const menunggu = kiriman.filter((k) => k.status === "pending");
 
   return (
@@ -36,7 +49,7 @@ async function Isi({ searchParams }: Pick<PageProps<"/admin">, "searchParams">) 
         <StatCard label="Menunggu" value={menunggu.length} />
         <StatCard label="Laporan terbuka" value={laporan.length} />
         <StatCard label="Total jajanan" value={stats.jajanan} />
-        <StatCard label="Disetujui minggu ini" value={kiriman.filter((k) => k.status === "approved").length} />
+        <StatCard label="Kiriman disetujui" value={kiriman.filter((k) => k.status === "approved").length} />
       </div>
 
       <Tabs
@@ -49,34 +62,9 @@ async function Isi({ searchParams }: Pick<PageProps<"/admin">, "searchParams">) 
         ]}
       />
 
-      {tab === "kiriman" && (
-        <ul className="space-y-3">
-          {kiriman.map((k) => (
-            <li key={k.id} className="flex flex-col gap-3 rounded-lg border border-line bg-surface p-4 text-sm sm:flex-row sm:items-center">
-              <div className="flex-1">
-                <p className="flex items-center gap-2 font-semibold">
-                  {k.judul}
-                  {k.ditandaiKataKasar && (
-                    <span className="flex items-center gap-1 text-xs font-normal text-danger">
-                      <TriangleAlert size={14} aria-hidden /> Ditandai filter kata kasar
-                    </span>
-                  )}
-                </p>
-                <p className="text-ink-2">{k.jenis} · @{k.oleh} · {formatTanggal(k.tanggal)}</p>
-              </div>
-              {k.status === "pending" ? (
-                <div className="flex gap-2">
-                  <button className={btn}>Lihat</button>
-                  <button className="rounded-full bg-accent px-3 py-1 text-white">Setujui</button>
-                  <RejectButton judul={k.judul} />
-                </div>
-              ) : (
-                <StatusPill status={k.status} />
-              )}
-            </li>
-          ))}
-        </ul>
-      )}
+      {tab === "kiriman" && <KirimanList kiriman={kiriman} />}
+
+      {tab === "laporan" && laporan.length === 0 && <p className="text-ink-2">Belum ada laporan terbuka.</p>}
 
       {tab === "laporan" && (
         <ul className="space-y-3">
@@ -84,7 +72,7 @@ async function Isi({ searchParams }: Pick<PageProps<"/admin">, "searchParams">) 
             <li key={r.id} className="flex flex-col gap-3 rounded-lg border border-line bg-surface p-4 text-sm sm:flex-row sm:items-center">
               <div className="flex-1">
                 <p className="font-semibold">{r.target}</p>
-                <p className="text-ink-2">{r.alasan} · dilaporkan @{r.oleh} · {formatTanggal(r.tanggal)}</p>
+                <p className="text-ink-2">{r.alasan} · dilaporkan {r.oleh} · {formatTanggal(r.tanggal)}</p>
               </div>
               <div className="flex gap-2">
                 <button className="rounded-full bg-danger px-3 py-1 text-white">Sembunyikan konten</button>

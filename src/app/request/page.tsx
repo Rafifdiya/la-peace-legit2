@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { MessageCircle } from "lucide-react";
 import { LoginButton } from "@/components/LoginButton";
 import { Tabs } from "@/components/Tabs";
-import { getRequests } from "@/lib/data";
+import { getRequests } from "@/lib/komunitas";
 import { formatTanggal } from "@/lib/format";
 
 export const metadata: Metadata = { title: "Request" };
@@ -41,8 +41,8 @@ async function RequestList({ searchParams }: Pick<PageProps<"/request">, "search
               <p className="font-semibold">{r.judul}</p>
               <p className="line-clamp-1 text-sm text-ink-2">{r.isi}</p>
               <p className="flex items-center gap-3 text-xs text-ink-2">
-                <span>{r.daerah}</span>
-                <span>@{r.oleh} · {formatTanggal(r.tanggal)}</span>
+                <span>{r.daerah || "-"}</span>
+                <span>{r.olehUsername ? `@${r.oleh}` : r.oleh} · {formatTanggal(r.tanggal)}</span>
                 <span className="flex items-center gap-1"><MessageCircle size={12} aria-hidden /> {r.jawaban.length} jawaban</span>
               </p>
             </Link>

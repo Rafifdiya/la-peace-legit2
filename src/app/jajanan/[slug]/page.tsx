@@ -7,12 +7,15 @@ import { MiniMapLazy } from "@/components/map/MiniMapLazy";
 import { RarityBadge } from "@/components/RarityBadge";
 import { SnackCard } from "@/components/SnackCard";
 import { SnackImage } from "@/components/SnackImage";
+import { labelWaktu } from "@/lib/format";
 import { getAllSlugs, getRelated, getSnack } from "@/lib/data";
 import { SightingAge } from "./SightingAge";
 
-// Semua halaman detail dibuat statis saat build -> dibuka sangat cepat
+// Semua halaman detail dibuat statis saat build -> dibuka sangat cepat.
+// Cache Components butuh minimal 1 param; kalau katalog kosong, pakai placeholder (404).
 export async function generateStaticParams() {
-  return (await getAllSlugs()).map((slug) => ({ slug }));
+  const slugs = await getAllSlugs();
+  return (slugs.length ? slugs : ["_"]).map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: PageProps<"/jajanan/[slug]">): Promise<Metadata> {
@@ -43,7 +46,7 @@ export default async function DetailPage({ params }: PageProps<"/jajanan/[slug]"
             <RarityBadge rarity={snack.rarity} jumlahVote={snack.jumlahVote} />
             <span className="text-sm text-ink-2">{snack.jumlahVote} suara</span>
           </div>
-          <p>{snack.deskripsi}</p>
+          {snack.deskripsi && <p className="font-hand text-2xl leading-snug text-brand">&ldquo;{snack.deskripsi}&rdquo;</p>}
           <div className="flex gap-2 text-sm">
             {([[Bookmark, "Simpan"], [Share2, "Bagikan"], [Flag, "Lapor"]] as const).map(([Icon, label]) => (
               <LoginButton key={label} className="flex items-center gap-1 rounded-full border border-line bg-surface px-3 py-1.5 hover:border-brand">
@@ -87,7 +90,7 @@ export default async function DetailPage({ params }: PageProps<"/jajanan/[slug]"
                     <span className="flex items-center gap-1 text-accent"><BadgeCheck size={16} aria-hidden /> Terverifikasi</span>
                   )}
                   <span>{snack.resep.porsi} porsi</span>
-                  <span>{snack.resep.waktuMenit} menit</span>
+                  {snack.resep.waktuMenit > 0 && <span>{labelWaktu(snack.resep.waktuMenit)}</span>}
                   <span className="capitalize">{snack.resep.kesulitan}</span>
                 </div>
                 <h3 className="font-semibold">Bahan</h3>

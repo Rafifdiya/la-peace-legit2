@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { LoginButton } from "@/components/LoginButton";
-import { getRequest, getRequestIds } from "@/lib/data";
+import { getRequest, getRequestIds } from "@/lib/komunitas";
 import { formatTanggal } from "@/lib/format";
 
+// Cache Components butuh minimal 1 param; kalau belum ada request, pakai placeholder (404).
 export async function generateStaticParams() {
-  return (await getRequestIds()).map((id) => ({ id }));
+  const ids = await getRequestIds();
+  return (ids.length ? ids : ["_"]).map((id) => ({ id }));
 }
 
 export async function generateMetadata({ params }: PageProps<"/request/[id]">): Promise<Metadata> {
@@ -27,7 +29,7 @@ export default async function RequestDetail({ params }: PageProps<"/request/[id]
         </span>
         <h1 className="font-display text-3xl font-semibold">{r.judul}</h1>
         <p className="text-sm text-ink-2">
-          <Link href={`/profil/${r.oleh}`} className="hover:text-brand">@{r.oleh}</Link> · {r.daerah} · {formatTanggal(r.tanggal)}
+          {r.olehUsername ? <Link href={`/profil/${r.olehUsername}`} className="hover:text-brand">@{r.oleh}</Link> : r.oleh} · {r.daerah} · {formatTanggal(r.tanggal)}
         </p>
         <p className="pt-2 leading-relaxed">{r.isi}</p>
       </div>
@@ -37,7 +39,7 @@ export default async function RequestDetail({ params }: PageProps<"/request/[id]
         {r.jawaban.map((j, i) => (
           <div key={i} className="space-y-1 rounded-lg border border-line bg-surface p-4">
             <p className="text-sm text-ink-2">
-              <Link href={`/profil/${j.oleh}`} className="hover:text-brand">@{j.oleh}</Link> · {formatTanggal(j.tanggal)}
+              {j.olehUsername ? <Link href={`/profil/${j.olehUsername}`} className="hover:text-brand">@{j.oleh}</Link> : j.oleh} · {formatTanggal(j.tanggal)}
             </p>
             <p>{j.isi}</p>
             {j.slug && <Link href={`/jajanan/${j.slug}`} className="text-sm text-brand underline">Lihat jajanan</Link>}

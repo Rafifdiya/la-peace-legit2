@@ -35,14 +35,14 @@ export function AuthNav() {
   }
 
   // Selama cek sesi, sisakan ruang kosong agar navbar tidak bergeser.
-  if (!status) return <span className="ml-auto w-14 sm:ml-0" aria-hidden />;
+  if (!status) return <span className="w-14" aria-hidden />;
 
   if (!status.masuk) {
-    return <LoginButton className="ml-auto text-sm hover:text-brand sm:ml-0">Masuk</LoginButton>;
+    return <LoginButton className="rounded-full border border-line bg-surface px-[1.155rem] py-[0.578rem] text-[1.155rem] hover:border-brand">Masuk</LoginButton>;
   }
 
   return (
-    <div className="ml-auto flex items-center gap-4 text-sm sm:ml-0">
+    <div className="flex items-center gap-4 text-[1.155rem]">
       {status.admin && (
         <Link href="/admin" className="hover:text-brand">
           Admin
@@ -51,7 +51,7 @@ export function AuthNav() {
       <button type="button" onClick={keluar} className="hover:text-brand">
         Keluar
       </button>
-      <Link href="/profil/saya" aria-label="Profil saya" className="hidden rounded-full bg-subtle p-2 hover:text-brand md:block">
+      <Link href="/profil/saya" aria-label="Profil saya" className="hidden rounded-full bg-brand p-2 text-white ring-2 ring-orange-500/40 hover:bg-brand-hover md:block">
         <UserRound size={18} />
       </Link>
     </div>
