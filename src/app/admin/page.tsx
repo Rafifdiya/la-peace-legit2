@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Metadata } from "next";
 import { connection } from "next/server";
 import { Suspense } from "react";
@@ -12,6 +13,7 @@ import { KirimanList } from "./KirimanList";
 import { getIklanAdmin } from "@/lib/iklan";
 import { IklanForm } from "./IklanForm";
 import { LihatIklanToggle } from "./LihatIklanToggle";
+import { AksiLaporan } from "./AksiLaporan";
 import { IklanItem } from "./IklanItem";
 
 export const metadata: Metadata = { title: "Admin", robots: { index: false } };
@@ -97,13 +99,13 @@ async function Isi({ searchParams }: Pick<PageProps<"/admin">, "searchParams">) 
           {laporan.map((r) => (
             <li key={r.id} className="flex flex-col gap-3 rounded-lg border border-line bg-surface p-4 text-sm sm:flex-row sm:items-center">
               <div className="flex-1">
-                <p className="font-semibold">{r.target}</p>
+                <p className="font-semibold">
+                  {r.target}
+                  {r.href && <Link href={r.href} className="ml-2 font-normal text-brand underline">Buka</Link>}
+                </p>
                 <p className="text-ink-2">{r.alasan} · dilaporkan {r.oleh} · {formatTanggal(r.tanggal)}</p>
               </div>
-              <div className="flex gap-2">
-                <button className="rounded-full bg-danger px-3 py-1 text-white">Sembunyikan konten</button>
-                <button className={btn}>Abaikan</button>
-              </div>
+              <AksiLaporan id={r.id} jenis={r.targetType} targetId={r.targetId} />
             </li>
           ))}
         </ul>

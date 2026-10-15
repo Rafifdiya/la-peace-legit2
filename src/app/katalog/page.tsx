@@ -6,7 +6,7 @@ import { getCategories, getProvinces, getSnackPage, type SnackFilter } from "@/l
 import { getIklanAktif } from "@/lib/iklan";
 import { InfiniteList } from "./InfiniteList";
 
-export const metadata: Metadata = { title: "Katalog" };
+export const metadata: Metadata = { title: "Katalog Jajanan" };
 
 export default function KatalogPage({ searchParams }: PageProps<"/katalog">) {
   return (

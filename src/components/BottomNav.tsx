@@ -5,7 +5,7 @@ const items = [
   { href: "/", label: "Beranda", Icon: Home },
   { href: "/katalog", label: "Katalog", Icon: LayoutGrid },
   { href: "/upload", label: "Kontribusi", Icon: Plus },
-  { href: "/request", label: "Tanya", Icon: MessageCircleQuestion },
+  { href: "/request", label: "Forum", Icon: MessageCircleQuestion },
   { href: "/profil/saya", label: "Profil", Icon: User },
 ];
 

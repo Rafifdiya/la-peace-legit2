@@ -15,10 +15,9 @@ export const metadata: Metadata = {
 // [fitur, gratis, premium]: true = ada, false = tidak, string = keterangan
 const fitur: [string, boolean | string, boolean | string][] = [
   ["Baca semua cerita, resep, dan lokasi", true, true],
-  ["Kirim jajanan, vote, Tanya Jajanan", true, true],
+  ["Kirim jajanan, vote, Forum Jajanan", true, true],
   ["Simpan jajanan", true, true],
   ["Koleksi (mis. \"Kue Lebaran\")", "Maks. 3", "Tanpa batas"],
-  ["Notifikasi jawaban & lokasi baru (segera hadir)", true, true],
   ["Unduh resep PDF", "5x per minggu", "Sepuasnya"],
   ["Mode masak (langkah besar, layar tetap menyala)", false, true],
   ["Lencana & bingkai Premium di profil", false, true],

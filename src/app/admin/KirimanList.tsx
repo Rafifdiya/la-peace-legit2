@@ -5,6 +5,7 @@ import { formatTanggal } from "@/lib/format";
 import type { Kiriman } from "@/lib/kiriman";
 import { ChecklistSetujui } from "./ChecklistSetujui";
 import { RejectButton } from "./RejectButton";
+import { HapusJajanan } from "./HapusJajanan";
 
 const btn = "rounded-full border border-line px-3 py-1 hover:border-brand";
 
@@ -33,6 +34,7 @@ export function KirimanList({ kiriman }: { kiriman: Kiriman[] }) {
               <div className="flex items-center gap-2">
                 {k.status === "approved" && <Link href={`/jajanan/${k.slug}`} className={btn}>Buka</Link>}
                 <StatusPill status={k.status === "approved" ? "approved" : "rejected"} />
+                <HapusJajanan kunci={{ id: k.id }} nama={k.nama} />
               </div>
             )}
           </div>

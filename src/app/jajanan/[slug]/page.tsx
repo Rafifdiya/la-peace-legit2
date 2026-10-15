@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
+import { Suspense } from "react";
 import { BadgeCheck, ExternalLink, MapPin, Share2, Flag } from "lucide-react";
 import { LoginButton } from "@/components/LoginButton";
 import { MiniMapLazy } from "@/components/map/MiniMapLazy";
@@ -10,6 +12,8 @@ import { SnackImage } from "@/components/SnackImage";
 import { SimpanButton } from "@/components/SimpanButton";
 import { AlatResep } from "@/components/AlatResep";
 import { SudahCoba } from "@/components/SudahCoba";
+import { HapusJajanan } from "@/app/admin/HapusJajanan";
+import { GantiFotoJajanan } from "@/app/admin/GantiFotoJajanan";
 import { labelWaktu } from "@/lib/format";
 import { getAllSlugs, getRelated, getSnack } from "@/lib/data";
 import { SightingAge } from "./SightingAge";
@@ -26,6 +30,13 @@ export async function generateMetadata({ params }: PageProps<"/jajanan/[slug]">)
   return snack ? { title: snack.nama, description: snack.deskripsi } : {};
 }
 
+// Jajanan baru (belum ada saat build) membaca params saat request, termasuk di generateMetadata.
+// Penanda ini memberi tahu Next.js bahwa bagian dinamis itu disengaja; isi halaman tetap prerender.
+async function Connection() {
+  await connection();
+  return null;
+}
+
 const jenisLabel = { kios_tetap: "Kios tetap", keliling: "Keliling", musiman: "Musiman" };
 
 export default async function DetailPage({ params }: PageProps<"/jajanan/[slug]">) {
@@ -38,8 +49,14 @@ export default async function DetailPage({ params }: PageProps<"/jajanan/[slug]"
 
   return (
     <div className="space-y-12 py-10">
+      <Suspense>
+        <Connection />
+      </Suspense>
       <div className="grid gap-8 lg:grid-cols-2">
-        <SnackImage src={snack.cover} alt={snack.nama} sizes="(max-width: 1024px) 100vw, 600px" utama className="aspect-[4/3] rounded-xl" />
+        <div className="relative">
+          <SnackImage src={snack.cover} alt={snack.nama} sizes="(max-width: 1024px) 100vw, 600px" utama className="aspect-[4/3] rounded-xl" />
+          <GantiFotoJajanan slug={snack.slug} />
+        </div>
         <div className="space-y-4">
           <p className="text-sm text-ink-2">{snack.kategori}</p>
           <h1 className="font-display text-5xl font-semibold">{snack.nama}</h1>
@@ -52,6 +69,7 @@ export default async function DetailPage({ params }: PageProps<"/jajanan/[slug]"
           {snack.deskripsi && <p className="font-hand text-2xl leading-snug text-brand">&ldquo;{snack.deskripsi}&rdquo;</p>}
           <div className="flex flex-wrap gap-2 text-sm">
             <SimpanButton slug={snack.slug} />
+            <HapusJajanan kunci={{ slug: snack.slug }} nama={snack.nama} cekAdmin sesudah="/katalog" />
             {([[Share2, "Bagikan"], [Flag, "Lapor"]] as const).map(([Icon, label]) => (
               <LoginButton key={label} className="flex items-center gap-1 rounded-full border border-line bg-surface px-3 py-1.5 hover:border-brand">
                 <Icon size={14} aria-hidden /> {label}

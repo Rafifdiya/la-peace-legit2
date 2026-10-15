@@ -104,18 +104,9 @@ body {
   60%, 100% { background-position: 0% 0; }
 }
 
-/* Pantulan pelan untuk tombol "Go back to top" */
-.pantul {
-  animation: pantul 2.4s ease-in-out infinite;
-}
-@keyframes pantul {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
-}
-
-/* Kecuali efek ketik (.ketik), kilau (.kilau) & pantul (.pantul): gerakannya kecil, aman untuk mode kurangi animasi */
+/* Kecuali efek ketik (.ketik), kilau (.kilau), dan tombol Pengaturan navbar: gerakannya kecil, aman untuk mode kurangi animasi */
 @media (prefers-reduced-motion: reduce) {
-  *:not(.ketik, .kilau, .pantul, .gear-putar, .buka-geser),
+  *:not(.ketik, .kilau, .gear-putar, .buka-geser, .marquee__inner),
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
@@ -235,4 +226,38 @@ html.kurangi-animasi *::after {
 }
 @keyframes foto-muncul {
   from { opacity: 0; transform: scale(0.85); }
+}
+
+/* Beranda layar lebar: teks kartu jajanan +20% mengikuti kartu yang lebih besar */
+@media (min-width: 80rem) {
+  .kartu-besar .text-xs { font-size: 0.9rem; }
+  .kartu-besar .text-sm { font-size: 1.05rem; }
+  .kartu-besar .text-xl { font-size: 1.5rem; }
+}
+
+
+/* Marquee bolak-balik carousel beranda (diadaptasi dari Uiverse.io, PriyanshuGupta28) */
+.marquee {
+  overflow: hidden;
+}
+/* Ringan: hanya transform (diproses GPU), tanpa mask yang harus digambar ulang tiap frame */
+.marquee__inner {
+  animation: marquee 30s ease-in-out infinite;
+  will-change: transform;
+}
+/* Kartu di marquee selalu dirender, supaya tidak dihitung ulang saat masuk layar */
+.marquee .cv-auto {
+  content-visibility: visible;
+}
+/* Berhenti saat di-hover / disentuh supaya kartu bisa dibaca & diklik */
+.marquee:hover .marquee__inner,
+.marquee:active .marquee__inner,
+.marquee:focus-within .marquee__inner {
+  animation-play-state: paused;
+}
+/* Jeda di kartu pertama, geser ke "Buka Katalog", jeda, balik ke kartu pertama */
+@keyframes marquee {
+  0%, 6% { transform: translateX(0); }
+  44%, 56% { transform: translateX(var(--geser, 0)); }
+  94%, 100% { transform: translateX(0); }
 }

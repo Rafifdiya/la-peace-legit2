@@ -1,6 +1,6 @@
 RINGKASAN PROJECT - JEJAK JAJAN
 =================================================================
-Update terakhir: 14 Oktober 2026
+Update terakhir: 15 Oktober 2026
 
 APA INI
 Web arsip/ensiklopedia jajanan tradisional Indonesia berbasis
@@ -18,40 +18,35 @@ PEMBEDA (vs Cookpad / TikTok / blog resep)
 - Cerita & asal daerah, bukan resep saja
 - Label kelangkaan hasil vote komunitas (umum s/d punah)
 - Lokasi "Terakhir Terlihat di" + konfirmasi "Masih ada / Sudah tidak ada"
-- Request jajanan: "ada yang tahu resep kue X?"
+- Forum Jajanan: tanya resep/penjual, sejarah, tips, nostalgia
+- Bukti komunitas "Sudah coba resep ini?" (Dicoba X orang, Y berhasil)
 
-FITUR UTAMA (MVP UNTUK EXPO)
-1. Beranda (carousel Hampir Punah & Baru Ditambahkan), katalog + search +
-   filter (provinsi, kategori, urutan)
-2. Detail jajanan: cerita, resep (banyak versi), langkah, lokasi + mini map,
-   komentar
-3. Upload jajanan (7 langkah, hanya info dasar yang wajib)
-4. Vote kelangkaan (1 user 1 suara, tampil min. 3 suara)
-5. Login email + password (Google menyusul), profil kontributor
-6. Moderasi admin: setujui/tolak kiriman, tangani laporan
-7. Request jajanan
-8. Halaman Kelas Bersama Penjual (segera hadir) + daftar minat
-
-TAMBAHAN DARI FEEDBACK PRESENTASI 1
-- Link "Pesan online" (GoFood/GrabFood/WA) di kartu lokasi
-- Penilaian resep Berhasil / Kurang berhasil
-- Badge Terverifikasi (resep dari penjual asli / diuji tim)
-- Filter kata kasar
+FITUR (daftar lengkap + status di docs/08-daftar-fitur.txt)
+1. Beranda (marquee Hampir Punah, Baru Ditambahkan, footer lengkap),
+   katalog + cari + filter
+2. Halaman jajanan: cerita, resep, langkah, lokasi + mini map, Sudah coba
+   resep ini?, simpan & koleksi, unduh PDF, mode masak
+3. Kontribusi 7 langkah + kriteria katalog
+4. Forum Jajanan (topik, balasan terbaik, laporkan)
+5. Akun: profil + level kontributor, pengaturan profil & fitur, Pesan
+6. Premium (mode demo, rencana Rp15.000/bulan) + iklan untuk akun gratis
+7. Admin: moderasi + checklist, laporan, iklan, hapus jajanan, ganti foto
+8. Kelas Bersama Penjual (segera hadir) + daftar minat
+Belum: vote kelangkaan, Masih ada / Sudah tidak ada, komentar, edit
+kontribusi, pembayaran asli.
 
 ROLE
 - User belum login : lihat semua konten
-- User login       : upload, vote, komentar, simpan, lapor, request
-- Admin            : moderasi
+- User gratis      : kontribusi, simpan, forum, sudah coba resep (+ iklan)
+- User Premium     : + bebas iklan, mode masak, PDF & koleksi tanpa batas
+- Admin            : moderasi + otomatis Premium
 
-MODEL BISNIS (detail di docs/05 Tema A & docs/06, masih direview tim)
+MODEL BISNIS (detail di docs/06 revisi 2)
 Arsip tetap gratis (tidak dikunci). Sumber pendapatan:
-- Sponsor brand bahan kue lokal (banner, resep bersponsor berlabel)
-- Link afiliasi bahan & alat (marketplace)
-- Kerja sama pemda / dinas pariwisata
-- Produk turunan: e-book resep, kartu edukasi
-- Kelas / workshop bersama penjual (bagi hasil). Sudah ada halaman
-  "segera hadir" + daftar minat untuk validasi jumlah peminat.
-- Opsional freemium: unduh resep PDF, koleksi tanpa batas
+- Iklan / sponsor brand bahan kue & UMKM (slot sudah ada di web)
+- Premium Rp15.000/bulan untuk kenyamanan (mode demo)
+- Kelas bersama penjual (bagi hasil ke penjual)
+- Nanti: afiliasi bahan, e-book, kerja sama pemda
 
 TEKNOLOGI
 Next.js 16 + Supabase (auth, database + RLS, storage foto) + Leaflet
@@ -61,19 +56,13 @@ Desain dasar dari Figma "Jejak Jajan"; beberapa perubahan setelahnya
 dropdown daerah di kotak cari) belum diperbarui di Figma & docs/03.
 
 STATUS
-- Selesai: ide, dokumen, desain Figma, presentasi progress 1, template UI.
-- Tersambung Supabase: katalog, detail, beranda, statistik, request,
-  profil. Data dummy sudah dihapus.
-- Jalan: daftar/masuk email, upload 7 langkah (foto, video per langkah),
-  moderasi admin (setujui/tolak + alasan, admin boleh setujui kiriman
-  sendiri), status kiriman di profil, halaman Kelas + daftar minat.
-- Belum: vote kelangkaan, Masih ada / Sudah tidak ada, simpan, komentar,
-  laporan, isi 20-30 data asli, deploy Vercel, verifikasi email + lupa
-  password (sebelum expo), testing (Vitest, Playwright, UAT).
-- Berikutnya: uji alur kirim -> moderasi, merge PR #7, review model
-  bisnis (docs/06) + slide.
+- Selesai: ide, dokumen, desain Figma, presentasi progress 1, web utama
+  tersambung Supabase (lihat docs/08).
+- Belum: tombol sementara di docs/08, isi 20-30 data asli, deploy Vercel,
+  testing (Vitest, Playwright, UAT).
 
 DOKUMEN DETAIL
 docs/01 ide & fitur, 02 survei, 03 desain, 04 rencana SE,
-05 feedback presentasi 1, 06 model bisnis (draft), 07 log progres.
+05 feedback presentasi 1, 06 model bisnis (revisi 2), 07 log progres,
+08 daftar fitur + status.
 Setup developer & aturan tim: AGENTS.md.
