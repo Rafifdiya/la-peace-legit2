@@ -9,6 +9,7 @@ import { SnackCard } from "@/components/SnackCard";
 import { SnackImage } from "@/components/SnackImage";
 import { SimpanButton } from "@/components/SimpanButton";
 import { AlatResep } from "@/components/AlatResep";
+import { SudahCoba } from "@/components/SudahCoba";
 import { labelWaktu } from "@/lib/format";
 import { getAllSlugs, getRelated, getSnack } from "@/lib/data";
 import { SightingAge } from "./SightingAge";
@@ -117,11 +118,7 @@ export default async function DetailPage({ params }: PageProps<"/jajanan/[slug]"
                     Tonton video lengkap <ExternalLink size={14} aria-hidden />
                   </a>
                 )}
-                <div className="flex gap-2 pt-2 text-sm print:hidden">
-                  <span className="text-ink-2">Sudah coba resep ini?</span>
-                  <LoginButton className="rounded-full border border-line px-3 py-1 hover:border-accent">Berhasil</LoginButton>
-                  <LoginButton className="rounded-full border border-line px-3 py-1 hover:border-danger">Kurang berhasil</LoginButton>
-                </div>
+                <SudahCoba slug={snack.slug} />
               </>
             ) : (
               <p className="text-ink-2">Belum ada resep. <Link href="/upload" className="text-brand underline">Tambahkan resep</Link></p>

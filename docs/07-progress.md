@@ -138,6 +138,9 @@ Catatan: jam untuk entri lama tidak tercatat, jadi hanya tanggal. Entri baru dit
 134. **2026-10-15 11:29** - Animasi tombol Pengaturan navbar diperhalus: tulisan terbuka 0,5 detik dengan easing lembut; gear berputar pelan 180° saat hover dan kembali halus saat dilepas (tidak lagi melompat).
 135. **2026-10-15 11:32** - Foto profil bisa dipencet (halaman profil & Pengaturan profil): tampil besar di tengah layar dengan animasi membesar, tertutup sendiri setelah 3 detik atau saat diklik (FotoPerbesar.tsx).
 136. **2026-10-15 11:33** - Menu "Profil saya" (ikon orang) di sidebar, antara Kelas dan Premium, menuju /profil/saya.
+137. **2026-10-15 12:00** - Commit & push pekerjaan entri 65-136 ke branch feat/upload-supabase.
+138. **2026-10-15 12:00** - Fitur "Sudah coba resep ini?" di halaman jajanan: Berhasil / Kurang berhasil + catatan + foto hasil (opsional), ringkasan "Dicoba X orang · Y berhasil" dengan bar, 1 user 1 laporan (bisa ubah/hapus). Migration 0015_resep_dicoba.sql.
+139. **2026-10-15 12:00** - Kriteria katalog dipusatkan di lib/kriteria.ts (+3 kriteria resep: takaran, langkah jelas, bukan salinan tanpa sumber). Tampil di Tentang kami, di atas form Kontribusi, dan sebagai checklist moderasi admin: tombol Setujui baru aktif setelah semua kriteria dicentang.
 
 ## Berikutnya
 - Review docs/06 model bisnis bersama tim, lalu buat slide

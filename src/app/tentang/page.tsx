@@ -1,15 +1,9 @@
+import { KRITERIA } from "@/lib/kriteria";
 import type { Metadata } from "next";
 import { Mail } from "lucide-react";
 
 export const metadata: Metadata = { title: "Tentang" };
 
-const kriteria = [
-  "Jajanan tradisional Indonesia (bukan kreasi modern / fusion)",
-  "Ada nama dan asal daerah",
-  "Foto milik sendiri atau berlisensi bebas (cantumkan kredit)",
-  "Tidak mengandung kata kasar, SARA, atau promosi berlebihan",
-  "Lokasi hanya tempat usaha / publik",
-];
 
 // Tim pembuat. Foto di public/tim/. Bio opsional.
 // Jangan isi nomor WA / email pribadi / alamat (repo public).
@@ -34,7 +28,7 @@ export default function TentangPage() {
       </p>
       <h2 className="font-display text-2xl font-semibold">Kriteria masuk katalog</h2>
       <ul className="list-inside list-disc space-y-1">
-        {kriteria.map((k) => <li key={k}>{k}</li>)}
+        {KRITERIA.map((k) => <li key={k}>{k}</li>)}
       </ul>
       <h2 className="font-display text-2xl font-semibold">Lisensi</h2>
       <p>Konten kontributor berlisensi CC BY-SA 4.0. Setiap kiriman dimoderasi admin sebelum tampil.</p>

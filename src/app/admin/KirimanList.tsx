@@ -3,7 +3,7 @@ import { TriangleAlert } from "lucide-react";
 import { StatusPill } from "@/components/StatusPill";
 import { formatTanggal } from "@/lib/format";
 import type { Kiriman } from "@/lib/kiriman";
-import { ApproveButton } from "./ApproveButton";
+import { ChecklistSetujui } from "./ChecklistSetujui";
 import { RejectButton } from "./RejectButton";
 
 const btn = "rounded-full border border-line px-3 py-1 hover:border-brand";
@@ -28,10 +28,7 @@ export function KirimanList({ kiriman }: { kiriman: Kiriman[] }) {
               <p className="text-ink-2">Jajanan baru · @{k.oleh} · {formatTanggal(k.tanggal)}</p>
             </div>
             {k.status === "pending" ? (
-              <div className="flex flex-wrap items-center gap-2">
-                <ApproveButton id={k.id} />
-                <RejectButton id={k.id} judul={k.nama} />
-              </div>
+              <RejectButton id={k.id} judul={k.nama} />
             ) : (
               <div className="flex items-center gap-2">
                 {k.status === "approved" && <Link href={`/jajanan/${k.slug}`} className={btn}>Buka</Link>}
@@ -39,6 +36,7 @@ export function KirimanList({ kiriman }: { kiriman: Kiriman[] }) {
               </div>
             )}
           </div>
+          {k.status === "pending" && <ChecklistSetujui id={k.id} />}
           <details>
             <summary className="cursor-pointer text-brand">Lihat isi kiriman</summary>
             <div className="mt-3 grid gap-4 sm:grid-cols-[160px_1fr]">
