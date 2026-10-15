@@ -7,17 +7,17 @@ import { Tabs } from "@/components/Tabs";
 import { getRequests } from "@/lib/komunitas";
 import { formatTanggal } from "@/lib/format";
 
-export const metadata: Metadata = { title: "Request" };
+export const metadata: Metadata = { title: "Tanya Jajanan" };
 
 export default function RequestPage({ searchParams }: PageProps<"/request">) {
   return (
     <div className="space-y-6 py-10">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="font-display text-4xl font-semibold">Request Jajanan</h1>
-          <p className="text-ink-2">Cari resep atau penjual jajanan tertentu? Tanyakan ke komunitas.</p>
+          <h1 className="font-display text-4xl font-semibold">Tanya Jajanan</h1>
+          <p className="mt-1.5 text-ink-2">Cari resep atau penjual jajanan tertentu? Tanyakan ke komunitas.</p>
         </div>
-        <LoginButton className="rounded-full bg-brand px-5 py-2 font-semibold text-white hover:bg-brand-hover">Buat request</LoginButton>
+        <LoginButton className="rounded-full bg-brand px-5 py-2 font-semibold text-white hover:bg-brand-hover">Buat pertanyaan</LoginButton>
       </div>
       <Suspense fallback={<p className="text-ink-2">Memuat...</p>}>
         <RequestList searchParams={searchParams} />
@@ -33,7 +33,7 @@ async function RequestList({ searchParams }: Pick<PageProps<"/request">, "search
   return (
     <>
       <Tabs basePath="/request" active={tab} tabs={[{ key: "terbuka", label: "Terbuka" }, { key: "terjawab", label: "Terjawab" }]} />
-      {list.length === 0 && <p className="text-ink-2">Belum ada request.</p>}
+      {list.length === 0 && <p className="text-ink-2">Belum ada pertanyaan.</p>}
       <ul className="space-y-3">
         {list.map((r) => (
           <li key={r.id}>

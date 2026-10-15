@@ -19,5 +19,5 @@ const style: Record<Rarity, string> = {
 /** Label tampil jika minimal 3 suara (docs/03 Flow D) */
 export function RarityBadge({ rarity, jumlahVote }: { rarity: Rarity; jumlahVote: number }) {
   const r = jumlahVote < 3 ? "unknown" : rarity;
-  return <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${style[r]}`}>{label[r]}</span>;
+  return <span className={`shrink-0 whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-semibold ${style[r]}`}>{label[r]}</span>;
 }

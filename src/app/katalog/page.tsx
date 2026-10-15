@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Search } from "lucide-react";
 import { Suspense } from "react";
 import { getCategories, getProvinces, getSnackPage, type SnackFilter } from "@/lib/data";
+import { getIklanAktif } from "@/lib/iklan";
 import { InfiniteList } from "./InfiniteList";
 
 export const metadata: Metadata = { title: "Katalog" };
@@ -28,38 +30,43 @@ async function Katalog({ searchParams }: Pick<PageProps<"/katalog">, "searchPara
     kategori: one(sp.kategori),
     urut: one(sp.urut) as SnackFilter["urut"],
   };
-  const [page, provinsi, kategori] = await Promise.all([getSnackPage(filter), getProvinces(), getCategories()]);
+  const [page, provinsi, kategori, iklan] = await Promise.all([getSnackPage(filter), getProvinces(), getCategories(), getIklanAktif()]);
   const query = new URLSearchParams(Object.entries(filter).filter(([, v]) => v) as [string, string][]).toString();
 
   return (
-    <div className="mt-6 grid gap-8 lg:grid-cols-[240px_1fr]">
+    <div className="mt-6 grid gap-8 lg:grid-cols-[276px_1fr]">
       {/* Filter = form GET biasa: jalan tanpa JavaScript, URL bisa dibagikan */}
-      <form className="h-fit space-y-5 rounded-lg border border-line bg-surface p-5 text-sm">
+      <form className="h-fit space-y-[1.4375rem] rounded-lg border border-line bg-surface p-[1.4375rem] text-[1.107rem]">
         <Field label="Cari">
-          <input name="q" defaultValue={filter.q} placeholder="Nama jajanan" className="w-full rounded-sm border border-line px-3 py-2" />
+          {/* Kotak cari berbentuk kapsul dengan ikon kaca pembesar */}
+          <div className="flex items-center gap-2 rounded-full border-2 border-orange-500/40 bg-page px-[0.8625rem] py-[0.575rem] focus-within:border-brand">
+            <Search size={20} className="shrink-0 text-ink" aria-hidden />
+            <input name="q" defaultValue={filter.q} placeholder="Nama jajanan" className="w-full min-w-0 bg-transparent outline-none placeholder:text-ink/70" />
+          </div>
         </Field>
         <Field label="Provinsi">
-          <select name="provinsi" defaultValue={filter.provinsi ?? ""} className="w-full rounded-sm border border-line px-3 py-2">
+          <select name="provinsi" defaultValue={filter.provinsi ?? ""} className="w-full rounded-sm border border-line px-[0.8625rem] py-[0.575rem]">
             <option value="">Semua provinsi</option>
             {provinsi.map((p) => <option key={p.slug} value={p.slug}>{p.nama}</option>)}
           </select>
         </Field>
         <Field label="Kategori">
-          <select name="kategori" defaultValue={filter.kategori ?? ""} className="w-full rounded-sm border border-line px-3 py-2">
+          <select name="kategori" defaultValue={filter.kategori ?? ""} className="w-full rounded-sm border border-line px-[0.8625rem] py-[0.575rem]">
             <option value="">Semua kategori</option>
             {kategori.map((k) => <option key={k}>{k}</option>)}
           </select>
         </Field>
         <Field label="Urutkan">
-          <select name="urut" defaultValue={filter.urut ?? "terbaru"} className="w-full rounded-sm border border-line px-3 py-2">
+          <select name="urut" defaultValue={filter.urut ?? "terbaru"} className="w-full rounded-sm border border-line px-[0.8625rem] py-[0.575rem]">
             <option value="terbaru">Terbaru</option>
+            <option value="terlama">Terlama</option>
             <option value="az">A-Z</option>
             <option value="langka">Paling langka</option>
           </select>
         </Field>
         <div className="flex gap-2">
-          <button className="flex-1 rounded-full bg-brand py-2 font-semibold text-white hover:bg-brand-hover">Terapkan</button>
-          <Link href="/katalog" className="rounded-full border border-line px-4 py-2">Reset</Link>
+          <button className="flex-1 rounded-full bg-brand py-[0.575rem] font-semibold text-white hover:bg-brand-hover">Terapkan</button>
+          <Link href="/katalog" className="rounded-full border border-line px-[1.15rem] py-[0.575rem]">Reset</Link>
         </div>
       </form>
 
@@ -69,13 +76,13 @@ async function Katalog({ searchParams }: Pick<PageProps<"/katalog">, "searchPara
           <div className="rounded-lg border border-dashed border-line p-10 text-center">
             <p>Belum ada jajanan yang cocok.</p>
             <p className="mt-2 text-sm text-ink-2">
-              <Link href="/request" className="text-brand underline">Buat request</Link> atau{" "}
+              <Link href="/request" className="text-brand underline">Tanya ke komunitas</Link> atau{" "}
               <Link href="/upload" className="text-brand underline">tambahkan jajanan</Link>.
             </p>
           </div>
         ) : (
           // key = query: daftar di-reset saat filter berubah
-          <InfiniteList key={query} initial={page} query={query} />
+          <InfiniteList key={query} initial={page} query={query} iklan={iklan} />
         )}
       </section>
     </div>
@@ -84,7 +91,7 @@ async function Katalog({ searchParams }: Pick<PageProps<"/katalog">, "searchPara
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <label className="block space-y-1.5">
+    <label className="block space-y-[0.43rem]">
       <span className="font-semibold">{label}</span>
       {children}
     </label>

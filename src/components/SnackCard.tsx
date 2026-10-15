@@ -4,7 +4,8 @@ import type { SnackCardData } from "@/lib/types";
 import { RarityBadge } from "./RarityBadge";
 import { SnackImage } from "./SnackImage";
 
-export function SnackCard({ snack }: { snack: SnackCardData }) {
+/** utama: kartu yang langsung terlihat saat halaman dibuka -> foto dimuat lebih awal (LCP) */
+export function SnackCard({ snack, utama = false }: { snack: SnackCardData; utama?: boolean }) {
   return (
     <Link
       href={`/jajanan/${snack.slug}`}
@@ -14,10 +15,11 @@ export function SnackCard({ snack }: { snack: SnackCardData }) {
         src={snack.cover}
         alt={snack.nama}
         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 384px"
+        utama={utama}
         className="aspect-[4/3]"
       />
       <div className="space-y-2 p-4">
-        <div className="flex items-center justify-between gap-2">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <span className="text-xs text-ink-2">{snack.kategori}</span>
           <RarityBadge rarity={snack.rarity} jumlahVote={snack.jumlahVote} />
         </div>

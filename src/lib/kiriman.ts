@@ -62,9 +62,23 @@ function toKiriman(r: Row): Kiriman {
 export async function getSesi() {
   const supabase = await createClient();
   const { data } = await supabase.auth.getUser();
-  if (!data.user) return { user: null, admin: false };
-  const { data: p } = await supabase.from("profiles").select("role").eq("id", data.user.id).single();
-  return { user: data.user, admin: p?.role === "admin" };
+  if (!data.user) return { user: null, admin: false, premium: false, premiumSampai: null };
+  let { data: p } = await supabase
+    .from("profiles")
+    .select("role, premium_sampai")
+    .eq("id", data.user.id)
+    .single<{ role: string; premium_sampai: string | null }>();
+  // Cadangan bila migration 0010 belum dijalankan (kolom premium belum ada)
+  if (!p) {
+    const r = await supabase.from("profiles").select("role").eq("id", data.user.id).single<{ role: string }>();
+    p = r.data && { ...r.data, premium_sampai: null };
+  }
+  // premium_sampai > sekarang = premium aktif (lihat migration 0010, mode demo)
+  const sampai = p?.premium_sampai ?? null;
+  const admin = p?.role === "admin";
+  const premiumSampai = sampai && new Date(sampai) > new Date() ? sampai : null;
+  // Admin otomatis Premium (migration 0012)
+  return { user: data.user, admin, premium: admin || !!premiumSampai, premiumSampai };
 }
 
 /** Admin: kiriman terbaru (pending dulu). RLS memastikan hanya admin yang melihat semua. */

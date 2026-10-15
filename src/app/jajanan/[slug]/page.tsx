@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { BadgeCheck, ExternalLink, MapPin, Share2, Bookmark, Flag } from "lucide-react";
+import { BadgeCheck, ExternalLink, MapPin, Share2, Flag } from "lucide-react";
 import { LoginButton } from "@/components/LoginButton";
 import { MiniMapLazy } from "@/components/map/MiniMapLazy";
 import { RarityBadge } from "@/components/RarityBadge";
 import { SnackCard } from "@/components/SnackCard";
 import { SnackImage } from "@/components/SnackImage";
+import { SimpanButton } from "@/components/SimpanButton";
+import { AlatResep } from "@/components/AlatResep";
 import { labelWaktu } from "@/lib/format";
 import { getAllSlugs, getRelated, getSnack } from "@/lib/data";
 import { SightingAge } from "./SightingAge";
@@ -47,8 +49,9 @@ export default async function DetailPage({ params }: PageProps<"/jajanan/[slug]"
             <span className="text-sm text-ink-2">{snack.jumlahVote} suara</span>
           </div>
           {snack.deskripsi && <p className="font-hand text-2xl leading-snug text-brand">&ldquo;{snack.deskripsi}&rdquo;</p>}
-          <div className="flex gap-2 text-sm">
-            {([[Bookmark, "Simpan"], [Share2, "Bagikan"], [Flag, "Lapor"]] as const).map(([Icon, label]) => (
+          <div className="flex flex-wrap gap-2 text-sm">
+            <SimpanButton slug={snack.slug} />
+            {([[Share2, "Bagikan"], [Flag, "Lapor"]] as const).map(([Icon, label]) => (
               <LoginButton key={label} className="flex items-center gap-1 rounded-full border border-line bg-surface px-3 py-1.5 hover:border-brand">
                 <Icon size={14} aria-hidden /> {label}
               </LoginButton>
@@ -81,9 +84,11 @@ export default async function DetailPage({ params }: PageProps<"/jajanan/[slug]"
           </section>
 
           <section id="resep" className="scroll-mt-32 space-y-4">
+            <p className="hidden font-display text-3xl font-semibold print:block">{snack.nama} · Jejak Jajan</p>
             <h2 className="font-display text-2xl font-semibold">Resep</h2>
             {snack.resep ? (
               <>
+                <AlatResep slug={snack.slug} nama={snack.nama} bahan={snack.resep.bahan} langkah={snack.resep.langkah} />
                 <div className="flex flex-wrap items-center gap-3 text-sm text-ink-2">
                   <span className="font-semibold text-ink">{snack.resep.judulVersi}</span>
                   {snack.resep.verified && (
@@ -112,7 +117,7 @@ export default async function DetailPage({ params }: PageProps<"/jajanan/[slug]"
                     Tonton video lengkap <ExternalLink size={14} aria-hidden />
                   </a>
                 )}
-                <div className="flex gap-2 pt-2 text-sm">
+                <div className="flex gap-2 pt-2 text-sm print:hidden">
                   <span className="text-ink-2">Sudah coba resep ini?</span>
                   <LoginButton className="rounded-full border border-line px-3 py-1 hover:border-accent">Berhasil</LoginButton>
                   <LoginButton className="rounded-full border border-line px-3 py-1 hover:border-danger">Kurang berhasil</LoginButton>

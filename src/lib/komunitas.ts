@@ -108,6 +108,8 @@ export type ProfilUser = {
   role: "user" | "admin";
   kontribusi: string[]; // slug jajanan yang sudah disetujui
   jumlahLokasi: number;
+  premium: boolean; // tampilkan lencana Premium di avatar
+  avatarUrl: string | null;
 };
 
 type ProfilRow = {
@@ -117,13 +119,16 @@ type ProfilRow = {
   daerah: string | null;
   bio: string | null;
   role: "user" | "admin";
+  avatar_url: string | null;
 };
 
 async function lengkapiProfil(p: ProfilRow): Promise<ProfilUser> {
   const supabase = createPublicClient();
-  const [snacks, lokasi] = await Promise.all([
+  const [snacks, lokasi, premium] = await Promise.all([
     supabase.from("snacks").select("slug").eq("created_by", p.id).eq("status", "approved").order("created_at", { ascending: false }),
     supabase.from("sightings").select("id", { count: "exact", head: true }).eq("created_by", p.id).eq("status", "approved"),
+    // Fungsi dari migration 0010; bila belum dijalankan, anggap bukan premium
+    supabase.rpc("is_premium", { uid: p.id }),
   ]);
   return {
     id: p.id,
@@ -134,10 +139,12 @@ async function lengkapiProfil(p: ProfilRow): Promise<ProfilUser> {
     role: p.role,
     kontribusi: cek<{ slug: string }[]>(snacks).map((s) => s.slug),
     jumlahLokasi: lokasi.count ?? 0,
+    premium: premium.data === true,
+    avatarUrl: p.avatar_url,
   };
 }
 
-const PROFIL_KOLOM = "id, username, nama_tampil, daerah, bio, role";
+const PROFIL_KOLOM = "id, username, nama_tampil, daerah, bio, role, avatar_url";
 
 /** Profil publik berdasarkan username. */
 export async function getProfil(username: string): Promise<ProfilUser | undefined> {
@@ -204,5 +211,37 @@ export async function getLaporan(): Promise<Laporan[]> {
     alasan: r.alasan,
     oleh: namaUser(r.profiles),
     tanggal: r.created_at,
+  }));
+}
+
+// ---------- Minat kelas (admin) ----------
+
+/** Jumlah pendaftar minat kelas. RLS: hanya admin yang bisa membaca (selain admin = 0). */
+export async function getJumlahMinatKelas(): Promise<number> {
+  const supabase = await createClient();
+  const { count } = await supabase.from("minat_kelas").select("id", { count: "exact", head: true });
+  return count ?? 0;
+}
+
+// ---------- Koleksi (profil sendiri) ----------
+
+export type KoleksiSaya = { id: string; nama: string; slugs: string[] };
+
+/** Koleksi milik user login beserta slug jajanan di dalamnya. Kosong bila migration 0010 belum ada. */
+export async function getKoleksiSaya(): Promise<KoleksiSaya[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("collections")
+    .select("id, nama, collection_items (created_at, snacks (slug))")
+    .order("created_at");
+  if (error || !data) return [];
+  type Row = { id: string; nama: string; collection_items: { created_at: string; snacks: { slug: string } | null }[] };
+  return (data as unknown as Row[]).map((k) => ({
+    id: k.id,
+    nama: k.nama,
+    slugs: [...k.collection_items]
+      .sort((a, b) => b.created_at.localeCompare(a.created_at))
+      .map((i) => i.snacks?.slug)
+      .filter((s): s is string => !!s),
   }));
 }

@@ -1,15 +1,20 @@
 import Link from "next/link";
-import { Search } from "lucide-react";
+import { ArrowRight, Search } from "lucide-react";
+import { Carousel } from "@/components/Carousel";
 import { SnackCard } from "@/components/SnackCard";
 import { StatCard } from "@/components/StatCard";
+import type { SnackCardData } from "@/lib/types";
 import { getProvinces, getSnackPage, getStats } from "@/lib/data";
+
+// Maksimal kartu per carousel beranda; sisanya di katalog
+const CAROUSEL = 8;
 
 export default async function Beranda() {
   const [stats, provinsi, langka, baru] = await Promise.all([
     getStats(),
     getProvinces(),
-    getSnackPage({ urut: "langka" }, 1, 3),
-    getSnackPage({ urut: "terbaru" }, 1, 3),
+    getSnackPage({ urut: "langka" }, 1, CAROUSEL),
+    getSnackPage({ urut: "terbaru" }, 1, CAROUSEL),
   ]);
 
   const statList = [
@@ -21,9 +26,10 @@ export default async function Beranda() {
 
   return (
     <div className="space-y-14 py-10">
-      <section className="space-y-5 text-center">
-        <p className="-rotate-2 font-hand text-2xl text-brand sm:text-3xl">
-          <span className="ketik">dari dapur nenek, untuk generasi berikutnya</span>
+      {/* Motif kawung samar di belakang hero */}
+      <section className="motif-kawung motif-pudar space-y-5 rounded-xl py-8 text-center">
+        <p className="-rotate-2 font-hand text-[1.575rem] text-brand sm:text-[1.96875rem]">
+          <span className="ketik">dari dapur nenek, untuk generasi berikutnya..</span>
         </p>
         <h1 className="font-display text-4xl font-semibold sm:text-6xl">Jejak jajan yang hampir hilang</h1>
         <p className="mx-auto max-w-2xl text-[1.32rem] text-ink">
@@ -45,13 +51,8 @@ export default async function Beranda() {
         {statList.map(([label, n]) => <StatCard key={label} label={label} value={n} />)}
       </section>
 
-      <Section judul="Hampir Punah" href="/katalog?urut=langka">
-        {langka.items.map((s) => <SnackCard key={s.slug} snack={s} />)}
-      </Section>
-
-      <Section judul="Baru Ditambahkan" href="/katalog">
-        {baru.items.map((s) => <SnackCard key={s.slug} snack={s} />)}
-      </Section>
+      <Section judul="Hampir Punah" href="/katalog?urut=langka" items={langka.items} utama />
+      <Section judul="Baru Ditambahkan" href="/katalog" items={baru.items} />
 
       <section className="rounded-xl bg-brand p-8 text-center text-white">
         <h2 className="font-display text-2xl font-semibold">Tahu jajanan yang belum ada?</h2>
@@ -64,14 +65,32 @@ export default async function Beranda() {
   );
 }
 
-function Section({ judul, href, children }: { judul: string; href: string; children: React.ReactNode }) {
+function Section({ judul, href, items, utama = false }: { judul: string; href: string; items: SnackCardData[]; utama?: boolean }) {
   return (
     <section className="space-y-4">
       <div className="flex items-end justify-between">
         <h2 className="font-display text-2xl font-semibold">{judul}</h2>
         <Link href={href} className="text-[1.155rem] font-semibold text-brand underline underline-offset-4 hover:text-brand-hover">Lihat semua</Link>
       </div>
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{children}</div>
+      {items.length === 0 ? (
+        <p className="text-ink-2">Belum ada jajanan.</p>
+      ) : (
+        <Carousel label={judul}>
+          {items.map((s, i) => (
+            <div key={s.slug} className="w-[78%] shrink-0 snap-start sm:w-[45%] lg:w-[31%]">
+              <SnackCard snack={s} utama={utama && i < 3} />
+            </div>
+          ))}
+          {/* Kartu terakhir: ajakan ke katalog */}
+          <Link
+            href={href}
+            className="flex w-[60%] shrink-0 snap-start flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed border-orange-500/40 bg-surface p-6 text-center font-semibold text-brand hover:bg-orange-500/10 sm:w-[30%] lg:w-[20%]"
+          >
+            <span className="rounded-full bg-brand p-3 text-white"><ArrowRight size={24} aria-hidden /></span>
+            Buka Katalog
+          </Link>
+        </Carousel>
+      )}
     </section>
   );
 }
