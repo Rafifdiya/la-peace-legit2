@@ -2,6 +2,10 @@ import type { Metadata, Viewport } from "next";
 import { Caveat, Fraunces, Plus_Jakarta_Sans } from "next/font/google";
 import { BottomNav } from "@/components/BottomNav";
 import { Footer } from "@/components/Footer";
+import { Suspense } from "react";
+import { KontakAdmin } from "@/components/KontakAdmin";
+import { TerapkanPengaturan } from "@/components/TerapkanPengaturan";
+import { SlotPopupIklan } from "@/components/SlotPopupIklan";
 import { LoginDialog } from "@/components/LoginDialog";
 import { Navbar } from "@/components/Navbar";
 import { Sidebar } from "@/components/Sidebar";
@@ -50,6 +54,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <Footer />
         </div>
         <BottomNav />
+        <KontakAdmin />
+        <TerapkanPengaturan />
+        <Suspense>
+          <SlotPopupIklan />
+        </Suspense>
         <LoginDialog />
       </body>
     </html>

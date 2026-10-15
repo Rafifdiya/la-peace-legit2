@@ -1,18 +1,27 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { SnackCard } from "@/components/SnackCard";
+import { KartuIklan } from "@/components/KartuIklan";
+import { useBebasIklan } from "@/components/TanpaIklanPremium";
+import type { Iklan } from "@/lib/iklan";
 import type { Page, SnackCardData } from "@/lib/types";
 
 type Props = {
   initial: Page<SnackCardData>;
   /** Query string filter aktif, mis. "q=klepon&provinsi=jawa-barat" */
   query: string;
+  /** Iklan aktif (maks. 6) untuk kartu sponsor di sela daftar */
+  iklan?: Iklan[];
 };
+
+// Kartu iklan setelah kartu ke-6, lalu tiap 12 kartu berikutnya
+const iklanSetelah = (i: number) => i === 5 || (i > 5 && (i - 5) % 12 === 0);
 
 // Halaman 1 sudah dirender server. Halaman berikutnya diambil saat user
 // mendekati bawah daftar (IntersectionObserver) atau menekan "Muat lagi".
-export function InfiniteList({ initial, query }: Props) {
+export function InfiniteList({ initial, query, iklan = [] }: Props) {
+  const bebasIklan = useBebasIklan();
   const [items, setItems] = useState(initial.items);
   const [nextPage, setNextPage] = useState(initial.nextPage);
   const [loading, setLoading] = useState(false);
@@ -47,9 +56,16 @@ export function InfiniteList({ initial, query }: Props) {
   return (
     <>
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {items.map((s) => (
-          <SnackCard key={s.slug} snack={s} />
-        ))}
+        {items.map((s, i) => {
+          // Nomor iklan berikutnya (bergiliran bila iklan lebih dari 1)
+          const ke = i === 5 ? 0 : (i - 5) / 12;
+          return (
+            <Fragment key={s.slug}>
+              <SnackCard snack={s} utama={i < 3} />
+              {bebasIklan === false && iklan.length > 0 && iklanSetelah(i) && <KartuIklan iklan={iklan[ke % iklan.length]} />}
+            </Fragment>
+          );
+        })}
       </div>
       <div ref={sentinel} className="flex justify-center py-8">
         {nextPage ? (

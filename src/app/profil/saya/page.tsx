@@ -6,7 +6,10 @@ import { LoginButton } from "@/components/LoginButton";
 import { ProfileView } from "@/components/profil/ProfileView";
 import { StatusPill } from "@/components/StatusPill";
 import { formatTanggal } from "@/lib/format";
-import { getProfilSaya } from "@/lib/komunitas";
+import { getKoleksiSaya, getProfilSaya } from "@/lib/komunitas";
+import { getCards } from "@/lib/data";
+import { SnackCard } from "@/components/SnackCard";
+import { HapusKoleksi } from "./HapusKoleksi";
 import { getKirimanAdmin, getKirimanSaya, getSesi } from "@/lib/kiriman";
 import { KirimanList } from "@/app/admin/KirimanList";
 
@@ -23,7 +26,8 @@ export default function ProfilSaya({ searchParams }: PageProps<"/profil/saya">) 
 async function Isi({ searchParams }: Pick<PageProps<"/profil/saya">, "searchParams">) {
   // Isi bergantung pada user yang login: selalu dibuat saat request
   await connection();
-  const tab = (await searchParams).tab;
+  const sp = await searchParams;
+  const tab = sp.tab;
   const sesi = await getSesi();
   if (!sesi.user) {
     return (
@@ -43,6 +47,9 @@ async function Isi({ searchParams }: Pick<PageProps<"/profil/saya">, "searchPara
       basePath="/profil/saya"
       statusKiriman={<KirimanSaya userId={sesi.user.id} />}
       moderasi={sesi.admin ? <Moderasi /> : undefined}
+      tersimpanIsi={
+        <Tersimpan semua={tersimpan} pilih={typeof sp.koleksi === "string" ? sp.koleksi : undefined} premium={sesi.premium} />
+      }
     />
   );
 }
@@ -102,5 +109,48 @@ async function Moderasi() {
         </Link>
       </div>
     </section>
+  );
+}
+
+const BATAS_GRATIS = 3;
+
+/** Tab Tersimpan: pilihan koleksi (chip) + kartu jajanan. */
+async function Tersimpan({ semua, pilih, premium }: { semua: string[]; pilih?: string; premium: boolean }) {
+  const koleksi = await getKoleksiSaya();
+  const aktif = koleksi.find((k) => k.id === pilih);
+  const cards = await getCards(aktif ? aktif.slugs : semua);
+  const chip = (on: boolean) =>
+    `rounded-full border px-3 py-1 text-sm ${on ? "border-brand bg-brand text-white" : "border-line bg-surface hover:border-brand"}`;
+
+  return (
+    <div className="space-y-5">
+      <div className="flex flex-wrap items-center gap-2">
+        <Link href="/profil/saya?tab=tersimpan" className={chip(!aktif)}>Semua ({semua.length})</Link>
+        {koleksi.map((k) => (
+          <Link key={k.id} href={`/profil/saya?tab=tersimpan&koleksi=${k.id}`} className={chip(aktif?.id === k.id)}>
+            {k.nama} ({k.slugs.length})
+          </Link>
+        ))}
+        <span className="text-sm text-ink-2">
+          {premium ? "Premium: koleksi tanpa batas" : `${koleksi.length}/${BATAS_GRATIS} koleksi`}
+          {!premium && koleksi.length >= BATAS_GRATIS && (
+            <>
+              {" · "}
+              <Link href="/premium" className="font-semibold text-brand underline">Tambah lewat Premium</Link>
+            </>
+          )}
+        </span>
+      </div>
+      {aktif && <HapusKoleksi id={aktif.id} nama={aktif.nama} />}
+      {cards.length === 0 ? (
+        <p className="text-ink-2">
+          {aktif ? "Koleksi ini masih kosong." : "Belum ada jajanan yang disimpan."} Simpan dari halaman jajanan lewat tombol Simpan / Koleksi.
+        </p>
+      ) : (
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {cards.map((c) => <SnackCard key={c.slug} snack={c} />)}
+        </div>
+      )}
+    </div>
   );
 }

@@ -75,6 +75,25 @@ C. NICE TO HAVE (ROADMAP DI PITCH)
 15. Dua bahasa (ID/EN) untuk turis
 16. Export resep ke PDF / kartu resep
 17. Verifikasi kontributor "penjual asli" (centang)
+18. Kelas Bersama Penjual (rencana pengembangan, per 2026-10-15)
+    Status sekarang: halaman /kelas "segera hadir" + form minat. Termasuk Premium
+    (diskon 20% + daftar lebih dulu; akun gratis bayar per kelas).
+    Tahap 1 - demo expo (dummy, tanpa pembayaran asli):
+      - Daftar kelas: foto, penjual, jajanan, daring/tatap muka, tanggal, kuota, harga;
+        filter daerah, jenis jajanan, daring/offline
+      - Detail kelas: profil penjual, materi, bahan yang disiapkan, link ke arsip jajanan
+      - Tombol Daftar (harga coret untuk Premium), kuota berkurang
+      - Tab "Kelas saya" di profil (akan datang / selesai)
+      - Admin: buat/ubah/tutup kelas, lihat peserta; data minat kelas jadi acuan
+    Tahap 2 - setelah expo:
+      - Ulasan & rating peserta, sertifikat PDF sederhana
+      - Rekaman kelas daring (peserta / Premium)
+      - Pengingat jadwal lewat notifikasi
+      - Halaman penjual (semua kelas + jajanan miliknya)
+    Tahap 3 - bisnis nyata:
+      - Pembayaran asli (Midtrans/Xendit) + bagi hasil otomatis (mis. 70% penjual)
+      - Penjual terverifikasi admin; dashboard penjual untuk buat kelas sendiri
+      - Matching penerus: peserta serius magang / melanjutkan usaha penjual (fase 2)
 
 
 -----------------------------------------------------------------

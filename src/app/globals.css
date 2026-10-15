@@ -68,7 +68,7 @@ body {
   padding-right: 0.15em;
   border-right: 2px solid currentColor;
   animation:
-    ketik 2.6s steps(42) 0.3s both,
+    ketik 2.7s steps(44) 0.3s both, /* 44 huruf */
     kursor 0.8s step-end infinite;
 }
 @keyframes ketik {
@@ -79,9 +79,43 @@ body {
   50% { border-color: transparent; }
 }
 
-/* Kecuali efek ketik (.ketik): gerakannya kecil, aman untuk mode kurangi animasi */
+/* Teks berkilau (menu Premium): kilatan emas-oranye lewat dari kiri ke kanan di atas teks cokelat.
+   Diadaptasi dari "btn-shine" (Uiverse.io, neerajbaniwal) dengan warna Jejak Jajan. */
+.kilau {
+  background: linear-gradient(
+    100deg,
+    var(--color-brand) 0%,
+    var(--color-brand) 40%,
+    #f59e0b 48%,
+    #fde68a 50%,
+    #f59e0b 52%,
+    var(--color-brand) 60%,
+    var(--color-brand) 100%
+  );
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 0.02em; /* +2% jarak antar huruf */
+  animation: kilau 3s linear infinite;
+}
+@keyframes kilau {
+  0% { background-position: 100% 0; }
+  60%, 100% { background-position: 0% 0; }
+}
+
+/* Pantulan pelan untuk tombol "Go back to top" */
+.pantul {
+  animation: pantul 2.4s ease-in-out infinite;
+}
+@keyframes pantul {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* Kecuali efek ketik (.ketik), kilau (.kilau) & pantul (.pantul): gerakannya kecil, aman untuk mode kurangi animasi */
 @media (prefers-reduced-motion: reduce) {
-  *:not(.ketik),
+  *:not(.ketik, .kilau, .pantul, .gear-putar, .buka-geser),
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
@@ -94,4 +128,111 @@ body {
 input,
 textarea {
   word-spacing: 0.08em;
+}
+
+/* Batang geser carousel: tipis, jalur krem, pegangan cokelat */
+.geser {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-brand) var(--color-line);
+}
+.geser::-webkit-scrollbar {
+  height: 6px;
+}
+.geser::-webkit-scrollbar-track {
+  background: var(--color-line);
+  border-radius: 999px;
+}
+.geser::-webkit-scrollbar-thumb {
+  background: var(--color-brand);
+  border-radius: 999px;
+}
+
+/* Unduh resep PDF: saat cetak, hanya bagian #resep yang tampil */
+@media print {
+  body.cetak-resep * { visibility: hidden; }
+  body.cetak-resep #resep, body.cetak-resep #resep * { visibility: visible; }
+  body.cetak-resep #resep { position: absolute; inset: 0 auto auto 0; width: 100%; }
+}
+
+/* Teks isi +10% (Pengaturan profil, Kelas) */
+.teks-110 {
+  --text-xs: 0.9075rem;
+  --text-sm: 1.05875rem;
+  --text-base: 1.21rem;
+  --text-lg: 1.36125rem;
+  font-size: var(--text-base);
+}
+
+/* Motif batik kawung (SVG kecil, ringan untuk HP). Dipakai samar di hero beranda & footer. */
+.motif-kawung {
+  position: relative;
+  isolation: isolate;
+}
+.motif-kawung::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Cg fill='none' stroke='%237a4a2a' stroke-width='1.4'%3E%3Cellipse cx='28' cy='15' rx='7.5' ry='11'/%3E%3Cellipse cx='28' cy='41' rx='7.5' ry='11'/%3E%3Cellipse cx='15' cy='28' rx='11' ry='7.5'/%3E%3Cellipse cx='41' cy='28' rx='11' ry='7.5'/%3E%3C/g%3E%3Cg fill='%237a4a2a'%3E%3Ccircle cx='28' cy='28' r='2'/%3E%3Ccircle cx='0' cy='0' r='2.5'/%3E%3Ccircle cx='56' cy='0' r='2.5'/%3E%3Ccircle cx='0' cy='56' r='2.5'/%3E%3Ccircle cx='56' cy='56' r='2.5'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 56px 56px;
+  opacity: 0.092; /* +15% */
+}
+/* Hero: motif memudar ke tepi supaya teks tetap jelas */
+.motif-pudar::before {
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 60%, transparent 100%);
+  mask-image: radial-gradient(ellipse at center, #000 60%, transparent 100%);
+  opacity: 0.1265; /* +15% */
+}
+/* Garis tepi bermotif di atas footer (belah ketupat berulang) */
+.tepi-batik {
+  height: 10px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='10'%3E%3Cpath d='M10 0 20 5 10 10 0 5Z' fill='%237a4a2a'/%3E%3C/svg%3E");
+  background-size: 20px 10px;
+  opacity: 0.35;
+}
+
+/* Menu Premium saat akun sudah Premium: kilau hijau */
+.kilau.kilau-hijau {
+  background-image: linear-gradient(
+    100deg,
+    var(--color-accent) 0%,
+    var(--color-accent) 40%,
+    #84cc16 48%,
+    #d9f99d 50%,
+    #84cc16 52%,
+    var(--color-accent) 60%,
+    var(--color-accent) 100%
+  );
+}
+
+/* Pengaturan tampilan (halaman /pengaturan) */
+html.teks-besar {
+  font-size: 112.5%;
+}
+html.kurangi-animasi *,
+html.kurangi-animasi *::before,
+html.kurangi-animasi *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* Tombol Pengaturan di navbar: roda gigi berputar pelan saat hover, kembali halus saat dilepas */
+.gear-putar {
+  transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.group:hover .gear-putar,
+.group:focus-visible .gear-putar {
+  transform: rotate(180deg);
+  transition-duration: 2.4s;
+}
+
+/* Pop-up foto profil: muncul membesar halus */
+.foto-muncul[open] {
+  animation: foto-muncul 0.25s ease-out;
+}
+@keyframes foto-muncul {
+  from { opacity: 0; transform: scale(0.85); }
 }

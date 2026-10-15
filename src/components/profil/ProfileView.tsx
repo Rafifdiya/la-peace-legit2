@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { Pencil, Settings } from "lucide-react";
 import { SnackCard } from "@/components/SnackCard";
+import { AvatarProfil } from "./AvatarProfil";
 import { StatCard } from "@/components/StatCard";
 import { Tabs } from "@/components/Tabs";
 import { getCards } from "@/lib/data";
@@ -14,11 +16,13 @@ type Props = {
   tersimpan?: string[];
   /** Profil sendiri: isi tab Status kiriman */
   statusKiriman?: React.ReactNode;
+  /** Profil sendiri: isi tab Tersimpan (koleksi). Bila kosong, pakai grid dari `tersimpan`. */
+  tersimpanIsi?: React.ReactNode;
   /** Profil sendiri & admin: ringkasan moderasi (selalu tampil, bukan tab) */
   moderasi?: React.ReactNode;
 };
 
-export async function ProfileView({ user, diriSendiri, tab, basePath, tersimpan = [], statusKiriman, moderasi }: Props) {
+export async function ProfileView({ user, diriSendiri, tab, basePath, tersimpan = [], statusKiriman, moderasi, tersimpanIsi }: Props) {
   // Tab Tersimpan & Status kiriman hanya untuk profil sendiri
   const tabs = [{ key: "kontribusi", label: "Kontribusi" }];
   if (diriSendiri) tabs.push({ key: "tersimpan", label: "Tersimpan" }, { key: "status", label: "Status kiriman" });
@@ -27,18 +31,36 @@ export async function ProfileView({ user, diriSendiri, tab, basePath, tersimpan 
   return (
     <div className="space-y-8 py-10">
       <header className="flex flex-col gap-5 sm:flex-row sm:items-center">
-        <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-brand font-display text-3xl text-white">
-          {user.nama.charAt(0).toUpperCase()}
-        </div>
+        <AvatarProfil nama={user.nama} premium={user.premium} src={user.avatarUrl} />
         <div className="flex-1 space-y-1">
-          <h1 className="font-display text-3xl font-semibold">{user.nama}</h1>
+          <h1 className="flex flex-wrap items-center gap-2 font-display text-3xl font-semibold">
+            {user.nama}
+            {user.premium && (
+              <span className="rounded-full bg-amber-500/15 px-2.5 py-0.5 font-sans text-sm">
+                {/* Teks berkilau seperti menu Premium di sidebar */}
+                <span className="kilau font-semibold">Premium</span>
+              </span>
+            )}
+          </h1>
           <p className="text-sm text-ink-2">
             {[user.username && `@${user.username}`, user.daerah].filter(Boolean).join(" · ") || "Belum mengisi username & daerah"}
           </p>
           {user.bio && <p>{user.bio}</p>}
         </div>
-        {diriSendiri && user.role === "admin" && (
-          <Link href="/admin" className="h-fit rounded-full bg-brand px-4 py-2 text-sm text-white">Dashboard Moderasi</Link>
+        {diriSendiri && (
+          <div className="flex flex-wrap gap-2">
+            <Link href="/profil/saya/pengaturan" className="flex h-fit items-center gap-1.5 rounded-full border border-line bg-surface px-4 py-2 text-sm hover:border-brand">
+              <Pencil size={14} aria-hidden /> Pengaturan profil
+            </Link>
+            {user.role !== "admin" && (
+              <Link href="/pengaturan" className="flex h-fit items-center gap-1.5 rounded-full border border-line bg-surface px-4 py-2 text-sm hover:border-brand">
+                <Settings size={14} aria-hidden /> Pengaturan
+              </Link>
+            )}
+            {user.role === "admin" && (
+              <Link href="/admin" className="h-fit rounded-full bg-brand px-4 py-2 text-sm text-white">Dashboard Moderasi</Link>
+            )}
+          </div>
         )}
       </header>
 
@@ -51,7 +73,7 @@ export async function ProfileView({ user, diriSendiri, tab, basePath, tersimpan 
 
       <Tabs basePath={basePath} active={active} tabs={tabs} />
       {active === "kontribusi" && <CardGrid slugs={user.kontribusi} kosong="Belum ada kontribusi yang disetujui." />}
-      {active === "tersimpan" && <CardGrid slugs={tersimpan} kosong="Belum ada jajanan yang disimpan." />}
+      {active === "tersimpan" && (tersimpanIsi ?? <CardGrid slugs={tersimpan} kosong="Belum ada jajanan yang disimpan." />)}
       {active === "status" && statusKiriman}
     </div>
   );

@@ -10,7 +10,7 @@ export type SnackFilter = {
   q?: string;
   provinsi?: string;
   kategori?: string;
-  urut?: "terbaru" | "az" | "langka";
+  urut?: "terbaru" | "terlama" | "az" | "langka";
 };
 
 // Kolom ringkas dari view snack_cards (lihat migration 0003)
@@ -67,6 +67,7 @@ export async function getSnackPage(filter: SnackFilter, page = 1, size = PAGE_SI
 
   if (filter.urut === "az") query = query.order("nama");
   else if (filter.urut === "langka") query = query.order("rarity_rank", { ascending: false }).order("nama");
+  else if (filter.urut === "terlama") query = query.order("created_at");
   else query = query.order("created_at", { ascending: false });
 
   const from = (page - 1) * size;

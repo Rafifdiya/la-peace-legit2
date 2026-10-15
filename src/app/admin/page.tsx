@@ -5,10 +5,14 @@ import { LoginButton } from "@/components/LoginButton";
 import { StatCard } from "@/components/StatCard";
 import { Tabs } from "@/components/Tabs";
 import { getCategories, getStats } from "@/lib/data";
-import { getLaporan } from "@/lib/komunitas";
+import { getJumlahMinatKelas, getLaporan } from "@/lib/komunitas";
 import { formatTanggal } from "@/lib/format";
 import { getKirimanAdmin, getSesi } from "@/lib/kiriman";
 import { KirimanList } from "./KirimanList";
+import { getIklanAdmin } from "@/lib/iklan";
+import { IklanForm } from "./IklanForm";
+import { LihatIklanToggle } from "./LihatIklanToggle";
+import { IklanItem } from "./IklanItem";
 
 export const metadata: Metadata = { title: "Admin", robots: { index: false } };
 
@@ -39,17 +43,25 @@ async function Isi({ searchParams }: Pick<PageProps<"/admin">, "searchParams">) 
   if (!sesi.admin) return <p className="text-ink-2">Halaman ini khusus admin.</p>;
 
   const t = (await searchParams).tab;
-  const tab = t === "laporan" || t === "kategori" ? t : "kiriman";
-  const [kiriman, laporan, kategori, stats] = await Promise.all([getKirimanAdmin(), getLaporan(), getCategories(), getStats()]);
+  const tab = t === "laporan" || t === "kategori" || t === "iklan" ? t : "kiriman";
+  const [kiriman, laporan, kategori, stats, minat] = await Promise.all([
+    getKirimanAdmin(),
+    getLaporan(),
+    getCategories(),
+    getStats(),
+    getJumlahMinatKelas(),
+  ]);
+  const iklan = tab === "iklan" ? await getIklanAdmin() : [];
   const menunggu = kiriman.filter((k) => k.status === "pending");
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
         <StatCard label="Menunggu" value={menunggu.length} />
         <StatCard label="Laporan terbuka" value={laporan.length} />
         <StatCard label="Total jajanan" value={stats.jajanan} />
         <StatCard label="Kiriman disetujui" value={kiriman.filter((k) => k.status === "approved").length} />
+        <StatCard label="Minat kelas" value={minat} />
       </div>
 
       <Tabs
@@ -59,10 +71,24 @@ async function Isi({ searchParams }: Pick<PageProps<"/admin">, "searchParams">) 
           { key: "kiriman", label: `Kiriman (${menunggu.length})` },
           { key: "laporan", label: `Laporan (${laporan.length})` },
           { key: "kategori", label: "Kategori" },
+          { key: "iklan", label: "Iklan" },
         ]}
       />
 
       {tab === "kiriman" && <KirimanList kiriman={kiriman} />}
+
+      {tab === "iklan" && (
+        <div className="space-y-6">
+          <p className="text-sm text-ink-2">Maksimal 6 iklan aktif, tampil bergantian tiap 6 detik di bawah sidebar (desktop). Nonaktifkan semua untuk kembali ke placeholder.</p>
+          <LihatIklanToggle />
+          <IklanForm />
+          {iklan.length === 0 ? (
+            <p className="text-ink-2">Belum ada iklan.</p>
+          ) : (
+            <ul className="space-y-3">{iklan.map((i) => <IklanItem key={i.id} iklan={i} />)}</ul>
+          )}
+        </div>
+      )}
 
       {tab === "laporan" && laporan.length === 0 && <p className="text-ink-2">Belum ada laporan terbuka.</p>}
 

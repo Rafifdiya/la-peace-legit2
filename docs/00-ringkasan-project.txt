@@ -1,6 +1,6 @@
 RINGKASAN PROJECT - JEJAK JAJAN
 =================================================================
-Update terakhir: 9 Oktober 2026
+Update terakhir: 14 Oktober 2026
 
 APA INI
 Web arsip/ensiklopedia jajanan tradisional Indonesia berbasis
@@ -21,14 +21,16 @@ PEMBEDA (vs Cookpad / TikTok / blog resep)
 - Request jajanan: "ada yang tahu resep kue X?"
 
 FITUR UTAMA (MVP UNTUK EXPO)
-1. Beranda, katalog + search + filter (provinsi, kategori, kelangkaan)
+1. Beranda (carousel Hampir Punah & Baru Ditambahkan), katalog + search +
+   filter (provinsi, kategori, urutan)
 2. Detail jajanan: cerita, resep (banyak versi), langkah, lokasi + mini map,
    komentar
 3. Upload jajanan (7 langkah, hanya info dasar yang wajib)
 4. Vote kelangkaan (1 user 1 suara, tampil min. 3 suara)
-5. Login (Google/email), profil kontributor
+5. Login email + password (Google menyusul), profil kontributor
 6. Moderasi admin: setujui/tolak kiriman, tangani laporan
 7. Request jajanan
+8. Halaman Kelas Bersama Penjual (segera hadir) + daftar minat
 
 TAMBAHAN DARI FEEDBACK PRESENTASI 1
 - Link "Pesan online" (GoFood/GrabFood/WA) di kartu lokasi
@@ -41,20 +43,37 @@ ROLE
 - User login       : upload, vote, komentar, simpan, lapor, request
 - Admin            : moderasi
 
-MODEL BISNIS (MASIH PERLU DIPERKUAT - feedback utama dosen)
-- Sponsor brand bahan kue lokal
+MODEL BISNIS (detail di docs/05 Tema A & docs/06, masih direview tim)
+Arsip tetap gratis (tidak dikunci). Sumber pendapatan:
+- Sponsor brand bahan kue lokal (banner, resep bersponsor berlabel)
+- Link afiliasi bahan & alat (marketplace)
 - Kerja sama pemda / dinas pariwisata
 - Produk turunan: e-book resep, kartu edukasi
-- Nanti: kursus premium dari penjual asli (bagi hasil)
+- Kelas / workshop bersama penjual (bagi hasil). Sudah ada halaman
+  "segera hadir" + daftar minat untuk validasi jumlah peminat.
+- Opsional freemium: unduh resep PDF, koleksi tanpa batas
 
 TEKNOLOGI
-Next.js + Supabase (auth, database, foto) + Leaflet (mini map) + Vercel.
-Desain di Figma "Jejak Jajan" (desktop dulu, lalu mobile).
+Next.js 16 + Supabase (auth, database + RLS, storage foto) + Leaflet
+(mini map). Deploy rencana ke Vercel (belum).
+Desain dasar dari Figma "Jejak Jajan"; beberapa perubahan setelahnya
+(sidebar kiri ala Cookpad, 3 font: Fraunces, Plus Jakarta Sans, Caveat,
+dropdown daerah di kotak cari) belum diperbarui di Figma & docs/03.
 
 STATUS
-- Selesai: ide, dokumen (docs/01-05), desain Figma, presentasi progress 1
-- Berikutnya: model bisnis, mulai development (template UI + data dummy)
+- Selesai: ide, dokumen, desain Figma, presentasi progress 1, template UI.
+- Tersambung Supabase: katalog, detail, beranda, statistik, request,
+  profil. Data dummy sudah dihapus.
+- Jalan: daftar/masuk email, upload 7 langkah (foto, video per langkah),
+  moderasi admin (setujui/tolak + alasan, admin boleh setujui kiriman
+  sendiri), status kiriman di profil, halaman Kelas + daftar minat.
+- Belum: vote kelangkaan, Masih ada / Sudah tidak ada, simpan, komentar,
+  laporan, isi 20-30 data asli, deploy Vercel, verifikasi email + lupa
+  password (sebelum expo), testing (Vitest, Playwright, UAT).
+- Berikutnya: uji alur kirim -> moderasi, merge PR #7, review model
+  bisnis (docs/06) + slide.
 
 DOKUMEN DETAIL
 docs/01 ide & fitur, 02 survei, 03 desain, 04 rencana SE,
-05 feedback presentasi 1
+05 feedback presentasi 1, 06 model bisnis (draft), 07 log progres.
+Setup developer & aturan tim: AGENTS.md.
