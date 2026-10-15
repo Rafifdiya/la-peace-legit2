@@ -7,8 +7,8 @@ import { Crown, GraduationCap, Home, Info, LayoutGrid, MessageCircleQuestion, Pl
 
 const menu = [
   { href: "/", label: "Beranda", Icon: Home },
-  { href: "/katalog", label: "Katalog", Icon: LayoutGrid },
-  { href: "/request", label: "Tanya Jajanan", Icon: MessageCircleQuestion },
+  { href: "/katalog", label: "Katalog Jajanan", Icon: LayoutGrid },
+  { href: "/request", label: "Forum Jajanan", Icon: MessageCircleQuestion },
   { href: "/kelas", label: "Kelas", Icon: GraduationCap },
   { href: "/profil/saya", label: "Profil saya", Icon: UserRound },
   { href: "/premium", label: "Premium", Icon: Crown },

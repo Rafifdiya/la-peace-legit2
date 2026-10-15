@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { LoginButton } from "@/components/LoginButton";
@@ -34,14 +33,8 @@ async function Isi() {
     .select("role, premium_sampai")
     .eq("id", data.user.id)
     .single<{ role: string; premium_sampai: string | null }>();
-  if (p?.role === "admin") {
-    return (
-      <p className="rounded-lg border border-line bg-surface p-5">
-        Halaman ini untuk akun user. Pengaturan iklan admin ada di{" "}
-        <Link href="/admin?tab=iklan" className="font-semibold text-brand underline">Dashboard Moderasi</Link>.
-      </p>
-    );
-  }
+  // Admin otomatis Premium: semua fitur terbuka + bagian khusus admin
+  if (p?.role === "admin") return <PengaturanFitur premium admin />;
   const premium = !!p?.premium_sampai && new Date(p.premium_sampai) > new Date();
   return <PengaturanFitur premium={premium} />;
 }

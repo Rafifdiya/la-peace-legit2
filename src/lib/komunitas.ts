@@ -1,4 +1,4 @@
-// Data komunitas dari Supabase: request jajanan, profil, laporan.
+// Data komunitas dari Supabase: Forum Jajanan, profil, laporan.
 import { cacheLife, cacheTag } from "next/cache";
 import { createPublicClient } from "./supabase/public";
 import { createClient } from "./supabase/server";
@@ -13,17 +13,31 @@ function namaUser(p: { username: string | null; nama_tampil: string | null } | n
   return p?.username ?? p?.nama_tampil ?? "anonim";
 }
 
-// ---------- Request ----------
+// ---------- Forum Jajanan (tabel requests) ----------
+
+export type Balasan = {
+  id: string;
+  userId: string | null;
+  oleh: string;
+  olehUsername: string | null;
+  isi: string;
+  slug?: string;
+  tanggal: string;
+};
 
 export type RequestItem = {
   id: string;
   judul: string;
   isi: string;
   daerah: string;
+  topik: string;
+  terjawab: boolean;
+  jawabanTerbaik: string | null;
+  pemilikId: string | null;
   oleh: string;
   olehUsername: string | null;
   tanggal: string;
-  jawaban: { oleh: string; olehUsername: string | null; isi: string; slug?: string; tanggal: string }[];
+  jawaban: Balasan[];
 };
 
 type Profil = { username: string | null; nama_tampil: string | null } | null;
@@ -33,14 +47,20 @@ type RequestRow = {
   judul: string;
   deskripsi: string | null;
   created_at: string;
+  created_by: string | null;
+  status: string;
+  topik?: string;
+  jawaban_terbaik?: string | null;
   provinces: { nama: string } | null;
   profiles: Profil;
-  request_answers: { isi: string; created_at: string; profiles: Profil; snacks: { slug: string } | null }[];
+  request_answers: { id: string; user_id: string | null; isi: string; created_at: string; profiles: Profil; snacks: { slug: string } | null }[];
 };
 
-const REQUEST_KOLOM = `id, judul, deskripsi, created_at, provinces (nama),
+const KOLOM_DASAR = `id, judul, deskripsi, created_at, created_by, status, provinces (nama),
   profiles!requests_created_by_fkey (username, nama_tampil),
-  request_answers (isi, created_at, profiles!request_answers_user_id_fkey (username, nama_tampil), snacks (slug))`;
+  request_answers!request_answers_request_id_fkey (id, user_id, isi, created_at, profiles!request_answers_user_id_fkey (username, nama_tampil), snacks (slug))`;
+// Kolom dari migration 0017; tanpa itu forum tetap jalan dengan topik "obrolan"
+const KOLOM_FORUM = `${KOLOM_DASAR}, topik, jawaban_terbaik`;
 
 function toRequest(r: RequestRow): RequestItem {
   return {
@@ -48,12 +68,18 @@ function toRequest(r: RequestRow): RequestItem {
     judul: r.judul,
     isi: r.deskripsi ?? "",
     daerah: r.provinces?.nama ?? "",
+    topik: r.topik ?? "obrolan",
+    terjawab: r.status === "answered",
+    jawabanTerbaik: r.jawaban_terbaik ?? null,
+    pemilikId: r.created_by,
     oleh: namaUser(r.profiles),
     olehUsername: r.profiles?.username ?? null,
     tanggal: r.created_at,
     jawaban: [...r.request_answers]
       .sort((a, b) => a.created_at.localeCompare(b.created_at))
       .map((j) => ({
+        id: j.id,
+        userId: j.user_id,
         oleh: namaUser(j.profiles),
         olehUsername: j.profiles?.username ?? null,
         isi: j.isi,
@@ -63,18 +89,29 @@ function toRequest(r: RequestRow): RequestItem {
   };
 }
 
-export async function getRequests(status: "terbuka" | "terjawab"): Promise<RequestItem[]> {
+/** Jalankan query dengan kolom forum; bila kolomnya belum ada (0017 belum dijalankan), ulangi tanpa itu. */
+async function denganCadangan<T>(query: (kolom: string, cadangan: boolean) => PromiseLike<{ data: unknown; error: { message: string; code?: string } | null }>): Promise<T> {
+  const res = await query(KOLOM_FORUM, false);
+  if (res.error?.code === "42703") return cek<T>(await query(KOLOM_DASAR, true));
+  return cek<T>(res);
+}
+
+/** tab "terbaru" = semua; "belum" = topik mencari yang belum terjawab. topik = filter opsional. */
+export async function getRequests(tab: "terbaru" | "belum", topik?: string): Promise<RequestItem[]> {
   "use cache";
   cacheLife("minutes");
   cacheTag("request");
-  const rows = cek<RequestRow[]>(
-    await createPublicClient()
-      .from("requests")
-      .select(REQUEST_KOLOM)
-      .eq("status", status === "terjawab" ? "answered" : "open")
-      .order("created_at", { ascending: false }),
-  );
-  return rows.map(toRequest);
+  const rows = await denganCadangan<RequestRow[]>((kolom, cadangan) => {
+    let q = createPublicClient().from("requests").select(kolom).order("created_at", { ascending: false });
+    if (tab === "belum") q = q.eq("status", "open");
+    // Tanpa kolom topik (cadangan) semua postingan dianggap "obrolan"
+    if (topik && !cadangan) q = q.eq("topik", topik);
+    return q;
+  });
+  if (topik) rows.splice(0, rows.length, ...rows.filter((r) => (r.topik ?? "obrolan") === topik));
+  const list = rows.map(toRequest);
+  // "Belum terjawab" hanya untuk topik mencari (resep / penjual)
+  return tab === "belum" ? list.filter((r) => r.topik === "cari-resep" || r.topik === "cari-penjual") : list;
 }
 
 export async function getRequest(id: string): Promise<RequestItem | undefined> {
@@ -83,8 +120,8 @@ export async function getRequest(id: string): Promise<RequestItem | undefined> {
   cacheTag("request");
   // id bukan UUID -> pasti tidak ada (hindari error query)
   if (!/^[0-9a-f-]{36}$/i.test(id)) return undefined;
-  const row = cek<RequestRow | null>(
-    await createPublicClient().from("requests").select(REQUEST_KOLOM).eq("id", id).maybeSingle(),
+  const row = await denganCadangan<RequestRow | null>((kolom) =>
+    createPublicClient().from("requests").select(kolom).eq("id", id).maybeSingle(),
   );
   return row ? toRequest(row) : undefined;
 }
@@ -183,7 +220,17 @@ export async function getProfilSaya(userId: string): Promise<{ profil: ProfilUse
 
 // ---------- Laporan (admin) ----------
 
-export type Laporan = { id: string; target: string; alasan: string; oleh: string; tanggal: string };
+export type Laporan = {
+  id: string;
+  target: string;
+  targetType: string;
+  targetId: string;
+  /** Link ke konten yang dilaporkan (forum), bila bisa ditentukan */
+  href?: string;
+  alasan: string;
+  oleh: string;
+  tanggal: string;
+};
 
 const targetLabel: Record<string, string> = {
   snack: "Jajanan",
@@ -191,27 +238,41 @@ const targetLabel: Record<string, string> = {
   sighting: "Lokasi",
   comment: "Komentar",
   photo: "Foto",
+  forum_post: "Postingan forum",
+  forum_reply: "Balasan forum",
 };
 
-/** Laporan terbuka. RLS: hanya admin yang bisa membaca. */
 export async function getLaporan(): Promise<Laporan[]> {
   const supabase = await createClient();
   const rows = cek<
-    { id: string; target_type: string; alasan: string; created_at: string; profiles: Profil }[]
+    { id: string; target_type: string; target_id: string; alasan: string; created_at: string; profiles: Profil }[]
   >(
     await supabase
       .from("reports")
-      .select("id, target_type, alasan, created_at, profiles!reports_reported_by_fkey (username, nama_tampil)")
+      .select("id, target_type, target_id, alasan, created_at, profiles!reports_reported_by_fkey (username, nama_tampil)")
       .eq("status", "open")
       .order("created_at", { ascending: false }),
   );
-  return rows.map((r) => ({
-    id: r.id,
-    target: targetLabel[r.target_type] ?? r.target_type,
-    alasan: r.alasan,
-    oleh: namaUser(r.profiles),
-    tanggal: r.created_at,
-  }));
+  // Balasan forum: cari postingan induknya untuk link
+  const idBalasan = rows.filter((r) => r.target_type === "forum_reply").map((r) => r.target_id);
+  const induk = new Map<string, string>();
+  if (idBalasan.length) {
+    const { data } = await supabase.from("request_answers").select("id, request_id").in("id", idBalasan);
+    for (const b of data ?? []) induk.set(b.id, b.request_id);
+  }
+  return rows.map((r) => {
+    const postId = r.target_type === "forum_post" ? r.target_id : induk.get(r.target_id);
+    return {
+      id: r.id,
+      target: targetLabel[r.target_type] ?? r.target_type,
+      targetType: r.target_type,
+      targetId: r.target_id,
+      href: postId ? `/request/${postId}` : undefined,
+      alasan: r.alasan,
+      oleh: namaUser(r.profiles),
+      tanggal: r.created_at,
+    };
+  });
 }
 
 // ---------- Minat kelas (admin) ----------

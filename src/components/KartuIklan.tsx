@@ -10,7 +10,7 @@ export function KartuIklan({ iklan }: { iklan: Iklan }) {
     </div>
   );
   return (
-    <div className="overflow-hidden rounded-lg border border-line bg-surface shadow-card">
+    <div className="overflow-hidden rounded-lg border-2 border-[#D9C4A3] bg-surface shadow-card">
       {iklan.linkUrl ? (
         <a href={iklan.linkUrl} target="_blank" rel="noopener sponsored" className="block hover:opacity-90">{isi}</a>
       ) : (
