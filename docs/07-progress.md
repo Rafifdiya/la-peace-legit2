@@ -138,6 +138,7 @@ Catatan: jam untuk entri lama tidak tercatat, jadi hanya tanggal. Entri baru dit
 134. **2026-10-15 11:29** - Animasi tombol Pengaturan navbar diperhalus: tulisan terbuka 0,5 detik dengan easing lembut; gear berputar pelan 180° saat hover dan kembali halus saat dilepas (tidak lagi melompat).
 135. **2026-10-15 11:32** - Foto profil bisa dipencet (halaman profil & Pengaturan profil): tampil besar di tengah layar dengan animasi membesar, tertutup sendiri setelah 3 detik atau saat diklik (FotoPerbesar.tsx).
 136. **2026-10-15 11:33** - Menu "Profil saya" (ikon orang) di sidebar, antara Kelas dan Premium, menuju /profil/saya.
+137. **2026-10-20 20:58** - Fix error Tanya Jajanan di main: "Could not embed because more than one relationship was found for 'requests' and 'request_answers'". Penyebab: migration 0017 (kolom requests.jawaban_terbaik, dari branch feat/resep-dicoba) sudah dijalankan di Supabase, jadi ada dua relasi requests-request_answers. Query di src/lib/komunitas.ts sekarang memakai relasi eksplisit request_answers!request_answers_request_id_fkey, sama seperti perbaikan di feat/resep-dicoba. Branch feat/perbaiki-tanya-jajanan.
 
 ## Berikutnya
 - Review docs/06 model bisnis bersama tim, lalu buat slide
