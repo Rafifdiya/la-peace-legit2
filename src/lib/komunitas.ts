@@ -38,9 +38,10 @@ type RequestRow = {
   request_answers: { isi: string; created_at: string; profiles: Profil; snacks: { slug: string } | null }[];
 };
 
+// Relasi request_answers disebut eksplisit: requests.jawaban_terbaik (migration 0017) juga menunjuk ke request_answers
 const REQUEST_KOLOM = `id, judul, deskripsi, created_at, provinces (nama),
   profiles!requests_created_by_fkey (username, nama_tampil),
-  request_answers (isi, created_at, profiles!request_answers_user_id_fkey (username, nama_tampil), snacks (slug))`;
+  request_answers!request_answers_request_id_fkey (isi, created_at, profiles!request_answers_user_id_fkey (username, nama_tampil), snacks (slug))`;
 
 function toRequest(r: RequestRow): RequestItem {
   return {
