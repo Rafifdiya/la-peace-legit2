@@ -3,6 +3,7 @@ import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { ArrowLeft } from "lucide-react";
+import { KepalaHalaman } from "@/components/KepalaHalaman";
 import { LoginButton } from "@/components/LoginButton";
 import { createClient } from "@/lib/supabase/server";
 import { PengaturanForm } from "./PengaturanForm";
@@ -15,7 +16,9 @@ export default function PengaturanPage() {
       <Link href="/profil/saya" className="inline-flex items-center gap-1 text-[1.155rem] text-ink-2 hover:text-brand">
         <ArrowLeft size={19} aria-hidden /> Kembali ke profil
       </Link>
-      <h1 className="font-display text-4xl font-semibold">Pengaturan profil</h1>
+      <KepalaHalaman>
+        <h1 className="font-display text-4xl font-semibold">Pengaturan profil</h1>
+      </KepalaHalaman>
       <Suspense fallback={<p className="text-ink-2">Memuat...</p>}>
         <Isi />
       </Suspense>

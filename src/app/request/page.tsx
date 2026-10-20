@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { MessageCircle } from "lucide-react";
+import { KepalaHalaman } from "@/components/KepalaHalaman";
 import { LoginButton } from "@/components/LoginButton";
 import { Tabs } from "@/components/Tabs";
 import { getRequests } from "@/lib/komunitas";
@@ -12,13 +13,13 @@ export const metadata: Metadata = { title: "Tanya Jajanan" };
 export default function RequestPage({ searchParams }: PageProps<"/request">) {
   return (
     <div className="space-y-6 py-10">
-      <div className="flex flex-wrap items-end justify-between gap-4">
+      <KepalaHalaman className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="font-display text-4xl font-semibold">Tanya Jajanan</h1>
           <p className="mt-1.5 text-ink-2">Cari resep atau penjual jajanan tertentu? Tanyakan ke komunitas.</p>
         </div>
         <LoginButton className="rounded-full bg-brand px-5 py-2 font-semibold text-white hover:bg-brand-hover">Buat pertanyaan</LoginButton>
-      </div>
+      </KepalaHalaman>
       <Suspense fallback={<p className="text-ink-2">Memuat...</p>}>
         <RequestList searchParams={searchParams} />
       </Suspense>

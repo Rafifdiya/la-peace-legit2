@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { KepalaHalaman } from "@/components/KepalaHalaman";
 import { LoginButton } from "@/components/LoginButton";
 import { getRequest, getRequestIds } from "@/lib/komunitas";
 import { formatTanggal } from "@/lib/format";
@@ -23,7 +24,7 @@ export default async function RequestDetail({ params }: PageProps<"/request/[id]
   return (
     <div className="mx-auto max-w-2xl space-y-6 py-10">
       <Link href="/request" className="text-sm text-brand hover:underline">← Semua pertanyaan</Link>
-      <div className="space-y-2">
+      <KepalaHalaman className="space-y-2">
         <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${r.jawaban.length ? "bg-rarity-umum" : "bg-rarity-mulai"}`}>
           {r.jawaban.length ? "Terjawab" : "Terbuka"}
         </span>
@@ -31,8 +32,8 @@ export default async function RequestDetail({ params }: PageProps<"/request/[id]
         <p className="text-sm text-ink-2">
           {r.olehUsername ? <Link href={`/profil/${r.olehUsername}`} className="hover:text-brand">@{r.oleh}</Link> : r.oleh} · {r.daerah} · {formatTanggal(r.tanggal)}
         </p>
-        <p className="pt-2 leading-relaxed">{r.isi}</p>
-      </div>
+      </KepalaHalaman>
+      <p className="leading-relaxed">{r.isi}</p>
 
       <section className="space-y-3">
         <h2 className="font-display text-xl font-semibold">{r.jawaban.length} Jawaban</h2>
