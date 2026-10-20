@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Search } from "lucide-react";
 import { Suspense } from "react";
+import { KepalaHalaman } from "@/components/KepalaHalaman";
 import { getCategories, getProvinces, getSnackPage, type SnackFilter } from "@/lib/data";
 import { getIklanAktif } from "@/lib/iklan";
 import { InfiniteList } from "./InfiniteList";
@@ -11,7 +12,9 @@ export const metadata: Metadata = { title: "Katalog" };
 export default function KatalogPage({ searchParams }: PageProps<"/katalog">) {
   return (
     <div className="py-10">
-      <h1 className="font-display text-4xl font-semibold">Katalog Jajanan</h1>
+      <KepalaHalaman>
+        <h1 className="font-display text-4xl font-semibold">Katalog Jajanan</h1>
+      </KepalaHalaman>
       {/* Judul tampil instan (static shell); hasil filter menyusul */}
       <Suspense fallback={<p className="mt-6 text-ink-2">Memuat katalog...</p>}>
         <Katalog searchParams={searchParams} />

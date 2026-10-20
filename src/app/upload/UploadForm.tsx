@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { CircleCheck, Plus, Trash2 } from "lucide-react";
+import { KepalaHalaman } from "@/components/KepalaHalaman";
 import { LoginButton } from "@/components/LoginButton";
 import { WAKTU } from "@/lib/format";
 import { createClient } from "@/lib/supabase/client";
@@ -164,30 +165,34 @@ export function UploadForm({ provinsi, kategori }: Props) {
 
   if (!masuk) {
     return (
-      <div className="mx-auto max-w-md space-y-4 py-16 text-center">
-        <h1 className="font-display text-3xl font-semibold">Masuk untuk berkontribusi</h1>
-        <p className="text-ink-2">Kirim jajanan, resep, dan lokasi terakhir terlihat. Kiriman dicek admin dulu sebelum tampil.</p>
-        <LoginButton className="rounded-full bg-brand px-6 py-2 font-semibold text-white hover:bg-brand-hover">Masuk</LoginButton>
+      <div className="mx-auto max-w-md py-8">
+        <KepalaHalaman className="space-y-4 text-center">
+          <h1 className="font-display text-3xl font-semibold">Masuk untuk berkontribusi</h1>
+          <p className="text-ink-2">Kirim jajanan, resep, dan lokasi terakhir terlihat. Kiriman dicek admin dulu sebelum tampil.</p>
+          <LoginButton className="rounded-full bg-brand px-6 py-2 font-semibold text-white hover:bg-brand-hover">Masuk</LoginButton>
+        </KepalaHalaman>
       </div>
     );
   }
 
   if (kirim === "terkirim") {
     return (
-      <div className="mx-auto max-w-md space-y-4 py-16 text-center">
-        <CircleCheck size={48} className="mx-auto text-accent" aria-hidden />
-        <h1 className="font-display text-3xl font-semibold">Terkirim!</h1>
-        <p className="text-ink-2">Kirimanmu menunggu moderasi admin. Statusnya bisa dilihat di profil, tab Status kiriman.</p>
-        <div className="flex justify-center gap-3">
-          <Link href="/profil/saya?tab=status" className="rounded-full border border-line px-5 py-2">Lihat status</Link>
-          <button
-            type="button"
-            onClick={() => { setD(kosong); setStep(0); setKirim("idle"); }}
-            className="rounded-full bg-brand px-5 py-2 font-semibold text-white"
-          >
-            Kirim lagi
-          </button>
-        </div>
+      <div className="mx-auto max-w-md py-8">
+        <KepalaHalaman className="space-y-4 text-center">
+          <CircleCheck size={48} className="mx-auto text-accent" aria-hidden />
+          <h1 className="font-display text-3xl font-semibold">Terkirim!</h1>
+          <p className="text-ink-2">Kirimanmu menunggu moderasi admin. Statusnya bisa dilihat di profil, tab Status kiriman.</p>
+          <div className="flex justify-center gap-3">
+            <Link href="/profil/saya?tab=status" className="rounded-full border border-line px-5 py-2">Lihat status</Link>
+            <button
+              type="button"
+              onClick={() => { setD(kosong); setStep(0); setKirim("idle"); }}
+              className="rounded-full bg-brand px-5 py-2 font-semibold text-white"
+            >
+              Kirim lagi
+            </button>
+          </div>
+        </KepalaHalaman>
       </div>
     );
   }
@@ -211,7 +216,9 @@ export function UploadForm({ provinsi, kategori }: Props) {
       </ol>
 
       <form onSubmit={(e) => { e.preventDefault(); if (step === LANGKAH.length - 1) kirimKiriman(); else lanjut(); }} className="space-y-5">
-        <h1 className="font-display text-3xl font-semibold">{LANGKAH[step]}</h1>
+        <KepalaHalaman>
+          <h1 className="font-display text-3xl font-semibold">{LANGKAH[step]}</h1>
+        </KepalaHalaman>
 
         {step === 0 && (
           <>

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
+import { KepalaHalaman } from "@/components/KepalaHalaman";
 import { LoginButton } from "@/components/LoginButton";
 import { createClient } from "@/lib/supabase/server";
 import { PengaturanFitur } from "./PengaturanFitur";
@@ -11,10 +12,10 @@ export const metadata: Metadata = { title: "Pengaturan" };
 export default function PengaturanPage() {
   return (
     <div className="teks-110 mx-auto max-w-3xl space-y-6 py-10">
-      <div className="space-y-1">
+      <KepalaHalaman className="space-y-1">
         <h1 className="font-display text-4xl font-semibold">Pengaturan</h1>
         <p className="text-ink-2">Atur fitur Jejak Jajan untuk akunmu di browser ini.</p>
-      </div>
+      </KepalaHalaman>
       <Suspense fallback={<p className="text-ink-2">Memuat...</p>}>
         <Isi />
       </Suspense>

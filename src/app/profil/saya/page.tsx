@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
+import { KepalaHalaman } from "@/components/KepalaHalaman";
 import { LoginButton } from "@/components/LoginButton";
 import { ProfileView } from "@/components/profil/ProfileView";
 import { StatusPill } from "@/components/StatusPill";
@@ -31,9 +32,11 @@ async function Isi({ searchParams }: Pick<PageProps<"/profil/saya">, "searchPara
   const sesi = await getSesi();
   if (!sesi.user) {
     return (
-      <div className="mx-auto max-w-md space-y-4 py-16 text-center">
-        <h1 className="font-display text-3xl font-semibold">Masuk untuk melihat profil</h1>
-        <LoginButton className="rounded-full bg-brand px-6 py-2 font-semibold text-white hover:bg-brand-hover">Masuk</LoginButton>
+      <div className="mx-auto max-w-md py-8">
+        <KepalaHalaman className="space-y-4 text-center">
+          <h1 className="font-display text-3xl font-semibold">Masuk untuk melihat profil</h1>
+          <LoginButton className="rounded-full bg-brand px-6 py-2 font-semibold text-white hover:bg-brand-hover">Masuk</LoginButton>
+        </KepalaHalaman>
       </div>
     );
   }

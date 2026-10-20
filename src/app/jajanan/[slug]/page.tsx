@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BadgeCheck, ExternalLink, MapPin, Share2, Flag } from "lucide-react";
+import { KepalaHalaman } from "@/components/KepalaHalaman";
 import { LoginButton } from "@/components/LoginButton";
 import { MiniMapLazy } from "@/components/map/MiniMapLazy";
 import { RarityBadge } from "@/components/RarityBadge";
@@ -37,7 +38,7 @@ export default async function DetailPage({ params }: PageProps<"/jajanan/[slug]"
 
   return (
     <div className="space-y-12 py-10">
-      <div className="grid gap-8 lg:grid-cols-2">
+      <KepalaHalaman className="grid gap-8 lg:grid-cols-2">
         <SnackImage src={snack.cover} alt={snack.nama} sizes="(max-width: 1024px) 100vw, 600px" utama className="aspect-[4/3] rounded-xl" />
         <div className="space-y-4">
           <p className="text-sm text-ink-2">{snack.kategori}</p>
@@ -66,7 +67,7 @@ export default async function DetailPage({ params }: PageProps<"/jajanan/[slug]"
             </div>
           </div>
         </div>
-      </div>
+      </KepalaHalaman>
 
       {/* Navigasi anchor (tanpa JavaScript) pengganti tab */}
       <nav className="sticky top-16 z-30 flex gap-6 border-b border-line bg-page py-3 text-sm font-semibold">
