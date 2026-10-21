@@ -29,14 +29,14 @@ export function SidebarLinks() {
             <Link
               href={href}
               aria-current={aktif ? "page" : undefined}
-              className={`flex items-center gap-3 rounded-md px-3 py-[0.73rem] transition-colors ${
+              className={`flex items-center gap-3 whitespace-nowrap rounded-md tracking-[0.03em] px-3 py-[0.73rem] transition-colors ${
                 // Kontribusi ditonjolkan: tulisan tangan tebal + bingkai oranye transparan
                 href === "/upload"
-                  ? "border border-orange-500/40 py-2 font-hand text-[1.73rem] font-bold"
+                  ? "border border-orange-500/40 py-2 font-hand text-[2.008rem] font-bold"
                   : // Tentang kami: 5% lebih kecil dari menu lain
                     href === "/tentang"
-                    ? "py-[0.69rem] text-[1.235rem]"
-                    : "text-[1.3rem]"
+                    ? "py-[0.69rem] text-[1.513rem]"
+                    : "text-[1.578rem]"
               } ${
                 // Sudah Premium: menu Premium selalu berlatar hijau muda transparan
                 href === "/premium" && premium

@@ -25,30 +25,30 @@ export default async function Beranda() {
   ] as const;
 
   return (
-    <div className="space-y-12 py-10">
+    <div className="beranda space-y-12 py-10">
       {/* Motif kawung samar di belakang hero */}
       <section className="motif-kawung motif-pudar space-y-5 rounded-xl py-8 text-center">
-        <p className="-rotate-2 font-hand text-[1.575rem] text-brand sm:text-[1.96875rem]">
+        <p className="-rotate-2 font-hand text-[2.988rem] text-brand sm:text-[3.375rem]">
           <span className="ketik">dari dapur nenek, untuk generasi berikutnya..</span>
         </p>
-        <h1 className="font-display text-4xl font-semibold sm:text-6xl xl:text-[4.5rem]">Jejak jajan yang hampir hilang</h1>
-        <p className="mx-auto max-w-2xl text-[1.32rem] text-ink">
+        <h1 className="font-display text-[1.8rem] font-semibold sm:text-[3rem] xl:text-[3.6rem]">Jejak jajan yang hampir hilang</h1>
+        <p className="mx-auto max-w-2xl text-[1.518rem] text-ink">
           Arsip jajanan tradisional Indonesia dari komunitas: cerita, resep, dan di mana terakhir terlihat.
         </p>
         {/* Cari + pilih daerah dalam satu kotak (pengganti daftar tombol provinsi) */}
-        <form action="/katalog" className="mx-auto flex max-w-[50.4rem] flex-wrap items-center gap-[0.6rem] rounded-3xl border border-line bg-surface px-[1.2rem] py-[0.9rem] sm:flex-nowrap sm:rounded-full">
+        <form action="/katalog" className="cari-beranda mx-auto flex max-w-[50.4rem] flex-wrap items-center gap-[0.6rem] rounded-3xl border border-line bg-surface px-[1.2rem] py-[0.9rem] sm:flex-nowrap sm:rounded-full">
           <Search size={22} className="text-ink" aria-hidden />
-          <input name="q" placeholder="Cari klepon, kue ape, lupis..." aria-label="Cari jajanan" className="min-w-0 flex-1 bg-transparent text-[1.32rem] outline-none placeholder:text-ink/80" />
-          <select name="provinsi" aria-label="Daerah" defaultValue="" className="w-full rounded-full border border-line bg-surface px-[0.9rem] py-[0.45rem] text-[1.155rem] sm:w-[13.2rem]">
+          <input name="q" placeholder="Cari klepon, kue ape, lupis..." aria-label="Cari jajanan" className="cari-teks min-w-0 flex-1 bg-transparent outline-none placeholder:text-ink/80" />
+          <select name="provinsi" aria-label="Daerah" defaultValue="" className="w-full rounded-full border border-line bg-surface px-[0.9rem] py-[0.45rem] cari-kecil sm:w-[13.2rem]">
             <option value="">Semua daerah</option>
             {provinsi.map((p) => <option key={p.slug} value={p.slug}>{p.nama}</option>)}
           </select>
-          <button className="w-full rounded-full bg-brand px-[1.2rem] py-[0.45rem] text-[1.155rem] font-semibold text-white sm:w-auto">Cari</button>
+          <button className="w-full rounded-full bg-brand px-[1.2rem] py-[0.45rem] cari-kecil font-semibold text-white sm:w-auto">Cari</button>
         </form>
       </section>
 
-      <section className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        {statList.map(([label, n]) => <StatCard key={label} label={label} value={n} />)}
+      <section className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        {statList.map(([label, n]) => <StatCard key={label} label={label} value={n} labelClass="label-statistik text-ink-2" />)}
       </section>
 
       <Section judul="Hampir Punah" href="/katalog?urut=langka" items={langka.items} utama />
@@ -56,7 +56,7 @@ export default async function Beranda() {
 
       <section className="rounded-xl bg-brand p-8 text-center text-white">
         <h2 className="font-display text-2xl font-semibold">Tahu jajanan yang belum ada?</h2>
-        <p className="mt-2 font-hand text-2xl text-white/90">Bagikan cerita, resep, atau lokasi penjualnya.</p>
+        <p className="mt-2 font-hand text-[1.725rem] text-white/90">Bagikan cerita, resep, atau lokasi penjualnya.</p>
         <Link href="/upload" className="mt-4 inline-block rounded-full bg-white px-5 py-2 font-semibold text-brand">
           Mulai kontribusi
         </Link>
@@ -68,9 +68,9 @@ export default async function Beranda() {
 function Section({ judul, href, items, utama = false }: { judul: string; href: string; items: SnackCardData[]; utama?: boolean }) {
   return (
     <section className="space-y-4">
-      <div className="flex items-end justify-between">
+      <div className="flex flex-wrap items-end justify-between gap-x-4">
         <h2 className="font-display text-2xl font-semibold xl:text-[1.8rem]">{judul}</h2>
-        <Link href={href} className="text-[1.155rem] font-semibold text-brand underline underline-offset-4 hover:text-brand-hover">Lihat semua</Link>
+        <Link href={href} className="lihat-semua shrink-0 rounded-full border-2 border-brand bg-surface px-5 py-1 font-semibold text-brand transition-colors hover:bg-brand hover:text-white">Lihat semua</Link>
       </div>
       {items.length === 0 ? (
         <p className="text-ink-2">Belum ada jajanan.</p>

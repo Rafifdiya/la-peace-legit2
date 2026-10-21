@@ -95,11 +95,11 @@ export function AuthNav() {
   return (
     <div className="flex items-center gap-4 text-[1.155rem]">
       {status.admin && (
-        <Link href="/admin" className="hover:text-brand">
+        <Link href="/admin" className="nav-besar hover:text-brand">
           Admin
         </Link>
       )}
-      <button type="button" onClick={() => dialog.current?.showModal()} className="rounded-full border border-line bg-surface px-[1.155rem] py-[0.578rem] transition-colors hover:border-danger hover:bg-danger hover:text-white">
+      <button type="button" onClick={() => dialog.current?.showModal()} className="nav-besar rounded-full border border-line bg-surface px-[1.155rem] py-[0.578rem] transition-colors hover:border-danger hover:bg-danger hover:text-white">
         Keluar
       </button>
       <dialog
@@ -122,7 +122,7 @@ export function AuthNav() {
           </div>
         </div>
       </dialog>
-      <div className="group relative hidden md:block">
+      <div className="nav-besar group relative hidden md:block">
       <Link href="/profil/saya" aria-label="Profil akun" className="flex h-[2.55rem] w-[2.55rem] items-center justify-center overflow-hidden rounded-full bg-brand text-white ring-2 ring-orange-500/40 hover:bg-brand-hover">
         {status.avatar ? (
           // Foto tidak persegi dipotong jadi lingkaran: minta versi besar agar tetap tajam
@@ -133,7 +133,7 @@ export function AuthNav() {
       </Link>
       {status.premium && lencana && (
         // Lencana Premium di pojok kanan bawah avatar, teks berkilau seperti menu Premium di sidebar
-        <span className="pointer-events-none absolute -bottom-1.5 -right-3 rounded-full border border-amber-400 bg-surface px-1.5 py-px text-[0.65rem] leading-tight shadow-sm">
+        <span className="pointer-events-none absolute -bottom-1.5 -right-3 rounded-full border border-amber-400 bg-surface px-1.5 py-px text-[0.75rem] leading-tight shadow-sm">
           <span className="kilau font-bold">Prem</span>
         </span>
       )}
@@ -148,7 +148,7 @@ export function AuthNav() {
       <Link
         href="/pesan"
         aria-label={adaPesanBaru ? "Pesan (ada pesan baru)" : "Pesan"}
-        className="group relative hidden h-[2.55rem] items-center rounded-full border border-line bg-surface px-[0.6rem] text-ink-2 hover:border-brand hover:text-brand md:flex"
+        className="nav-besar group relative hidden h-[2.55rem] items-center rounded-full border border-line bg-surface px-[0.6rem] text-ink-2 hover:border-brand hover:text-brand md:flex"
       >
         <Mail size={22} aria-hidden className="shrink-0" />
         {adaPesanBaru && <span className="absolute -right-0.5 -top-0.5 h-3 w-3 rounded-full bg-red-600 ring-2 ring-page" aria-hidden />}
@@ -160,7 +160,7 @@ export function AuthNav() {
       <Link
         href="/pengaturan"
         aria-label="Pengaturan"
-        className="group hidden h-[2.55rem] items-center rounded-full border border-line bg-surface px-[0.6rem] text-ink-2 hover:border-brand hover:text-brand md:flex"
+        className="nav-besar group hidden h-[2.55rem] items-center rounded-full border border-line bg-surface px-[0.6rem] text-ink-2 hover:border-brand hover:text-brand md:flex"
       >
         <span className="buka-geser max-w-0 overflow-hidden whitespace-nowrap opacity-0 transition-[max-width,opacity,margin,padding] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:mr-1.5 group-hover:max-w-[8rem] group-hover:pl-1 group-hover:opacity-100 group-focus-visible:mr-1.5 group-focus-visible:max-w-[8rem] group-focus-visible:pl-1 group-focus-visible:opacity-100">
           Pengaturan

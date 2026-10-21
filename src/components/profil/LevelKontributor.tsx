@@ -50,7 +50,7 @@ export function LevelKontributor({ jumlah, diriSendiri, admin }: { jumlah: numbe
                   {lewat ? <Check size={16} strokeWidth={3} aria-hidden /> : i + 1}
                 </span>
                 <span className={`text-xs leading-tight sm:text-sm ${aktif ? "font-semibold text-ink" : "text-ink-2"}`}>{l.nama}</span>
-                <span className="text-[0.7rem] text-ink-2">{l.min === 0 ? "0" : `${l.min}+`}</span>
+                <span className="text-xs text-ink-2">{l.min === 0 ? "0" : `${l.min}+`}</span>
               </div>
               {i < LEVEL.length - 1 && (
                 <div className="mt-[0.9rem] h-[3px] flex-1 overflow-hidden rounded-full bg-line" aria-hidden>

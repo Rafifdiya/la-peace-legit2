@@ -30,7 +30,7 @@ export async function hapusJajanan(kunci: { id: string } | { slug: string }): Pr
   const [kolom, nilai] = "id" in kunci ? ["id", kunci.id] : ["slug", kunci.slug];
   const { error, count } = await supabase.from("snacks").delete({ count: "exact" }).eq(kolom, nilai);
   if (error) return { error: error.message };
-  if (!count) return { error: "Gagal menghapus (khusus admin)." };
+  if (!count) return { error: "Gagal menghapus (hanya pengirim atau admin; pengirim butuh migration 0021)." };
   updateTag("jajanan");
 }
 

@@ -68,6 +68,8 @@ Lainnya
         kriteria tampil di atas form
 [JALAN] Edit kontribusi milik sendiri, hanya setelah disetujui (teks & resep; foto/lokasi lewat
         admin)
+[JALAN] Hapus kontribusi milik sendiri kapan saja (halaman jajanan, kartu tab Kontribusi &
+        Status kiriman); vote/komentar/"sudah coba" orang lain ikut terhapus
 [JALAN] Profil: foto (bisa diperbesar), level kontributor (Pencicip,
         Penjelajah, Penjaga Resep, Penjaga Warisan), kontribusi, simpanan,
         status kiriman
@@ -118,6 +120,7 @@ Iklan (untuk pengguna gratis)
 0012 admin otomatis premium    0018 admin ganti foto utama
                                0019 komentar jajanan + edit milik sendiri
                                0020 perbaikan balas komentar, edit setelah disetujui
+                               0021 pengirim hapus kontribusi sendiri
 Opsional: supabase/data-iklan-demo.sql (3 iklan merek fiktif)
 
 

@@ -13,6 +13,7 @@ import { SnackCard } from "@/components/SnackCard";
 import { HapusKoleksi } from "./HapusKoleksi";
 import { getKirimanAdmin, getKirimanSaya, getSesi } from "@/lib/kiriman";
 import { KirimanList } from "@/app/admin/KirimanList";
+import { HapusJajanan } from "@/app/admin/HapusJajanan";
 
 export const metadata: Metadata = { title: "Profil saya" };
 
@@ -77,7 +78,10 @@ async function KirimanSaya({ userId }: { userId: string }) {
               </p>
               <p className="text-sm text-ink-2">Jajanan baru · {formatTanggal(k.tanggal)}</p>
             </div>
-            <StatusPill status={k.status === "hidden" ? "rejected" : k.status} />
+            <div className="flex items-center gap-3">
+              <HapusJajanan kunci={{ id: k.id }} nama={k.nama} label="Hapus" />
+              <StatusPill status={k.status === "hidden" ? "rejected" : k.status} />
+            </div>
           </div>
           {k.status === "rejected" && k.alasanTolak && (
             <div className="rounded-sm bg-subtle p-3 text-sm">

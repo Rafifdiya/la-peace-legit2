@@ -9,7 +9,7 @@ export function SnackCard({ snack, utama = false }: { snack: SnackCardData; utam
   return (
     <Link
       href={`/jajanan/${snack.slug}`}
-      className="cv-auto group block overflow-hidden rounded-lg border-2 border-[#D9C4A3] bg-surface shadow-card hover:border-brand"
+      className="kartu-jajanan cv-auto group block overflow-hidden rounded-lg border-2 border-[#D9C4A3] bg-surface shadow-card hover:border-brand"
     >
       <SnackImage
         src={snack.cover}
@@ -25,17 +25,17 @@ export function SnackCard({ snack, utama = false }: { snack: SnackCardData; utam
         </div>
         <h3 className="font-display text-xl font-semibold group-hover:text-brand">{snack.nama}</h3>
         <p className="text-sm text-ink-2">{snack.provinsi}</p>
-        <p className="line-clamp-2 text-sm">{snack.deskripsi}</p>
+        <p className="kartu-deskripsi line-clamp-2">{snack.deskripsi}</p>
         {/* Ikon hanya tampil jika datanya ada */}
         <div className="flex gap-3 pt-1 text-xs text-ink-2">
           {snack.punyaResep && (
-            <span className="flex items-center gap-1"><BookOpen size={14} aria-hidden /> Resep</span>
+            <span className="flex items-center gap-1"><BookOpen size={17} aria-hidden /> Resep</span>
           )}
           {snack.punyaVideo && (
-            <span className="flex items-center gap-1"><Video size={14} aria-hidden /> Video</span>
+            <span className="flex items-center gap-1"><Video size={17} aria-hidden /> Video</span>
           )}
           {snack.punyaLokasi && (
-            <span className="flex items-center gap-1"><MapPin size={14} aria-hidden /> Lokasi</span>
+            <span className="flex items-center gap-1"><MapPin size={17} aria-hidden /> Lokasi</span>
           )}
         </div>
       </div>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Pencil, Settings } from "lucide-react";
 import { SnackCard } from "@/components/SnackCard";
+import { HapusJajanan } from "@/app/admin/HapusJajanan";
 import { AvatarProfil } from "./AvatarProfil";
 import { KepalaHalaman } from "@/components/KepalaHalaman";
 import { LevelKontributor } from "./LevelKontributor";
@@ -74,19 +75,37 @@ export async function ProfileView({ user, diriSendiri, tab, basePath, tersimpan 
       {moderasi}
 
       <Tabs basePath={basePath} active={active} tabs={tabs} />
-      {active === "kontribusi" && <CardGrid slugs={user.kontribusi} kosong="Belum ada kontribusi yang disetujui." />}
+      {active === "kontribusi" && <CardGrid slugs={user.kontribusi} kosong="Belum ada kontribusi yang disetujui." bisaHapus={diriSendiri} />}
       {active === "tersimpan" && (tersimpanIsi ?? <CardGrid slugs={tersimpan} kosong="Belum ada jajanan yang disimpan." />)}
       {active === "status" && statusKiriman}
     </div>
   );
 }
 
-async function CardGrid({ slugs, kosong }: { slugs: string[]; kosong: string }) {
+/** bisaHapus: profil sendiri, tombol Hapus di pojok kartu (di luar link kartu). */
+async function CardGrid({ slugs, kosong, bisaHapus }: { slugs: string[]; kosong: string; bisaHapus?: boolean }) {
   const cards = await getCards(slugs);
   if (cards.length === 0) return <p className="text-ink-2">{kosong}</p>;
   return (
     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-      {cards.map((s) => <SnackCard key={s.slug} snack={s} />)}
+      {cards.map((s) =>
+        bisaHapus ? (
+          <div key={s.slug} className="relative">
+            <SnackCard snack={s} />
+            <Link
+              href={`/edit-kontribusi?slug=${s.slug}`}
+              className="absolute right-3 top-3 flex items-center gap-1 rounded-full border border-brand bg-white px-3 py-1 text-sm text-brand shadow-card hover:bg-brand hover:text-white"
+            >
+              <Pencil size={14} aria-hidden /> Edit
+            </Link>
+            <div className="absolute bottom-3 right-3 rounded-full bg-white shadow-card">
+              <HapusJajanan kunci={{ slug: s.slug }} nama={s.nama} label="Hapus" />
+            </div>
+          </div>
+        ) : (
+          <SnackCard key={s.slug} snack={s} />
+        ),
+      )}
     </div>
   );
 }
