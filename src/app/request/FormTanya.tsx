@@ -1,11 +1,11 @@
 "use client";
 
 import { useActionState, useEffect, useRef, useState, useTransition } from "react";
-import { Award, Flag, Trash2, X } from "lucide-react";
+import { Award, Flag, Pencil, Trash2, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { openLogin } from "@/components/LoginDialog";
 import { ATURAN_FORUM, TOPIK } from "@/lib/forum";
-import { buatPertanyaan, hapusBalasan, hapusPostingan, jawabPertanyaan, laporkan, pilihTerbaik, type HasilTanya } from "./actions";
+import { buatPertanyaan, editBalasan, editPostingan, hapusBalasan, hapusPostingan, jawabPertanyaan, laporkan, pilihTerbaik, type HasilTanya } from "./actions";
 
 const input = "w-full rounded-sm border border-line bg-surface px-3 py-2";
 const kirim = "rounded-full bg-brand px-5 py-2 font-semibold text-white hover:bg-brand-hover disabled:opacity-60";
@@ -174,14 +174,45 @@ function TombolLapor({ jenis, id, sesi }: { jenis: "forum_post" | "forum_reply";
   );
 }
 
-/** Aksi di postingan: Laporkan, Hapus (pemilik/admin). */
-export function AksiPostingan({ id, pemilikId }: { id: string; pemilikId: string | null }) {
+/** Form edit singkat (judul opsional + isi) untuk postingan / balasan milik sendiri. */
+function FormEdit({ judul, isi, onSimpan, onBatal }: {
+  judul?: string; isi: string; onSimpan: (judul: string, isi: string) => Promise<HasilTanya>; onBatal: () => void;
+}) {
+  const [j, setJ] = useState(judul ?? "");
+  const [t, setT] = useState(isi);
+  const [pending, mulai] = useTransition();
+  const [error, setError] = useState<string>();
+  return (
+    <div className="w-full space-y-2 rounded-lg bg-subtle p-3">
+      {judul !== undefined && <input value={j} onChange={(e) => setJ(e.target.value)} maxLength={100} aria-label="Judul" className={input} />}
+      <textarea value={t} onChange={(e) => setT(e.target.value)} rows={3} maxLength={1000} aria-label="Isi" className={input} />
+      {error && <p role="alert" className="text-xs text-danger">{error}</p>}
+      <div className="flex gap-2">
+        <button type="button" disabled={pending} onClick={() => mulai(async () => { const h = await onSimpan(j, t); if (h?.error) setError(h.error); else onBatal(); })} className={`${kirim} text-sm`}>
+          {pending ? "Menyimpan..." : "Simpan"}
+        </button>
+        <button type="button" onClick={onBatal} className="rounded-full border border-line px-4 py-1.5 text-sm hover:border-brand">Batal</button>
+      </div>
+    </div>
+  );
+}
+
+/** Aksi di postingan: Laporkan, Edit (pemilik), Hapus (pemilik/admin). */
+export function AksiPostingan({ id, pemilikId, judul, isi }: { id: string; pemilikId: string | null; judul: string; isi: string }) {
   const sesi = useSesi();
   const [pending, mulai] = useTransition();
   const [error, setError] = useState<string>();
-  const boleh = !!sesi && (sesi.admin || sesi.userId === pemilikId);
+  const [edit, setEdit] = useState(false);
+  const milikku = !!sesi && sesi.userId === pemilikId;
+  const boleh = !!sesi && (sesi.admin || milikku);
+  if (edit) return <FormEdit judul={judul} isi={isi} onSimpan={(j, t) => editPostingan(id, j, t)} onBatal={() => setEdit(false)} />;
   return (
     <div className="flex flex-wrap items-center gap-4">
+      {milikku && (
+        <button type="button" onClick={() => setEdit(true)} className={kecil}>
+          <Pencil size={13} aria-hidden /> Edit
+        </button>
+      )}
       <TombolLapor jenis="forum_post" id={id} sesi={sesi} />
       {boleh && (
         <button
@@ -199,14 +230,22 @@ export function AksiPostingan({ id, pemilikId }: { id: string; pemilikId: string
 }
 
 /** Aksi di balasan: Balasan terbaik (pemilik postingan), Laporkan, Hapus (pemilik/admin). */
-export function AksiBalasan({ requestId, id, pemilikId, pemilikPostId, terbaik }: { requestId: string; id: string; pemilikId: string | null; pemilikPostId: string | null; terbaik: boolean }) {
+export function AksiBalasan({ requestId, id, pemilikId, pemilikPostId, terbaik, isi }: { requestId: string; id: string; pemilikId: string | null; pemilikPostId: string | null; terbaik: boolean; isi: string }) {
   const sesi = useSesi();
   const [pending, mulai] = useTransition();
   const [error, setError] = useState<string>();
+  const [edit, setEdit] = useState(false);
   const pemilikPost = !!sesi && sesi.userId === pemilikPostId;
-  const boleh = !!sesi && (sesi.admin || sesi.userId === pemilikId);
+  const milikku = !!sesi && sesi.userId === pemilikId;
+  const boleh = !!sesi && (sesi.admin || milikku);
+  if (edit) return <FormEdit isi={isi} onSimpan={(_, t) => editBalasan(id, t)} onBatal={() => setEdit(false)} />;
   return (
     <div className="flex flex-wrap items-center gap-4 pt-1">
+      {milikku && (
+        <button type="button" onClick={() => setEdit(true)} className={kecil}>
+          <Pencil size={13} aria-hidden /> Edit
+        </button>
+      )}
       {pemilikPost && (
         <button type="button" disabled={pending} onClick={() => mulai(async () => setError((await pilihTerbaik(requestId, terbaik ? null : id))?.error))} className={`${kecil} hover:text-accent`}>
           <Award size={13} aria-hidden /> {terbaik ? "Batalkan balasan terbaik" : "Jadikan balasan terbaik"}

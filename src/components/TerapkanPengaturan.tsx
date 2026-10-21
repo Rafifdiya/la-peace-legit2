@@ -1,14 +1,15 @@
 "use client";
 
 import { useEffect } from "react";
-import { EVENT_PENGATURAN, bacaPengaturan } from "@/lib/pengaturan";
+import { EVENT_PENGATURAN, UKURAN_TEKS, bacaPengaturan, bacaUkuranTeks } from "@/lib/pengaturan";
 
-/** Pasang kelas di <html> sesuai pengaturan tampilan (teks besar, kurangi animasi). */
+/** Pasang kelas di <html> sesuai pengaturan tampilan (ukuran teks, kurangi animasi). */
 export function TerapkanPengaturan() {
   useEffect(() => {
     const terapkan = () => {
       const html = document.documentElement.classList;
-      html.toggle("teks-besar", bacaPengaturan("teksBesar"));
+      const ukuran = bacaUkuranTeks();
+      for (const u of UKURAN_TEKS) html.toggle(`teks-${u.nilai}`, u.nilai !== "normal" && u.nilai === ukuran);
       html.toggle("kurangi-animasi", bacaPengaturan("kurangiAnimasi"));
     };
     terapkan();

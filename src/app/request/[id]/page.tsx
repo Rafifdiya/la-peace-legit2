@@ -58,7 +58,7 @@ export default async function PostinganForum({ params }: PageProps<"/request/[id
           {r.daerah && ` · ${r.daerah}`} · {formatTanggal(r.tanggal)}
         </p>
         {r.isi && <p className="whitespace-pre-line pt-2 leading-relaxed">{r.isi}</p>}
-        <AksiPostingan id={r.id} pemilikId={r.pemilikId} />
+        <AksiPostingan id={r.id} pemilikId={r.pemilikId} judul={r.judul} isi={r.isi} />
       </KepalaHalaman>
 
       <section className="space-y-3">
@@ -75,7 +75,7 @@ export default async function PostinganForum({ params }: PageProps<"/request/[id
               </p>
               <p className="whitespace-pre-line">{j.isi}</p>
               {j.slug && <Link href={`/jajanan/${j.slug}`} className="text-sm text-brand underline">Lihat jajanan</Link>}
-              <AksiBalasan requestId={r.id} id={j.id} pemilikId={j.userId} pemilikPostId={r.pemilikId} terbaik={terbaik} />
+              <AksiBalasan requestId={r.id} id={j.id} pemilikId={j.userId} pemilikPostId={r.pemilikId} terbaik={terbaik} isi={j.isi} />
             </div>
           );
         })}

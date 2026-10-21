@@ -10,7 +10,7 @@ Riwayat pengerjaan: docs/07-progress.md
 =================================================================
 1. Minta akses collaborator repo GitHub ke pemilik repo.
 2. Minta akses project Supabase (Dashboard > Organization > Members),
-   atau buat project Supabase sendiri lalu jalankan migration 0001-0018.
+   atau buat project Supabase sendiri lalu jalankan migration 0001-0020.
 3. Ikuti README bagian "Menjalankan web (lokal)":
    .env.example -> .env.local, npm install, npm run dev.
 4. Akun demo (admin, user gratis) diminta langsung ke tim,
@@ -22,7 +22,7 @@ Aturan kerja
   akun, nomor WA / kontak pribadi.
 - Setiap selesai satu pekerjaan, tambah entri di docs/07-progress.md
   (nomor, tanggal & jam, apa yang dilakukan).
-- Migration baru: file berikutnya supabase/migrations/0019_....sql,
+- Migration baru: file berikutnya supabase/migrations/0021_....sql,
   jalankan manual di SQL Editor, catat di docs/08 bagian 4.
 - Next.js 16: baca docs di node_modules/next/dist/docs/ sebelum
   menulis kode (API cache berbeda dari versi lama).
@@ -31,17 +31,12 @@ Aturan kerja
 =================================================================
 2. TO-DO SEBELUM EXPO (URUT PRIORITAS)
 =================================================================
-[ ] 1. Vote kelangkaan (halaman jajanan)
-       - Pilihan: Umum / Mulai langka / Hampir punah / Punah
-       - 1 akun 1 suara, boleh diganti
-       - Label = suara terbanyak, tampil jika min. 3 suara;
-         sebelum itu "Belum cukup suara"
-       - Butuh migration 0019 (tabel vote + view hitungan)
+[x] 1. Vote kelangkaan (selesai 21 Okt; tanpa migration baru)
 [ ] 2. Masih ada / Sudah tidak ada + "Saya lihat di tempat lain"
        - Konfirmasi memperbarui tanggal "terakhir dikonfirmasi"
        - Tanda lokasi lama (> 6 bulan) sudah ada, tinggal disambung
        - Lokasi baru masuk moderasi admin dulu
-       - Bisa satu migration dengan nomor 1
+       - Butuh migration baru (0021)
 [ ] 3. Isi 20-30 data jajanan asli (tim) + label "Teruji tim"
        untuk resep yang sudah dicoba tim
 [ ] 4. Deploy Vercel
@@ -60,10 +55,11 @@ Aturan kerja
 =================================================================
 3. KALAU MASIH ADA WAKTU
 =================================================================
-[ ] Bagikan, Lapor jajanan, Komentar di halaman jajanan
+[x] Bagikan (link) & Komentar di halaman jajanan
+[ ] Lapor jajanan
 [ ] Tab Kategori di dashboard admin
 [ ] Hapus konten selain forum dari tab Laporan
-[ ] Edit kontribusi / postingan forum
+[x] Edit kontribusi / postingan forum (milik sendiri)
 [ ] Resep dasar + variasi
 [ ] Akun media sosial resmi Jejak Jajan (ikon footer masih redup)
 
@@ -73,5 +69,4 @@ Aturan kerja
 =================================================================
 [ ] Pembayaran Premium asli (payment gateway)
 [ ] Lupa password via email (ganti mode demo, migration 0014)
-[ ] Notifikasi jajanan baru
 [ ] Roadmap fase 2: matching penjual senior <-> penerus

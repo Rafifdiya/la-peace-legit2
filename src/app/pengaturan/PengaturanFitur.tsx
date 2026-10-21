@@ -6,14 +6,12 @@ import { useRouter } from "next/navigation";
 import { Lock } from "lucide-react";
 import { EVENT_PREMIUM } from "@/components/TanpaIklanPremium";
 import { LihatIklanToggle } from "@/app/admin/LihatIklanToggle";
-import { bacaPengaturan, simpanPengaturan, type NamaPengaturan } from "@/lib/pengaturan";
+import { UKURAN_TEKS, bacaPengaturan, bacaUkuranTeks, simpanPengaturan, simpanUkuranTeks, type NamaPengaturan, type UkuranTeks } from "@/lib/pengaturan";
 
 type Item = { nama?: NamaPengaturan; judul: string; ket: string; segera?: boolean };
 
 const GRATIS: Item[] = [
-  { nama: "teksBesar", judul: "Teks lebih besar", ket: "Perbesar semua tulisan sekitar 12%, nyaman untuk membaca resep." },
   { nama: "kurangiAnimasi", judul: "Kurangi animasi", ket: "Matikan efek ketik, kilau, dan gerakan lain. Lebih hemat baterai." },
-  { judul: "Notifikasi jajanan baru", ket: "Kabar saat ada jajanan baru dari daerahmu.", segera: true },
 ];
 
 const PREMIUM: Item[] = [
@@ -55,6 +53,42 @@ function Baris({ item, kunci, nyala, onKlik }: { item: Item; kunci?: boolean; ny
   );
 }
 
+/** Pilihan ukuran teks: Kecil / Normal / Sedang / Besar. */
+function UkuranTeksPilih() {
+  const [ukuran, setUkuran] = useState<UkuranTeks>("normal");
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => setUkuran(bacaUkuranTeks()), []);
+
+  function pilih(u: UkuranTeks) {
+    setUkuran(u);
+    simpanUkuranTeks(u);
+  }
+
+  return (
+    <li className="space-y-3 py-4">
+      <div>
+        <p className="font-semibold">Ukuran teks</p>
+        <p className="text-sm text-ink-2">Atur besar semua tulisan, nyaman untuk membaca resep.</p>
+      </div>
+      <div role="radiogroup" aria-label="Ukuran teks" className="grid grid-cols-4 gap-2">
+        {UKURAN_TEKS.map((u, i) => (
+          <button
+            key={u.nilai}
+            type="button"
+            role="radio"
+            aria-checked={ukuran === u.nilai}
+            onClick={() => pilih(u.nilai)}
+            className={`flex flex-col items-center gap-0.5 rounded-lg border-2 py-2 transition-colors ${ukuran === u.nilai ? "border-accent bg-accent/10 font-semibold" : "border-line hover:border-ink-2"}`}
+          >
+            <span className="font-display leading-none" style={{ fontSize: `${1 + i * 0.25}rem` }} aria-hidden>Aa</span>
+            <span className="text-xs">{u.label}</span>
+          </button>
+        ))}
+      </div>
+    </li>
+  );
+}
+
 export function PengaturanFitur({ premium, admin }: { premium: boolean; admin?: boolean }) {
   const router = useRouter();
   const [nilai, setNilai] = useState<Partial<Record<NamaPengaturan, boolean>>>({});
@@ -89,6 +123,9 @@ export function PengaturanFitur({ premium, admin }: { premium: boolean; admin?: 
     <div className="space-y-6">
       <section className="rounded-xl border border-line bg-surface px-5">
         <h2 className="border-b border-line py-4 font-display text-2xl font-semibold">Gratis</h2>
+        <ul className="border-b border-line">
+          <UkuranTeksPilih />
+        </ul>
         {daftar(GRATIS)}
       </section>
 

@@ -3,11 +3,14 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
-import { BadgeCheck, ExternalLink, MapPin, Share2, Flag } from "lucide-react";
+import { BadgeCheck, ExternalLink, MapPin, Flag } from "lucide-react";
 import { LoginButton } from "@/components/LoginButton";
 import { KepalaHalaman } from "@/components/KepalaHalaman";
 import { MiniMapLazy } from "@/components/map/MiniMapLazy";
-import { RarityBadge } from "@/components/RarityBadge";
+import { VoteKelangkaan } from "@/components/VoteKelangkaan";
+import { TombolBagikan } from "@/components/TombolBagikan";
+import { TombolEditJajanan } from "@/components/TombolEditJajanan";
+import { KomentarJajanan } from "@/components/KomentarJajanan";
 import { SnackCard } from "@/components/SnackCard";
 import { SnackImage } from "@/components/SnackImage";
 import { SimpanButton } from "@/components/SimpanButton";
@@ -63,28 +66,17 @@ export default async function DetailPage({ params }: PageProps<"/jajanan/[slug]"
           <h1 className="font-display text-5xl font-semibold">{snack.nama}</h1>
           {snack.namaLain.length > 0 && <p className="text-ink-2">Juga dikenal: {snack.namaLain.join(", ")}</p>}
           <p className="flex items-center gap-1"><MapPin size={16} aria-hidden /> {snack.provinsi}</p>
-          <div className="flex items-center gap-2">
-            <RarityBadge rarity={snack.rarity} jumlahVote={snack.jumlahVote} />
-            <span className="text-sm text-ink-2">{snack.jumlahVote} suara</span>
-          </div>
           {snack.deskripsi && <p className="font-hand text-2xl leading-snug text-brand">&ldquo;{snack.deskripsi}&rdquo;</p>}
           <div className="flex flex-wrap gap-2 text-sm">
             <SimpanButton slug={snack.slug} />
             <HapusJajanan kunci={{ slug: snack.slug }} nama={snack.nama} cekAdmin sesudah="/katalog" />
-            {([[Share2, "Bagikan"], [Flag, "Lapor"]] as const).map(([Icon, label]) => (
-              <LoginButton key={label} className="flex items-center gap-1 rounded-full border border-line bg-surface px-3 py-1.5 hover:border-brand">
-                <Icon size={14} aria-hidden /> {label}
-              </LoginButton>
-            ))}
+            <TombolBagikan />
+            <TombolEditJajanan slug={snack.slug} />
+            <LoginButton className="flex items-center gap-1 rounded-full border border-line bg-surface px-3 py-1.5 hover:border-brand">
+              <Flag size={14} aria-hidden /> Lapor
+            </LoginButton>
           </div>
-          <div className="rounded-lg border border-line bg-surface p-4 text-sm">
-            <p className="font-semibold">Menurutmu seberapa langka?</p>
-            <div className="mt-2 flex flex-wrap gap-2">
-              {["Umum", "Mulai langka", "Hampir punah", "Punah"].map((r) => (
-                <LoginButton key={r} className="rounded-full border border-line px-3 py-1 hover:border-brand">{r}</LoginButton>
-              ))}
-            </div>
-          </div>
+          <VoteKelangkaan slug={snack.slug} rarity={snack.rarity} jumlahVote={snack.jumlahVote} />
         </div>
       </KepalaHalaman>
 
@@ -146,7 +138,7 @@ export default async function DetailPage({ params }: PageProps<"/jajanan/[slug]"
 
           <section id="komentar" className="scroll-mt-32 space-y-3">
             <h2 className="font-display text-2xl font-semibold">Komentar</h2>
-            <p className="text-ink-2">Belum ada komentar.</p>
+            <KomentarJajanan slug={snack.slug} />
           </section>
         </div>
 
