@@ -19,7 +19,7 @@ type Props = {
   tersimpan?: string[];
   /** Profil sendiri: isi tab Status kiriman */
   statusKiriman?: React.ReactNode;
-  /** Profil sendiri: isi tab Tersimpan (koleksi). Bila kosong, pakai grid dari `tersimpan`. */
+  /** Profil sendiri: isi tab Tersimpan. Bila kosong, pakai grid dari `tersimpan`. */
   tersimpanIsi?: React.ReactNode;
   /** Profil sendiri & admin: ringkasan moderasi (selalu tampil, bukan tab) */
   moderasi?: React.ReactNode;

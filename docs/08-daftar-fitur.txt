@@ -19,8 +19,9 @@ Beranda
         ikon media sosial (redup sampai akun resmi dibuat)
 
 Katalog Jajanan
-[JALAN] Cari, filter provinsi & kategori, urutan, gulir tanpa batas
-[JALAN] Kartu iklan berlabel "Iklan" di sela kartu
+[JALAN] Cari, filter provinsi & kategori, urutan, gulir tanpa batas;
+        otomatis (cari 1 detik setelah berhenti mengetik, pilihan langsung)
+[JALAN] Kartu iklan berlabel "Iklan" tiap 6 kartu jajanan
 
 Halaman jajanan
 [JALAN] Foto, nama lain, asal daerah, cerita, resep, langkah, video
@@ -28,8 +29,8 @@ Halaman jajanan
 [JALAN] Tanda lokasi lama (> 6 bulan tanpa konfirmasi)
 [JALAN] "Sudah coba resep ini?": Berhasil / Kurang berhasil + catatan +
         foto hasil, ringkasan "Dicoba X orang, Y berhasil"
-[JALAN] Simpan jajanan & koleksi (gratis maks. 3 koleksi)
-[JALAN] Unduh PDF (gratis 5x/minggu) & Mode masak (Premium)
+[JALAN] Simpan jajanan (tampil di tab Tersimpan profil)
+[JALAN] Unduh resep PDF (khusus Premium); mode masak dihapus
 [JALAN] Vote kelangkaan (Umum / Mulai langka / Hampir punah / Punah):
         1 akun 1 suara, bisa diganti/dibatalkan, label tampil min. 3 suara
 [JALAN] Bagikan (salin link)
@@ -47,6 +48,7 @@ Forum Jajanan (/request)
 [JALAN] Balasan (tautkan jajanan katalog), Balasan terbaik pilihan penanya
 [JALAN] Pemilik postingan baru bisa membalas setelah ada balasan orang lain
 [JALAN] Laporkan postingan / balasan, filter kata kasar
+[JALAN] Cari di forum: hasil paling relevan muncul 1 detik setelah berhenti mengetik
 [JALAN] Edit postingan / balasan milik sendiri
 
 Lainnya
@@ -65,7 +67,9 @@ Lainnya
 [DEMO]  Lupa password: muncul setelah 2x salah, langsung ganti tanpa email
         (akun admin dikecualikan) -> ganti reset via email sebelum rilis
 [JALAN] Tombol mata tampilkan password, dialog konfirmasi Keluar
-[JALAN] Kontribusi 7 langkah (foto dikompres, video per langkah via link),
+[JALAN] Kontribusi 7 langkah, bebas diisi urutan mana saja; tombol Kirim hijau
+        bila nama + foto utama, Cerita (min. 10 karakter) + Vote kelangkaan terisi (foto dikompres,
+        video per langkah via link),
         kriteria tampil di atas form
 [JALAN] Edit kontribusi milik sendiri, hanya setelah disetujui (teks & resep; foto/lokasi lewat
         admin)
@@ -84,7 +88,7 @@ Lainnya
 
 Premium
 [DEMO]  Aktifkan / batalkan Premium tanpa pembayaran (rencana Rp15.000/bulan)
-[JALAN] Bebas iklan, mode masak, PDF tanpa batas, koleksi tanpa batas,
+[JALAN] Bebas iklan, unduh resep PDF,
         lencana "Prem" + bingkai mahkota, menu Premium hijau di sidebar
 [BELUM] Pembayaran asli (payment gateway)
 
@@ -104,8 +108,9 @@ Premium
 [BELUM] Hapus konten selain forum dari tab Laporan
 
 Iklan (untuk pengguna gratis)
-[JALAN] Slide sidebar (6 detik), kartu di katalog, pop-up tengah layar
-        (tiap 50 detik, maks. 3x/hari)
+[JALAN] Slide sidebar (6 detik), kartu di katalog (tiap 6 kartu), pop-up
+        tengah layar tiap 2 menit (waktu dijumlah di beranda, katalog,
+        forum, profil sendiri; tanpa batas harian)
 
 
 =================================================================
@@ -122,6 +127,8 @@ Iklan (untuk pengguna gratis)
                                0019 komentar jajanan + edit milik sendiri
                                0020 perbaikan balas komentar, edit setelah disetujui
                                0021 pengirim hapus kontribusi sendiri
+                               0022 forum: daerah diketik bebas
+                               0023 kontribusi: provinsi tidak wajib
 Opsional: supabase/data-iklan-demo.sql (3 iklan merek fiktif)
 
 

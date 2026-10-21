@@ -4,12 +4,13 @@ import { KepalaHalaman } from "@/components/KepalaHalaman";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
-import { Award } from "lucide-react";
+import { ArrowLeft, Award } from "lucide-react";
 import { getSnackPage } from "@/lib/data";
 import { getRequest, getRequestIds } from "@/lib/komunitas";
 import { formatTanggal } from "@/lib/format";
 import { cariTopik } from "@/lib/forum";
 import { AksiBalasan, AksiPostingan, FormJawab } from "../FormTanya";
+import { KembaliOtomatis } from "./KembaliOtomatis";
 
 // Cache Components butuh minimal 1 param; kalau belum ada postingan, pakai placeholder (404).
 export async function generateStaticParams() {
@@ -38,11 +39,16 @@ export default async function PostinganForum({ params }: PageProps<"/request/[id
   const balasan = [...r.jawaban].sort((a, b) => Number(b.id === r.jawabanTerbaik) - Number(a.id === r.jawabanTerbaik));
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6 py-10">
+    <div className="mx-auto max-w-2xl space-y-5 pt-2 pb-8">
       <Suspense>
         <Connection />
       </Suspense>
-      <Link href="/request" className="inline-block pb-2 text-sm text-brand hover:underline">← Forum Jajanan</Link>
+      <Link href="/request" className="inline-flex items-center gap-1.5 rounded-full border-2 border-brand bg-surface px-4 py-1.5 text-sm font-semibold text-brand transition-colors hover:bg-brand hover:text-white">
+        <ArrowLeft size={16} aria-hidden /> Forum Jajanan
+      </Link>
+      <Suspense>
+        <KembaliOtomatis />
+      </Suspense>
       <KepalaHalaman className="space-y-2">
         <p className="flex flex-wrap items-center gap-2 text-xs">
           <Link href={`/request?topik=${t.key}`} className="rounded-full bg-subtle px-2.5 py-0.5 font-semibold text-brand hover:underline">{t.emoji} {t.label}</Link>
@@ -53,8 +59,8 @@ export default async function PostinganForum({ params }: PageProps<"/request/[id
           )}
         </p>
         <h1 className="font-display text-3xl font-semibold">{r.judul}</h1>
-        <p className="text-sm text-ink-2">
-          {r.olehUsername ? <Link href={`/profil/${r.olehUsername}`} className="hover:text-brand">@{r.oleh}</Link> : r.oleh}
+        <p className="text-sm text-ink">
+          {r.olehUsername ? <Link href={`/profil/${r.olehUsername}`} className={r.olehPremium ? "kilau font-semibold" : "hover:text-brand"}>@{r.oleh}</Link> : r.oleh}
           {r.daerah && ` · ${r.daerah}`} · {formatTanggal(r.tanggal)}
         </p>
         {r.isi && <p className="whitespace-pre-line pt-2 leading-relaxed">{r.isi}</p>}
@@ -70,8 +76,8 @@ export default async function PostinganForum({ params }: PageProps<"/request/[id
               {terbaik && (
                 <p className="flex items-center gap-1 text-xs font-semibold text-accent"><Award size={14} aria-hidden /> Balasan terbaik pilihan penanya</p>
               )}
-              <p className="text-sm text-ink-2">
-                {j.olehUsername ? <Link href={`/profil/${j.olehUsername}`} className="hover:text-brand">@{j.oleh}</Link> : j.oleh} · {formatTanggal(j.tanggal)}
+              <p className="text-sm text-ink">
+                {j.olehUsername ? <Link href={`/profil/${j.olehUsername}`} className={j.olehPremium ? "kilau font-semibold" : "hover:text-brand"}>@{j.oleh}</Link> : j.oleh} · {formatTanggal(j.tanggal)}
               </p>
               <p className="whitespace-pre-line">{j.isi}</p>
               {j.slug && <Link href={`/jajanan/${j.slug}`} className="text-sm text-brand underline">Lihat jajanan</Link>}

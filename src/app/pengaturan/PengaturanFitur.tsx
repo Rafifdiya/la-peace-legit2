@@ -16,7 +16,6 @@ const GRATIS: Item[] = [
 
 const PREMIUM: Item[] = [
   { nama: "bebasIklan", judul: "Bebas iklan", ket: "Sembunyikan iklan di sidebar, katalog, dan pop-up." },
-  { nama: "layarMenyala", judul: "Layar tetap menyala saat mode masak", ket: "Layar HP tidak mati sendiri selama memasak." },
   { nama: "lencana", judul: "Lencana Prem di ikon profil", ket: "Tampilkan lencana Prem berkilau di avatar navbar." },
 ];
 

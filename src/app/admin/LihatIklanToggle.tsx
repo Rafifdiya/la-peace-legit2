@@ -57,7 +57,7 @@ export function LihatIklanToggle() {
     setPopup(baru);
     try {
       localStorage.setItem(KUNCI_POPUP_ADMIN, baru ? "1" : "0");
-      // Dinyalakan lagi: hitungan 50 detik & jatah 3x sehari mulai dari awal
+      // Dinyalakan lagi: hitungan 2 menit mulai dari awal
       if (baru) localStorage.removeItem(KUNCI_POPUP);
     } catch {}
     window.dispatchEvent(new Event(EVENT_PREMIUM));
@@ -76,7 +76,7 @@ export function LihatIklanToggle() {
         mati={!lihat}
         onUbah={ubahPopup}
         judul="Pop-up iklan untuk saya"
-        ket={lihat ? "Tiap 50 detik, maks. 3x sehari. Menyalakan ulang = hitungan mulai dari awal." : "Nyalakan \"Tampilkan iklan\" dulu."}
+        ket={lihat ? "Tiap 2 menit di beranda, katalog, forum, profil. Menyalakan ulang = hitungan mulai dari awal." : "Nyalakan \"Tampilkan iklan\" dulu."}
       />
     </div>
   );

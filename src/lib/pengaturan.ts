@@ -4,7 +4,6 @@ export const EVENT_PENGATURAN = "jj:pengaturan-berubah";
 export const PENGATURAN = {
   kurangiAnimasi: { kunci: "jj:set-kurangi-animasi", awal: false },
   bebasIklan: { kunci: "jj:set-bebas-iklan", awal: true },
-  layarMenyala: { kunci: "jj:set-layar-menyala", awal: true },
   lencana: { kunci: "jj:set-lencana", awal: true },
 } as const;
 

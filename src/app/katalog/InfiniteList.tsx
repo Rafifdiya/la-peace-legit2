@@ -15,8 +15,8 @@ type Props = {
   iklan?: Iklan[];
 };
 
-// Kartu iklan setelah kartu ke-6, lalu tiap 12 kartu berikutnya
-const iklanSetelah = (i: number) => i === 5 || (i > 5 && (i - 5) % 12 === 0);
+// Kartu iklan tiap 6 kartu jajanan (setelah kartu ke-6, 12, 18, ...)
+const iklanSetelah = (i: number) => i % 6 === 5;
 
 // Halaman 1 sudah dirender server. Halaman berikutnya diambil saat user
 // mendekati bawah daftar (IntersectionObserver) atau menekan "Muat lagi".
@@ -58,7 +58,7 @@ export function InfiniteList({ initial, query, iklan = [] }: Props) {
       <div className="grid-katalog grid gap-5">
         {items.map((s, i) => {
           // Nomor iklan berikutnya (bergiliran bila iklan lebih dari 1)
-          const ke = i === 5 ? 0 : (i - 5) / 12;
+          const ke = Math.floor(i / 6);
           return (
             <Fragment key={s.slug}>
               <SnackCard snack={s} utama={i < 3} />

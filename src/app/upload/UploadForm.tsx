@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { CircleCheck, Plus, Trash2 } from "lucide-react";
+import { Check, CircleCheck, Loader2, Plus, Send, Trash2 } from "lucide-react";
 import { KepalaHalaman } from "@/components/KepalaHalaman";
 import { LoginButton } from "@/components/LoginButton";
 import { WAKTU } from "@/lib/format";
@@ -43,7 +43,7 @@ const kosong: Draft = {
   rarity: "",
 };
 
-const LANGKAH = ["Info dasar", "Cerita", "Resep", "Langkah pembuatan", "Lokasi terlihat", "Vote kelangkaan", "Review & kirim"];
+const LANGKAH = ["Info dasar", "Cerita", "Resep", "Langkah pembuatan", "Lokasi terlihat", "Vote kelangkaan"];
 const DRAFT_KEY = "jejak-jajan:draft-upload";
 const input = "w-full rounded-sm border border-line bg-surface px-3 py-2";
 
@@ -64,19 +64,23 @@ export function UploadForm({ provinsi }: Props) {
   const [error, setError] = useState<string>();
   const [kirim, setKirim] = useState<"idle" | "mengirim" | "terkirim">("idle");
 
-  // Next.js menyimpan halaman yang ditinggalkan (tersembunyi, bukan dihapus), jadi layar "Terkirim!"
-  // bisa muncul lagi saat membuka Kontribusi. Saat halaman ditinggalkan, siapkan form baru.
-  // Efek dijalankan ulang setiap halaman tampil lagi, jadi layar "Terkirim!" diganti form baru.
-  const sudahTerkirim = useRef(false);
+  const konfirmasi = useRef<HTMLDialogElement>(null);
+  const [memuat, setMemuat] = useState(true);
+
+  // Setiap membuka Kontribusi: animasi loading singkat lalu form baru yang kosong.
+  // Efek tanpa dependensi ini jalan ulang setiap halaman tampil lagi (Next.js menyimpan halaman
+  // yang ditinggalkan dalam keadaan tersembunyi, bukan dihapus).
   useEffect(() => {
-    sudahTerkirim.current = kirim === "terkirim";
-  }, [kirim]);
-  useEffect(() => {
-    if (!sudahTerkirim.current) return;
-    sudahTerkirim.current = false;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- sengaja: reset setiap halaman dibuka
+    setMemuat(true);
     setD(kosong);
     setStep(0);
     setKirim("idle");
+    setError(undefined);
+    setMirip([]);
+    try { localStorage.removeItem(DRAFT_KEY); } catch {}
+    const t = setTimeout(() => setMemuat(false), 600);
+    return () => clearTimeout(t);
   }, []);
 
   // Cek status login (form hanya untuk user yang sudah masuk)
@@ -84,22 +88,6 @@ export function UploadForm({ provinsi }: Props) {
     const { data: sub } = createClient().auth.onAuthStateChange((_e, session) => setMasuk(!!session));
     return () => sub.subscription.unsubscribe();
   }, []);
-
-  // Muat draft tersimpan sekali saat halaman dibuka
-  useEffect(() => {
-    try {
-      const simpan = localStorage.getItem(DRAFT_KEY);
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage hanya ada di browser
-      if (simpan) setD({ ...kosong, ...JSON.parse(simpan) });
-    } catch {}
-  }, []);
-
-  // Draft tersimpan otomatis setiap ada perubahan
-  useEffect(() => {
-    try {
-      if (d !== kosong) localStorage.setItem(DRAFT_KEY, JSON.stringify(d));
-    } catch {}
-  }, [d]);
 
   // Cek duplikat: cari jajanan dengan nama mirip
   useEffect(() => {
@@ -126,22 +114,30 @@ export function UploadForm({ provinsi }: Props) {
 
   function infoDasarValid() {
     if (d.nama.trim().length < 2) return "Nama jajanan minimal 2 huruf.";
-    if (!d.provinsi) return "Pilih provinsi asal.";
     if (!d.cover) return "Unggah foto utama.";
     return undefined;
   }
 
+  // Syarat kirim: Info dasar, Cerita, dan Vote kelangkaan terisi (langkah lain boleh dilewati)
+  const MIN_CERITA = 10;
+  const kurang: { step: number; pesan: string }[] = [];
+  const errInfo = infoDasarValid();
+  if (errInfo) kurang.push({ step: 0, pesan: `Info dasar: ${errInfo}` });
+  if (d.cerita.trim().length < MIN_CERITA) kurang.push({ step: 1, pesan: `Cerita: tulis minimal ${MIN_CERITA} karakter.` });
+  if (!d.rarity) kurang.push({ step: 5, pesan: "Vote kelangkaan: pilih salah satu." });
+  const bisaKirim = kurang.length === 0;
+  const WAJIB = new Set([0, 1, 5]);
+
+  // Bebas pindah langkah: isi dari mana saja
   function lanjut() {
-    const err = step === 0 ? infoDasarValid() : undefined;
-    setError(err);
-    if (!err) setStep((s) => Math.min(s + 1, LANGKAH.length - 1));
+    setError(undefined);
+    setStep((s) => Math.min(s + 1, LANGKAH.length - 1));
   }
 
   async function kirimKiriman() {
-    const err = infoDasarValid();
-    if (err) {
-      setError(err);
-      setStep(0);
+    if (!bisaKirim) {
+      setError(`Belum bisa dikirim. ${kurang.map((k) => k.pesan).join(" ")}`);
+      setStep(kurang[0].step);
       return;
     }
     setError(undefined);
@@ -173,10 +169,18 @@ export function UploadForm({ provinsi }: Props) {
     try {
       localStorage.removeItem(DRAFT_KEY);
     } catch {}
+    konfirmasi.current?.close();
     setKirim("terkirim");
   }
 
-  if (masuk === null) return <p className="py-10 text-ink-2">Memuat...</p>;
+  if (masuk === null || (masuk && memuat)) {
+    return (
+      <div role="status" className="flex flex-col items-center gap-3 py-20 text-ink-2">
+        <Loader2 size={40} className="putar-muat text-brand" aria-hidden />
+        <p className="font-semibold">Menyiapkan form kontribusi...</p>
+      </div>
+    );
+  }
 
   if (!masuk) {
     return (
@@ -215,22 +219,29 @@ export function UploadForm({ provinsi }: Props) {
   const namaProvinsi = provinsi.find((p) => p.slug === d.provinsi)?.nama;
 
   return (
-    <div className="grid gap-8 py-10 lg:grid-cols-[220px_1fr_260px]">
+    <div className="mx-auto grid max-w-5xl gap-8 py-10 lg:grid-cols-[200px_1fr_230px]">
       <ol className="flex gap-2 overflow-x-auto text-sm lg:block lg:space-y-2">
         {LANGKAH.map((l, i) => (
           <li key={l} className="shrink-0">
             <button
               type="button"
-              onClick={() => (i === 0 || !infoDasarValid() ? setStep(i) : setError(infoDasarValid()))}
-              className={`w-full rounded-sm px-3 py-2 text-left ${i === step ? "bg-brand font-semibold text-white" : "text-ink-2 hover:bg-subtle"}`}
+              onClick={() => { setError(undefined); setStep(i); }}
+              className={`flex w-full items-center gap-1.5 rounded-sm px-3 py-2 text-left ${i === step ? "bg-brand font-semibold text-white" : "text-ink-2 hover:bg-subtle"}`}
             >
-              {i + 1}. {l}
+              <span>{i + 1}. {l}</span>
+              {/* Langkah wajib: tanda centang bila sudah terisi, "wajib" bila belum */}
+              {WAJIB.has(i) &&
+                (kurang.some((k) => k.step === i) ? (
+                  <span className={`ml-auto text-xs ${i === step ? "text-white/80" : "text-danger"}`}>wajib</span>
+                ) : (
+                  <Check size={15} strokeWidth={3} className={`ml-auto ${i === step ? "text-white" : "text-green-600"}`} aria-label="sudah terisi" />
+                ))}
             </button>
           </li>
         ))}
       </ol>
 
-      <form onSubmit={(e) => { e.preventDefault(); if (step === LANGKAH.length - 1) kirimKiriman(); else lanjut(); }} className="space-y-5">
+      <form onSubmit={(e) => { e.preventDefault(); if (step < LANGKAH.length - 1) lanjut(); }} className="space-y-5">
         <KepalaHalaman>
           <h1 className="font-display text-3xl font-semibold">{LANGKAH[step]}</h1>
         </KepalaHalaman>
@@ -257,7 +268,7 @@ export function UploadForm({ provinsi }: Props) {
               <input value={d.namaLain} onChange={(e) => ubah({ namaLain: e.target.value })} className={input} placeholder="mis. Sagu Rangi" />
             </Field>
             <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="Provinsi asal *">
+              <Field label="Provinsi asal (opsional)">
                 <select value={d.provinsi} onChange={(e) => ubah({ provinsi: e.target.value })} className={input}>
                   <option value="">Pilih provinsi</option>
                   {provinsi.map((p) => <option key={p.slug} value={p.slug}>{p.nama}</option>)}
@@ -398,8 +409,56 @@ export function UploadForm({ provinsi }: Props) {
           </fieldset>
         )}
 
-        {step === 6 && (
-          <dl className="divide-y divide-line rounded-lg border border-line bg-surface text-sm">
+
+        {error && <p role="alert" className="text-sm text-danger">{error}</p>}
+
+        <div className="flex flex-wrap gap-3">
+          {step > 0 && (
+            <button type="button" onClick={() => { setError(undefined); setStep(step - 1); }} className="rounded-full border border-line px-6 py-2">
+              Kembali
+            </button>
+          )}
+          {step < LANGKAH.length - 1 && (
+            <button className="rounded-full bg-brand px-6 py-2 font-semibold text-white hover:bg-brand-hover">
+              {WAJIB.has(step) ? "Lanjut" : "Lanjut / lewati"}
+            </button>
+          )}
+          {/* Kirim bisa kapan saja: hijau terang bila syarat terpenuhi, gelap transparan bila belum */}
+          <button
+            type="button"
+            onClick={() => {
+              // Belum lengkap: tunjukkan yang kurang. Lengkap: tampilkan ringkasan untuk dikonfirmasi
+              if (!bisaKirim) return kirimKiriman();
+              setError(undefined);
+              konfirmasi.current?.showModal();
+            }}
+            disabled={kirim === "mengirim"}
+            aria-disabled={!bisaKirim}
+            title={bisaKirim ? "Kirim kontribusi" : "Isi Info dasar, Cerita, dan Vote kelangkaan dulu"}
+            className={`flex items-center gap-1.5 rounded-full px-6 py-2 font-semibold transition-colors disabled:opacity-60 ${
+              bisaKirim ? "bg-green-500 text-white shadow hover:bg-green-600" : "cursor-not-allowed bg-ink/15 text-ink/50"
+            }`}
+          >
+            <Send size={16} aria-hidden /> {kirim === "mengirim" ? "Mengirim..." : "Kirim"}
+          </button>
+        </div>
+        {!bisaKirim && (
+          <p className="text-sm text-ink-2">
+            Wajib diisi sebelum kirim: <b className="text-ink">{kurang.map((k) => LANGKAH[k.step]).join(", ")}</b>. Langkah lain boleh diisi kapan saja atau dilewati.
+          </p>
+        )}
+        <dialog
+          ref={konfirmasi}
+          aria-labelledby="judul-konfirmasi"
+          onClick={(e) => e.target === e.currentTarget && kirim !== "mengirim" && konfirmasi.current?.close()}
+          className="m-auto w-[min(30rem,calc(100vw-2rem))] rounded-xl border border-line bg-surface p-6 text-ink backdrop:bg-black/40"
+        >
+          <div className="space-y-4">
+            <div>
+              <h2 id="judul-konfirmasi" className="font-display text-2xl font-semibold">Kirim kontribusi?</h2>
+              <p className="text-sm text-ink-2">Periksa ringkasan di bawah. Setelah dikirim, admin akan mengecek dulu sebelum tampil di katalog.</p>
+            </div>
+            <dl className="divide-y divide-line rounded-lg border border-line bg-surface text-sm">
             <Ringkas label="Nama">{d.nama || "-"}</Ringkas>
             <Ringkas label="Asal">{[d.daerah, namaProvinsi].filter(Boolean).join(", ") || "-"}</Ringkas>
             <Ringkas label="Foto utama">{d.cover ? "Ada" : "Belum"}</Ringkas>
@@ -410,25 +469,22 @@ export function UploadForm({ provinsi }: Props) {
             <Ringkas label="Lokasi">{d.lokasi.tempat || "Dilewati"}</Ringkas>
             <Ringkas label="Kelangkaan">{rarityPilihan.find(([v]) => v === d.rarity)?.[1] ?? "Dilewati"}</Ringkas>
           </dl>
-        )}
-
-        {error && <p role="alert" className="text-sm text-danger">{error}</p>}
-
-        <div className="flex flex-wrap gap-3">
-          {step > 0 && (
-            <button type="button" onClick={() => { setError(undefined); setStep(step - 1); }} className="rounded-full border border-line px-6 py-2">
-              Kembali
-            </button>
-          )}
-          <button disabled={kirim === "mengirim"} className="rounded-full bg-brand px-6 py-2 font-semibold text-white hover:bg-brand-hover disabled:opacity-60">
-            {step === LANGKAH.length - 1 ? (kirim === "mengirim" ? "Mengirim..." : "Kirim") : step === 0 ? "Lanjut" : "Lanjut / lewati"}
-          </button>
-        </div>
+            {error && <p role="alert" className="text-sm text-danger">{error}</p>}
+            <div className="flex gap-3">
+              <button type="button" onClick={() => konfirmasi.current?.close()} disabled={kirim === "mengirim"} className="flex-1 rounded-full border border-line py-2.5 hover:border-brand disabled:opacity-60">
+                Periksa lagi
+              </button>
+              <button type="button" onClick={kirimKiriman} disabled={kirim === "mengirim"} className="flex flex-1 items-center justify-center gap-1.5 rounded-full bg-green-500 py-2.5 font-semibold text-white hover:bg-green-600 disabled:opacity-60">
+                <Send size={16} aria-hidden /> {kirim === "mengirim" ? "Mengirim..." : "Ya, kirim"}
+              </button>
+            </div>
+          </div>
+        </dialog>
       </form>
 
       <aside className="h-fit space-y-2 rounded-lg bg-subtle p-4 text-sm text-ink-2">
         <p className="font-semibold text-ink">Tips</p>
-        <p>Isian tersimpan otomatis di perangkat ini, jadi aman kalau ditinggal.</p>
+        <p>Setiap membuka Kontribusi, form dimulai dari awal. Selesaikan dan kirim dalam satu kali buka.</p>
         <p>Foto otomatis dikecilkan sebelum dikirim, jadi hemat kuota.</p>
         <p>Pakai foto milik sendiri. Lokasi cukup tempat usaha, bukan rumah pribadi.</p>
         <p>Kiriman dicek admin dulu sebelum tampil di katalog.</p>

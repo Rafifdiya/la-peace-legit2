@@ -100,7 +100,7 @@ export default async function DetailPage({ params }: PageProps<"/jajanan/[slug]"
             <h2 className="font-display text-2xl font-semibold">Resep</h2>
             {snack.resep ? (
               <>
-                <AlatResep slug={snack.slug} nama={snack.nama} bahan={snack.resep.bahan} langkah={snack.resep.langkah} />
+                <AlatResep slug={snack.slug} />
                 <div className="flex flex-wrap items-center gap-3 text-sm text-ink-2">
                   <span className="font-semibold text-ink">{snack.resep.judulVersi}</span>
                   {snack.resep.verified && (
