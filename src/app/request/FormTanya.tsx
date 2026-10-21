@@ -268,7 +268,7 @@ export function BagianForum({ items }: { items: { id: string; pemilikId: string 
   const milikku = sesi ? items.filter((i) => i.pemilikId === sesi.userId) : [];
   const global = sesi ? items.filter((i) => i.pemilikId !== sesi.userId) : items;
   const grid = (list: typeof items, bisaHapus = false) => (
-    <ul className="grid gap-4 md:grid-cols-2">
+    <ul className="grid-forum grid gap-4">
       {list.map((i) => (
         <li key={i.id} className="cv-auto flex flex-col rounded-lg border border-line bg-surface hover:border-brand">
           {i.kartu}

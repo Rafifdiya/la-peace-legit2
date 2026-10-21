@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { X } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { InputPassword } from "@/components/InputPassword";
 import { createClient } from "@/lib/supabase/client";
@@ -10,6 +10,17 @@ const EVENT = "jj:open-login";
 const USERNAME = /^[a-z0-9_]{3,30}$/;
 // Nama: huruf, spasi, titik, apostrof, strip. Tanpa angka.
 const NAMA = /^[\p{L}][\p{L} .'-]{1,59}$/u;
+
+/** Dipicu navbar saat foto profil & tombol akun sudah siap tampil setelah masuk */
+export const EVENT_SESI_SIAP = "jj:sesi-siap";
+
+/** Tunggu navbar siap (atau batas waktu), minimal sebentar agar loading terlihat */
+function tungguNavbarSiap(min = 700, maks = 6000) {
+  const siap = new Promise<void>((r) => window.addEventListener(EVENT_SESI_SIAP, () => r(), { once: true }));
+  const batas = new Promise<void>((r) => setTimeout(r, maks));
+  const minimal = new Promise<void>((r) => setTimeout(r, min));
+  return Promise.all([Promise.race([siap, batas]), minimal]);
+}
 
 /** Buka overlay Masuk dari komponen mana saja (mis. tombol Simpan / vote saat belum login) */
 export function openLogin() {
@@ -25,6 +36,7 @@ export function LoginDialog() {
   const [salah, setSalah] = useState(0);
   const [info, setInfo] = useState("");
   const [proses, setProses] = useState(false);
+  const [menyiapkan, setMenyiapkan] = useState(false);
   const [error, setError] = useState("");
 
   // Sementara: email + password tanpa verifikasi email ("Confirm email" dimatikan di Supabase).
@@ -85,6 +97,8 @@ export function LoginDialog() {
       }
     }
 
+    // Mulai dengarkan sebelum masuk: navbar bisa siap sangat cepat
+    const navbarSiap = tungguNavbarSiap();
     const { data, error } =
       mode === "masuk"
         ? await supabase.auth.signInWithPassword({ email, password })
@@ -116,10 +130,14 @@ export function LoginDialog() {
       }
     }
 
+    // Loading sampai foto profil & tombol Keluar di navbar siap, lalu tutup bersamaan
+    setMenyiapkan(true);
+    await navbarSiap;
+    router.refresh();
     setProses(false);
+    setMenyiapkan(false);
     ref.current?.close();
     el.reset();
-    router.refresh();
   }
 
   useEffect(() => {
@@ -142,7 +160,14 @@ export function LoginDialog() {
       }}
       className="m-auto w-[calc(100%-2rem)] max-w-sm rounded-xl bg-surface p-0 text-ink backdrop:bg-ink/50"
     >
-      <div className="space-y-5 p-6">
+      {menyiapkan && (
+        <div role="status" aria-live="polite" className="flex flex-col items-center gap-4 px-6 py-14 text-center">
+          <Loader2 size={44} className="putar-muat text-brand" aria-hidden />
+          <p className="font-display text-2xl font-semibold">{mode === "daftar" ? "Membuat akunmu..." : "Sedang masuk..."}</p>
+          <p className="text-sm text-ink-2">Menyiapkan akunmu, sebentar ya.</p>
+        </div>
+      )}
+      <div className={`space-y-5 p-6 ${menyiapkan ? "hidden" : ""}`}>
         <div className="flex items-start justify-between">
           <div>
             <h2 id="login-title" className="font-display text-2xl font-semibold">{mode === "masuk" ? "Masuk" : mode === "daftar" ? "Daftar" : "Lupa password"}</h2>

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getCategories, getProvinces } from "@/lib/data";
+import { getProvinces } from "@/lib/data";
 import { UploadForm } from "./UploadForm";
 import { KRITERIA } from "@/lib/kriteria";
 import { ListChecks } from "lucide-react";
@@ -8,7 +8,7 @@ export const metadata: Metadata = { title: "Kontribusi" };
 
 // Form kontribusi 7 langkah (docs/03 Flow B). Data referensi dari server, sisanya di browser.
 export default async function UploadPage() {
-  const [provinsi, kategori] = await Promise.all([getProvinces(), getCategories()]);
+  const provinsi = await getProvinces();
   return (
     <>
       {/* Kriteria ditampilkan sebelum mengisi, supaya kontributor tahu yang dicek admin */}
@@ -21,7 +21,7 @@ export default async function UploadPage() {
         </ul>
         <p className="mt-2 text-ink-2">Admin mengecek setiap kiriman dengan kriteria yang sama sebelum tampil di katalog.</p>
       </details>
-      <UploadForm provinsi={provinsi} kategori={kategori} />
+      <UploadForm provinsi={provinsi} />
     </>
   );
 }

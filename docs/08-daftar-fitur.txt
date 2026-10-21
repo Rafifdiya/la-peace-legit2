@@ -54,6 +54,7 @@ Lainnya
 [JALAN] Tentang kami: kriteria katalog, lisensi, kartu tim + sosial
 [JALAN] Syarat & Ketentuan, Kebijakan Privasi
 [JALAN] Tombol Kontak admin (melayang), Balik ke atas
+[JALAN] Sidebar bisa ditutup/dibuka (default terbuka, diingat per browser)
 [JALAN] Motif batik kawung (beranda, footer, Tentang kami)
 
 

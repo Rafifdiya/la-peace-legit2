@@ -16,7 +16,7 @@ const langkah = [
 
 export default function KelasPage() {
   return (
-    <div className="teks-110 mx-auto max-w-3xl space-y-10 py-10">
+    <div className="teks-110 mx-auto max-w-3xl space-y-7 py-6 [zoom:0.85]">
       <KepalaHalaman className="space-y-3 text-center">
         <span className="inline-block rounded-full border border-orange-500/40 bg-orange-500/10 px-3 py-1 text-sm font-semibold text-brand">
           Segera hadir

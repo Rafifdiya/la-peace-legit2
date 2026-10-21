@@ -37,9 +37,9 @@ async function Katalog({ searchParams }: Pick<PageProps<"/katalog">, "searchPara
   const query = new URLSearchParams(Object.entries(filter).filter(([, v]) => v) as [string, string][]).toString();
 
   return (
-    <div className="mt-6 grid gap-8 lg:grid-cols-[276px_1fr]">
+    <div className="mt-6 grid gap-8 lg:grid-cols-[235px_1fr]">
       {/* Filter = form GET biasa: jalan tanpa JavaScript, URL bisa dibagikan */}
-      <form className="h-fit space-y-[1.4375rem] rounded-lg border border-line bg-surface p-[1.4375rem] text-[1.107rem]">
+      <form className="h-fit space-y-[1.4375rem] rounded-lg [zoom:0.85] border border-line bg-surface p-[1.4375rem] text-[1.107rem]">
         <Field label="Cari">
           {/* Kotak cari berbentuk kapsul dengan ikon kaca pembesar */}
           <div className="flex items-center gap-2 rounded-full border-2 border-orange-500/40 bg-page px-[0.8625rem] py-[0.575rem] focus-within:border-brand">

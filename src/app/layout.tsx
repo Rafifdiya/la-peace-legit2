@@ -8,6 +8,7 @@ import { TerapkanPengaturan } from "@/components/TerapkanPengaturan";
 import { SlotPopupIklan } from "@/components/SlotPopupIklan";
 import { LoginDialog } from "@/components/LoginDialog";
 import { Navbar } from "@/components/Navbar";
+import { SKRIP_SIDEBAR } from "@/components/TombolSidebar";
 import { Sidebar } from "@/components/Sidebar";
 import "./globals.css";
 
@@ -45,8 +46,10 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="id" className={`${fraunces.variable} ${jakarta.variable} ${caveat.variable} antialiased`}>
+    <html lang="id" suppressHydrationWarning className={`${fraunces.variable} ${jakarta.variable} ${caveat.variable} antialiased`}>
       <body className="flex min-h-screen pb-16 md:pb-0">
+        {/* Status buka/tutup sidebar diterapkan sebelum tampil agar tidak berkedip */}
+        <script dangerouslySetInnerHTML={{ __html: SKRIP_SIDEBAR }} />
         <Sidebar />
         <div className="flex min-w-0 flex-1 flex-col">
           <Navbar />

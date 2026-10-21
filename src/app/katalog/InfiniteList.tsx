@@ -55,7 +55,7 @@ export function InfiniteList({ initial, query, iklan = [] }: Props) {
 
   return (
     <>
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid-katalog grid gap-5">
         {items.map((s, i) => {
           // Nomor iklan berikutnya (bergiliran bila iklan lebih dari 1)
           const ke = i === 5 ? 0 : (i - 5) / 12;
