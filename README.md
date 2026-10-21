@@ -45,7 +45,7 @@ Lihat folder [docs/](docs/):
 Butuh Node.js 20+ dan project Supabase.
 
 1. Salin `.env.example` jadi `.env.local`, isi URL + publishable key Supabase.
-2. Jalankan semua file `supabase/migrations/0001-0021` berurutan di
+2. Jalankan semua file `supabase/migrations/0001-0023` berurutan di
    Supabase Dashboard > SQL Editor.
 3. Authentication > Sign In / Providers > Email: matikan "Confirm email".
 4. Jadikan akun admin (daftar dulu lewat web, lalu di SQL Editor):

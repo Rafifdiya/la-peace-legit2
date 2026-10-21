@@ -1,9 +1,12 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { ArrowUp } from "lucide-react";
 
-/** Tombol di footer: gulir kembali ke paling atas halaman. */
+/** Tombol di footer: gulir kembali ke paling atas halaman. Tidak tampil di halaman postingan forum. */
 export function KeAtas() {
+  const path = usePathname();
+  if (path.startsWith("/request/")) return null;
   return (
     <button
       type="button"

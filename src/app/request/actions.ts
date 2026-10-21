@@ -18,27 +18,25 @@ async function userMasuk() {
 export async function buatPertanyaan(_prev: HasilTanya, form: FormData): Promise<HasilTanya> {
   const judul = String(form.get("judul") ?? "").trim();
   const deskripsi = String(form.get("deskripsi") ?? "").trim();
-  const provinsi = String(form.get("provinsi") ?? "");
+  const daerah = String(form.get("daerah") ?? "").trim().slice(0, 80);
   const topik = String(form.get("topik") ?? "");
   if (!topikValid(topik)) return { error: "Pilih topik dulu." };
   if (judul.length < 3 || judul.length > 100) return { error: "Judul 3-100 karakter." };
-  if (adaKataKasar(judul, deskripsi)) return { error: "Postingan mengandung kata yang tidak pantas." };
+  if (adaKataKasar(judul, deskripsi, daerah)) return { error: "Postingan mengandung kata yang tidak pantas." };
 
   const { supabase, user } = await userMasuk();
   if (!user) return { error: "Masuk dulu untuk membuat postingan." };
 
-  let province_id: number | null = null;
-  if (provinsi) {
-    const { data } = await supabase.from("provinces").select("id").eq("slug", provinsi).maybeSingle();
-    province_id = data?.id ?? null;
-  }
-  const isi = { judul, deskripsi: deskripsi || null, province_id };
-  let res = await supabase.from("requests").insert({ ...isi, topik }).select("id").single();
-  // Kolom topik belum ada (migration 0017 belum dijalankan): simpan tanpa topik
-  if (res.error?.code === "PGRST204" || res.error?.code === "42703") res = await supabase.from("requests").insert(isi).select("id").single();
+  const isi = { judul, deskripsi: deskripsi || null };
+  const kolomHilang = (c?: string) => c === "PGRST204" || c === "42703";
+  let res = await supabase.from("requests").insert({ ...isi, topik, daerah: daerah || null }).select("id").single();
+  // Kolom daerah (0022) / topik (0017) belum ada: simpan tanpa kolom itu
+  if (kolomHilang(res.error?.code)) res = await supabase.from("requests").insert({ ...isi, topik }).select("id").single();
+  if (kolomHilang(res.error?.code)) res = await supabase.from("requests").insert(isi).select("id").single();
   if (res.error) return { error: `Gagal mengirim: ${res.error.message}` };
   updateTag("request");
-  redirect(`/request/${res.data.id}`);
+  // ?baru=1: halaman postingan menampilkan hasilnya, lalu kembali ke Forum setelah 3 detik
+  redirect(`/request/${res.data.id}?baru=1`);
 }
 
 /** Balas postingan; boleh menautkan jajanan yang sudah ada di katalog. */

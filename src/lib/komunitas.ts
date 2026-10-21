@@ -20,6 +20,7 @@ export type Balasan = {
   userId: string | null;
   oleh: string;
   olehUsername: string | null;
+  olehPremium: boolean;
   isi: string;
   slug?: string;
   tanggal: string;
@@ -36,11 +37,15 @@ export type RequestItem = {
   pemilikId: string | null;
   oleh: string;
   olehUsername: string | null;
+  olehPremium: boolean;
   tanggal: string;
   jawaban: Balasan[];
 };
 
-type Profil = { username: string | null; nama_tampil: string | null } | null;
+type Profil = { username: string | null; nama_tampil: string | null; role?: string | null; premium_sampai?: string | null } | null;
+
+/** Premium aktif (admin otomatis Premium, migration 0012) */
+const premiumAktif = (p: Profil) => !!p && (p.role === "admin" || (!!p.premium_sampai && new Date(p.premium_sampai) > new Date()));
 
 type RequestRow = {
   id: string;
@@ -51,29 +56,33 @@ type RequestRow = {
   status: string;
   topik?: string;
   jawaban_terbaik?: string | null;
+  daerah?: string | null;
   provinces: { nama: string } | null;
   profiles: Profil;
   request_answers: { id: string; user_id: string | null; isi: string; created_at: string; profiles: Profil; snacks: { slug: string } | null }[];
 };
 
 const KOLOM_DASAR = `id, judul, deskripsi, created_at, created_by, status, provinces (nama),
-  profiles!requests_created_by_fkey (username, nama_tampil),
-  request_answers!request_answers_request_id_fkey (id, user_id, isi, created_at, profiles!request_answers_user_id_fkey (username, nama_tampil), snacks (slug))`;
+  profiles!requests_created_by_fkey (username, nama_tampil, role, premium_sampai),
+  request_answers!request_answers_request_id_fkey (id, user_id, isi, created_at, profiles!request_answers_user_id_fkey (username, nama_tampil, role, premium_sampai), snacks (slug))`;
 // Kolom dari migration 0017; tanpa itu forum tetap jalan dengan topik "obrolan"
 const KOLOM_FORUM = `${KOLOM_DASAR}, topik, jawaban_terbaik`;
+// Kolom daerah teks bebas dari migration 0022
+const KOLOM_FORUM_DAERAH = `${KOLOM_FORUM}, daerah`;
 
 function toRequest(r: RequestRow): RequestItem {
   return {
     id: r.id,
     judul: r.judul,
     isi: r.deskripsi ?? "",
-    daerah: r.provinces?.nama ?? "",
+    daerah: r.daerah || r.provinces?.nama || "",
     topik: r.topik ?? "obrolan",
     terjawab: r.status === "answered",
     jawabanTerbaik: r.jawaban_terbaik ?? null,
     pemilikId: r.created_by,
     oleh: namaUser(r.profiles),
     olehUsername: r.profiles?.username ?? null,
+    olehPremium: premiumAktif(r.profiles),
     tanggal: r.created_at,
     jawaban: [...r.request_answers]
       .sort((a, b) => a.created_at.localeCompare(b.created_at))
@@ -82,6 +91,7 @@ function toRequest(r: RequestRow): RequestItem {
         userId: j.user_id,
         oleh: namaUser(j.profiles),
         olehUsername: j.profiles?.username ?? null,
+        olehPremium: premiumAktif(j.profiles),
         isi: j.isi,
         slug: j.snacks?.slug,
         tanggal: j.created_at,
@@ -91,9 +101,12 @@ function toRequest(r: RequestRow): RequestItem {
 
 /** Jalankan query dengan kolom forum; bila kolomnya belum ada (0017 belum dijalankan), ulangi tanpa itu. */
 async function denganCadangan<T>(query: (kolom: string, cadangan: boolean) => PromiseLike<{ data: unknown; error: { message: string; code?: string } | null }>): Promise<T> {
-  const res = await query(KOLOM_FORUM, false);
-  if (res.error?.code === "42703") return cek<T>(await query(KOLOM_DASAR, true));
-  return cek<T>(res);
+  const res = await query(KOLOM_FORUM_DAERAH, false);
+  if (res.error?.code !== "42703") return cek<T>(res);
+  // 0022 belum dijalankan: tanpa kolom daerah; 0017 belum: tanpa kolom forum
+  const res2 = await query(KOLOM_FORUM, false);
+  if (res2.error?.code === "42703") return cek<T>(await query(KOLOM_DASAR, true));
+  return cek<T>(res2);
 }
 
 /** tab "terbaru" = semua; "belum" = topik mencari yang belum terjawab. topik = filter opsional. */
@@ -282,27 +295,4 @@ export async function getJumlahMinatKelas(): Promise<number> {
   const supabase = await createClient();
   const { count } = await supabase.from("minat_kelas").select("id", { count: "exact", head: true });
   return count ?? 0;
-}
-
-// ---------- Koleksi (profil sendiri) ----------
-
-export type KoleksiSaya = { id: string; nama: string; slugs: string[] };
-
-/** Koleksi milik user login beserta slug jajanan di dalamnya. Kosong bila migration 0010 belum ada. */
-export async function getKoleksiSaya(): Promise<KoleksiSaya[]> {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("collections")
-    .select("id, nama, collection_items (created_at, snacks (slug))")
-    .order("created_at");
-  if (error || !data) return [];
-  type Row = { id: string; nama: string; collection_items: { created_at: string; snacks: { slug: string } | null }[] };
-  return (data as unknown as Row[]).map((k) => ({
-    id: k.id,
-    nama: k.nama,
-    slugs: [...k.collection_items]
-      .sort((a, b) => b.created_at.localeCompare(a.created_at))
-      .map((i) => i.snacks?.slug)
-      .filter((s): s is string => !!s),
-  }));
 }

@@ -50,7 +50,15 @@ export function SidebarLinks() {
               <Icon size={href === "/tentang" ? 24 : 25} aria-hidden className={href === "/premium" && premium ? "text-accent" : undefined} />
               {/* Premium: teks berkilau kiri ke kanan supaya menarik perhatian */}
               {href === "/premium" ? (
-                <span className={`kilau font-semibold ${premium ? "kilau-hijau" : ""}`}>{label}</span>
+                // Belum Premium: teks berkilau menarik perhatian. Sudah Premium: tanpa kilau + label kecil "aktif"
+                premium ? (
+                  <span className="flex items-baseline gap-2 font-semibold">
+                    {label}
+                    <span className="rounded-full bg-green-500/15 px-1.5 py-px text-[0.7em] font-semibold text-green-700">aktif</span>
+                  </span>
+                ) : (
+                  <span className="kilau font-semibold">{label}</span>
+                )
               ) : href === "/tentang" ? (
                 <span className="underline underline-offset-4">{label}</span>
               ) : (

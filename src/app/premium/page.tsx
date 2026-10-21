@@ -10,7 +10,7 @@ import { PremiumButton } from "./PremiumButton";
 
 export const metadata: Metadata = {
   title: "Premium",
-  description: "Arsip tetap gratis. Premium untuk bebas iklan, mode masak, PDF dan koleksi tanpa batas.",
+  description: "Arsip tetap gratis. Premium untuk bebas iklan dan unduh resep PDF.",
 };
 
 // [fitur, gratis, premium]: true = ada, false = tidak, string = keterangan
@@ -18,16 +18,14 @@ const fitur: [string, boolean | string, boolean | string][] = [
   ["Baca semua cerita, resep, dan lokasi", true, true],
   ["Kirim jajanan, vote, Forum Jajanan", true, true],
   ["Simpan jajanan", true, true],
-  ["Koleksi (mis. \"Kue Lebaran\")", "Maks. 3", "Tanpa batas"],
-  ["Unduh resep PDF", "5x per minggu", "Sepuasnya"],
-  ["Mode masak (langkah besar, layar tetap menyala)", false, true],
+  ["Unduh resep PDF", false, true],
   ["Lencana & bingkai Premium di profil", false, true],
   ["Bebas iklan sponsor", false, true],
-  ["Kelas Bersama Penjual (segera hadir)", "Bayar per kelas", "Diskon 20% + daftar lebih dulu"],
+  ["Kelas Bersama Penjual (segera hadir)", "-", "Diskon 20% + daftar lebih dulu"],
 ];
 
 function Sel({ v }: { v: boolean | string }) {
-  if (typeof v === "string") return <span className="font-semibold">{v}</span>;
+  if (typeof v === "string") return <span className="text-sm font-semibold">{v}</span>;
   return v ? <Check size={20} className="mx-auto text-accent" aria-label="Ya" /> : <X size={20} className="mx-auto text-danger" aria-label="Tidak" />;
 }
 

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Form from "next/form";
 import Link from "next/link";
 import { Search } from "lucide-react";
 import { Suspense } from "react";
@@ -6,6 +7,7 @@ import { KepalaHalaman } from "@/components/KepalaHalaman";
 import { getCategories, getProvinces, getSnackPage, type SnackFilter } from "@/lib/data";
 import { getIklanAktif } from "@/lib/iklan";
 import { InfiniteList } from "./InfiniteList";
+import { FilterOtomatis } from "./FilterOtomatis";
 
 export const metadata: Metadata = { title: "Katalog Jajanan" };
 
@@ -39,13 +41,15 @@ async function Katalog({ searchParams }: Pick<PageProps<"/katalog">, "searchPara
   return (
     <div className="mt-6 grid gap-8 lg:grid-cols-[235px_1fr]">
       {/* Filter = form GET biasa: jalan tanpa JavaScript, URL bisa dibagikan */}
-      <form className="h-fit space-y-[1.4375rem] rounded-lg [zoom:0.85] border border-line bg-surface p-[1.4375rem] text-[1.107rem]">
+      {/* Form next/form: kirim tanpa memuat ulang halaman; tetap jalan tanpa JavaScript (tombol Terapkan) */}
+      <Form action="/katalog" replace scroll={false} className="h-fit space-y-[1.4375rem] rounded-lg [zoom:0.85] border border-line bg-surface p-[1.4375rem] text-[1.107rem]">
         <Field label="Cari">
           {/* Kotak cari berbentuk kapsul dengan ikon kaca pembesar */}
           <div className="flex items-center gap-2 rounded-full border-2 border-orange-500/40 bg-page px-[0.8625rem] py-[0.575rem] focus-within:border-brand">
             <Search size={20} className="shrink-0 text-ink" aria-hidden />
             <input name="q" defaultValue={filter.q} placeholder="Nama jajanan" className="w-full min-w-0 bg-transparent outline-none placeholder:text-ink/70" />
           </div>
+          <FilterOtomatis />
         </Field>
         <Field label="Provinsi">
           <select name="provinsi" defaultValue={filter.provinsi ?? ""} className="w-full rounded-sm border border-line px-[0.8625rem] py-[0.575rem]">
@@ -71,7 +75,7 @@ async function Katalog({ searchParams }: Pick<PageProps<"/katalog">, "searchPara
           <button className="flex-1 rounded-full bg-brand py-[0.575rem] font-semibold text-white hover:bg-brand-hover">Terapkan</button>
           <Link href="/katalog" className="rounded-full border border-line px-[1.15rem] py-[0.575rem]">Reset</Link>
         </div>
-      </form>
+      </Form>
 
       <section className="space-y-4">
         <p className="text-sm text-ink-2">{page.total} jajanan ditemukan</p>

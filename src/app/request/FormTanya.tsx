@@ -1,15 +1,16 @@
 "use client";
 
 import { useActionState, useEffect, useRef, useState, useTransition } from "react";
-import { Award, Flag, Pencil, Trash2, X } from "lucide-react";
+import { Award, Flag, Loader2, Pencil, Search, Trash2, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { openLogin } from "@/components/LoginDialog";
 import { ATURAN_FORUM, TOPIK } from "@/lib/forum";
+import { cariMirip, type TeksCari } from "@/lib/cari-forum";
 import { buatPertanyaan, editBalasan, editPostingan, hapusBalasan, hapusPostingan, jawabPertanyaan, laporkan, pilihTerbaik, type HasilTanya } from "./actions";
 
 const input = "w-full rounded-sm border border-line bg-surface px-3 py-2";
 const kirim = "rounded-full bg-brand px-5 py-2 font-semibold text-white hover:bg-brand-hover disabled:opacity-60";
-const kecil = "flex items-center gap-1 text-xs text-ink-2 hover:text-brand disabled:opacity-50";
+const kecil = "flex items-center gap-1 rounded-full border border-line bg-surface px-2.5 py-1 text-xs text-ink transition-colors hover:border-brand hover:text-brand disabled:opacity-50";
 
 type Sesi = { userId: string; admin: boolean } | null;
 
@@ -31,7 +32,7 @@ export function useSesi() {
 }
 
 /** Tombol "Buat postingan": belum masuk = dialog Masuk, sudah masuk = form postingan. */
-export function TombolTanya({ provinsi }: { provinsi: { nama: string; slug: string }[] }) {
+export function TombolTanya() {
   const sesi = useSesi();
   const ref = useRef<HTMLDialogElement>(null);
   const [hasil, aksi, pending] = useActionState<HasilTanya, FormData>(buatPertanyaan, undefined);
@@ -82,10 +83,7 @@ export function TombolTanya({ provinsi }: { provinsi: { nama: string; slug: stri
           </label>
           <label className="block space-y-1">
             <span className="text-sm font-semibold">Daerah (opsional)</span>
-            <select name="provinsi" defaultValue="" className={input}>
-              <option value="">Tidak spesifik</option>
-              {provinsi.map((p) => <option key={p.slug} value={p.slug}>{p.nama}</option>)}
-            </select>
+            <input name="daerah" maxLength={80} placeholder="Ketik sendiri, mis. Bogor, Jawa Barat" className={input} />
           </label>
           {hasil?.error && <p role="alert" className="text-sm text-danger">{hasil.error}</p>}
           <div className="flex justify-end gap-2">
@@ -207,7 +205,7 @@ export function AksiPostingan({ id, pemilikId, judul, isi }: { id: string; pemil
   const boleh = !!sesi && (sesi.admin || milikku);
   if (edit) return <FormEdit judul={judul} isi={isi} onSimpan={(j, t) => editPostingan(id, j, t)} onBatal={() => setEdit(false)} />;
   return (
-    <div className="flex flex-wrap items-center gap-4">
+    <div className="flex flex-wrap items-center gap-2">
       {milikku && (
         <button type="button" onClick={() => setEdit(true)} className={kecil}>
           <Pencil size={13} aria-hidden /> Edit
@@ -219,7 +217,7 @@ export function AksiPostingan({ id, pemilikId, judul, isi }: { id: string; pemil
           type="button"
           disabled={pending}
           onClick={() => confirm("Hapus postingan ini beserta semua balasannya?") && mulai(async () => setError((await hapusPostingan(id))?.error))}
-          className={`${kecil} hover:text-danger`}
+          className={`${kecil} hover:border-danger hover:text-danger`}
         >
           <Trash2 size={13} aria-hidden /> Hapus
         </button>
@@ -240,20 +238,20 @@ export function AksiBalasan({ requestId, id, pemilikId, pemilikPostId, terbaik, 
   const boleh = !!sesi && (sesi.admin || milikku);
   if (edit) return <FormEdit isi={isi} onSimpan={(_, t) => editBalasan(id, t)} onBatal={() => setEdit(false)} />;
   return (
-    <div className="flex flex-wrap items-center gap-4 pt-1">
+    <div className="flex flex-wrap items-center gap-2 pt-1">
       {milikku && (
         <button type="button" onClick={() => setEdit(true)} className={kecil}>
           <Pencil size={13} aria-hidden /> Edit
         </button>
       )}
       {pemilikPost && (
-        <button type="button" disabled={pending} onClick={() => mulai(async () => setError((await pilihTerbaik(requestId, terbaik ? null : id))?.error))} className={`${kecil} hover:text-accent`}>
+        <button type="button" disabled={pending} onClick={() => mulai(async () => setError((await pilihTerbaik(requestId, terbaik ? null : id))?.error))} className={`${kecil} hover:border-accent hover:text-accent`}>
           <Award size={13} aria-hidden /> {terbaik ? "Batalkan balasan terbaik" : "Jadikan balasan terbaik"}
         </button>
       )}
       <TombolLapor jenis="forum_reply" id={id} sesi={sesi} />
       {boleh && (
-        <button type="button" disabled={pending} onClick={() => confirm("Hapus balasan ini?") && mulai(async () => setError((await hapusBalasan(id))?.error))} className={`${kecil} hover:text-danger`}>
+        <button type="button" disabled={pending} onClick={() => confirm("Hapus balasan ini?") && mulai(async () => setError((await hapusBalasan(id))?.error))} className={`${kecil} hover:border-danger hover:text-danger`}>
           <Trash2 size={13} aria-hidden /> Hapus
         </button>
       )}
@@ -263,24 +261,76 @@ export function AksiBalasan({ requestId, id, pemilikId, pemilikPostId, terbaik, 
 }
 
 /** Pisahkan daftar forum jadi "Postingan saya" (milik user yang masuk) dan "Postingan global". */
-export function BagianForum({ items }: { items: { id: string; pemilikId: string | null; kartu: React.ReactNode }[] }) {
+type ItemForum = { id: string; pemilikId: string | null; teks: TeksCari; kartu: React.ReactNode };
+const JEDA_CARI = 1000; // hasil muncul 1 detik setelah berhenti mengetik
+
+export function BagianForum({ items }: { items: ItemForum[] }) {
   const sesi = useSesi();
+  const [ketik, setKetik] = useState("");
+  const [kata, setKata] = useState("");
+  const mencari = ketik.trim() !== kata.trim();
+  useEffect(() => {
+    const t = setTimeout(() => setKata(ketik), ketik.trim() ? JEDA_CARI : 0);
+    return () => clearTimeout(t);
+  }, [ketik]);
+  const hasil = kata.trim() ? cariMirip(items, kata) : null;
   const milikku = sesi ? items.filter((i) => i.pemilikId === sesi.userId) : [];
   const global = sesi ? items.filter((i) => i.pemilikId !== sesi.userId) : items;
-  const grid = (list: typeof items, bisaHapus = false) => (
+  const grid = (list: ItemForum[], bisaHapus = false, bolehHapus?: (i: ItemForum) => boolean) => (
     <ul className="grid-forum grid gap-4">
       {list.map((i) => (
         <li key={i.id} className="cv-auto flex flex-col rounded-lg border border-line bg-surface hover:border-brand">
           {i.kartu}
           {/* Hanya postingan milik sendiri yang punya tombol hapus, di dalam kotak bagian bawah */}
-          {bisaHapus && <HapusDiKartu id={i.id} />}
+          {(bolehHapus ? bolehHapus(i) : bisaHapus) && <HapusDiKartu id={i.id} />}
         </li>
       ))}
     </ul>
   );
 
+  const kotakCari = (
+    <div className="max-w-3xl space-y-1.5 [zoom:0.8]">
+      <label className="flex items-center gap-2 rounded-full border-2 border-orange-500/40 bg-surface px-4 py-2 focus-within:border-brand">
+        <Search size={18} className="shrink-0 text-ink" aria-hidden />
+        <input
+          type="text"
+          value={ketik}
+          onChange={(e) => setKetik(e.target.value)}
+          placeholder="Cari di forum, mis. serabi, kue ape, Bogor..."
+          aria-label="Cari postingan forum"
+          className="w-full min-w-0 bg-transparent outline-none placeholder:text-ink/60"
+        />
+        {ketik && (
+          <button type="button" onClick={() => setKetik("")} aria-label="Hapus pencarian" className="shrink-0 rounded-full p-0.5 text-ink-2 hover:text-ink">
+            <X size={16} />
+          </button>
+        )}
+      </label>
+      {mencari && <p className="flex items-center gap-1.5 px-2 text-sm text-ink-2"><Loader2 size={14} className="putar-muat" aria-hidden /> Mencari...</p>}
+    </div>
+  );
+
+  if (hasil) {
+    return (
+      <div className="space-y-6">
+        {kotakCari}
+        <section className="space-y-3">
+          <h2 className="font-display text-2xl font-semibold">
+            Hasil untuk &ldquo;{kata.trim()}&rdquo; <span className="font-sans text-base font-normal text-ink-2">({hasil.length} postingan, paling relevan di atas)</span>
+          </h2>
+          {hasil.length ? (
+            grid(hasil, false, (i) => !!sesi && (sesi.admin || i.pemilikId === sesi.userId))
+          ) : (
+            <p className="text-sm text-ink-2">Tidak ada postingan yang cocok. Coba kata lain, atau buat postingan baru.</p>
+          )}
+        </section>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8">
+      {kotakCari}
       {sesi && (
         <section className="space-y-3">
           <h2 className="font-display text-2xl font-semibold">Postingan saya</h2>

@@ -25,7 +25,7 @@ FITUR (daftar lengkap + status di docs/08-daftar-fitur.txt)
 1. Beranda (marquee Hampir Punah, Baru Ditambahkan, footer lengkap),
    katalog + cari + filter
 2. Halaman jajanan: cerita, resep, langkah, lokasi + mini map, Sudah coba
-   resep ini?, simpan & koleksi, unduh PDF, mode masak
+   resep ini?, simpan, unduh PDF (Premium)
 3. Kontribusi 7 langkah + kriteria katalog
 4. Forum Jajanan (topik, balasan terbaik, laporkan)
 5. Akun: profil + level kontributor, pengaturan profil & fitur, Pesan
@@ -38,7 +38,7 @@ kontribusi, pembayaran asli.
 ROLE
 - User belum login : lihat semua konten
 - User gratis      : kontribusi, simpan, forum, sudah coba resep (+ iklan)
-- User Premium     : + bebas iklan, mode masak, PDF & koleksi tanpa batas
+- User Premium     : + bebas iklan, unduh resep PDF
 - Admin            : moderasi + otomatis Premium
 
 MODEL BISNIS (detail di docs/06 revisi 2)
