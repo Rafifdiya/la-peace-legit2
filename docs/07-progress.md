@@ -178,6 +178,9 @@ Catatan: jam untuk entri lama tidak tercatat, jadi hanya tanggal. Entri baru dit
 174. **2026-10-15 15:26** - docs/06-model-bisnis.txt revisi 2: BMC disesuaikan fitur yang sudah ada (iklan, Premium mode demo Rp15.000/bulan, kelas bagi hasil, Forum Jajanan, level kontributor), tabel sumber pendapatan + status di web, tabel Gratis vs Premium, titik impas baru, bagian kualitas resep (jawaban feedback), risiko & jawaban dosen diperbarui.
 175. **2026-10-15 15:30** - Fix error "more than one relationship was found for requests and request_answers" setelah migration 0017 (kolom jawaban_terbaik menambah relasi kedua): query forum, pesan, dan navbar menyebut relasi request_answers_request_id_fkey.
 176. **2026-10-15 15:35** - Dokumen baru docs/08-daftar-fitur.txt: semua fitur per bagian dengan status [JALAN]/[DEMO]/[BELUM], daftar migration 0001-0018, akun demo (tanpa kredensial), checklist sebelum expo. docs/00-ringkasan-project.txt diperbarui (fitur, role, model bisnis, status).
+177. **2026-10-15 18:40** - Commit + push entri 140-176 ke branch feat/resep-dicoba (tanpa docs/06, foto-anggota, foto-iklan).
+178. **2026-10-17 17:00** - Persiapan serah terima: docs/09-serah-terima.txt (to-do prioritas expo), .env.example, README (setup Supabase, migration, admin, daftar docs). Cek repo: tidak ada .env/kredensial di riwayat, PR #9 bisa di-merge.
+179. **2026-10-21 14:22** - Merge main (PR #10 fix relasi forum, PR #11 KepalaHalaman motif kawung dari anggota tim) ke feat/resep-dicoba; 6 konflik diselesaikan (fitur forum/pesan/level tetap, KepalaHalaman dipasang di detail jajanan, forum, detail postingan, profil). tsc, lint, build lulus.
 
 ## Berikutnya
 - Review docs/06 model bisnis bersama tim, lalu buat slide
