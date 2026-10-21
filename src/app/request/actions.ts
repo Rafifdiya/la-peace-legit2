@@ -105,3 +105,29 @@ export async function laporkan(jenis: "forum_post" | "forum_reply", id: string, 
   if (error) return { error: /check/i.test(error.message) ? "Jalankan migration 0017 dulu." : error.message };
   return { ok: "Terima kasih, laporan dikirim ke admin." };
 }
+
+function pesanEdit(message: string) {
+  return /function|schema cache/i.test(message) ? "Fitur edit belum aktif (jalankan migration 0019)." : message;
+}
+
+/** Edit postingan sendiri (fungsi edit_postingan, migration 0019). */
+export async function editPostingan(id: string, judul: string, deskripsi: string): Promise<HasilTanya> {
+  const j = judul.trim();
+  if (j.length < 3 || j.length > 100) return { error: "Judul 3-100 karakter." };
+  if (adaKataKasar(j, deskripsi)) return { error: "Postingan mengandung kata yang tidak pantas." };
+  const { supabase } = await userMasuk();
+  const { error } = await supabase.rpc("edit_postingan", { p_id: id, p_judul: j, p_deskripsi: deskripsi, p_topik: null });
+  if (error) return { error: pesanEdit(error.message) };
+  updateTag("request");
+}
+
+/** Edit balasan sendiri (fungsi edit_balasan, migration 0019). */
+export async function editBalasan(id: string, isi: string): Promise<HasilTanya> {
+  const t = isi.trim();
+  if (t.length < 3 || t.length > 1000) return { error: "Balasan 3-1000 karakter." };
+  if (adaKataKasar(t)) return { error: "Balasan mengandung kata yang tidak pantas." };
+  const { supabase } = await userMasuk();
+  const { error } = await supabase.rpc("edit_balasan", { p_id: id, p_isi: t });
+  if (error) return { error: pesanEdit(error.message) };
+  updateTag("request");
+}

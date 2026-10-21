@@ -198,8 +198,14 @@ textarea {
 }
 
 /* Pengaturan tampilan (halaman /pengaturan) */
-html.teks-besar {
-  font-size: 112.5%;
+/* Ukuran teks dari ukuran dasar (106.25% HP, 112.5% laptop): kecil -10%, sedang +12%, besar +20% */
+html.teks-kecil { font-size: 95.625%; }
+html.teks-sedang { font-size: 119%; }
+html.teks-besar { font-size: 127.5%; }
+@media (min-width: 1024px) {
+  html.teks-kecil { font-size: 101.25%; }
+  html.teks-sedang { font-size: 126%; }
+  html.teks-besar { font-size: 135%; }
 }
 html.kurangi-animasi *,
 html.kurangi-animasi *::before,

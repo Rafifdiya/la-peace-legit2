@@ -30,9 +30,14 @@ Halaman jajanan
         foto hasil, ringkasan "Dicoba X orang, Y berhasil"
 [JALAN] Simpan jajanan & koleksi (gratis maks. 3 koleksi)
 [JALAN] Unduh PDF (gratis 5x/minggu) & Mode masak (Premium)
-[BELUM] Vote kelangkaan (Umum / Mulai langka / Hampir punah / Punah)
+[JALAN] Vote kelangkaan (Umum / Mulai langka / Hampir punah / Punah):
+        1 akun 1 suara, bisa diganti/dibatalkan, label tampil min. 3 suara
+[JALAN] Bagikan (salin link)
+[JALAN] Komentar + balasan 1 tingkat (semua yang masuk, termasuk
+        pengirim jajanan); edit milik sendiri, hapus milik sendiri/admin
+[JALAN] Edit (pengirim saja) -> halaman /edit-kontribusi
 [BELUM] Masih ada / Sudah tidak ada, Saya lihat di tempat lain
-[BELUM] Bagikan, Lapor jajanan, Komentar
+[BELUM] Lapor jajanan
 
 Forum Jajanan (/request)
 [JALAN] Postingan dengan topik (Cari resep, Cari penjual/lokasi,
@@ -42,7 +47,7 @@ Forum Jajanan (/request)
 [JALAN] Balasan (tautkan jajanan katalog), Balasan terbaik pilihan penanya
 [JALAN] Pemilik postingan baru bisa membalas setelah ada balasan orang lain
 [JALAN] Laporkan postingan / balasan, filter kata kasar
-[BELUM] Edit postingan / balasan
+[JALAN] Edit postingan / balasan milik sendiri
 
 Lainnya
 [JALAN] Kelas Bersama Penjual (segera hadir) + form minat
@@ -61,7 +66,8 @@ Lainnya
 [JALAN] Tombol mata tampilkan password, dialog konfirmasi Keluar
 [JALAN] Kontribusi 7 langkah (foto dikompres, video per langkah via link),
         kriteria tampil di atas form
-[BELUM] Edit kontribusi yang sudah dikirim
+[JALAN] Edit kontribusi milik sendiri, hanya setelah disetujui (teks & resep; foto/lokasi lewat
+        admin)
 [JALAN] Profil: foto (bisa diperbesar), level kontributor (Pencicip,
         Penjelajah, Penjaga Resep, Penjaga Warisan), kontribusi, simpanan,
         status kiriman
@@ -72,7 +78,6 @@ Lainnya
         untuk akun gratis -> diarahkan ke /premium)
 [JALAN] Pesan (/pesan): status kiriman, balasan forum, selamat datang;
         titik merah navbar, tandai semua dibaca, hapus semua
-[BELUM] Notifikasi jajanan baru (tertulis "segera hadir")
 
 Premium
 [DEMO]  Aktifkan / batalkan Premium tanpa pembayaran (rencana Rp15.000/bulan)
@@ -111,6 +116,8 @@ Iklan (untuk pengguna gratis)
 0010 premium + koleksi         0016 forum: terjawab otomatis, hapus milik sendiri
 0011 unduh PDF                 0017 forum: topik, balasan terbaik, laporan forum
 0012 admin otomatis premium    0018 admin ganti foto utama
+                               0019 komentar jajanan + edit milik sendiri
+                               0020 perbaikan balas komentar, edit setelah disetujui
 Opsional: supabase/data-iklan-demo.sql (3 iklan merek fiktif)
 
 
