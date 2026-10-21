@@ -28,11 +28,11 @@ export default async function Beranda() {
     <div className="beranda space-y-12 py-10">
       {/* Motif kawung samar di belakang hero */}
       <section className="motif-kawung motif-pudar space-y-5 rounded-xl py-8 text-center">
-        <p className="-rotate-2 font-hand text-[2.988rem] text-brand sm:text-[3.375rem]">
+        <p className="-rotate-2 font-hand text-[2.694rem] text-brand sm:text-[3.081rem] lg:text-[3.097rem]">
           <span className="ketik">dari dapur nenek, untuk generasi berikutnya..</span>
         </p>
-        <h1 className="font-display text-[1.8rem] font-semibold sm:text-[3rem] xl:text-[3.6rem]">Jejak jajan yang hampir hilang</h1>
-        <p className="mx-auto max-w-2xl text-[1.518rem] text-ink">
+        <h1 className="font-display text-[1.506rem] font-semibold sm:text-[2.706rem] lg:text-[2.722rem] xl:text-[3.322rem]">Jejak jajan yang hampir hilang</h1>
+        <p className="mx-auto max-w-2xl text-[1.4rem] text-ink lg:text-[1.407rem]">
           Arsip jajanan tradisional Indonesia dari komunitas: cerita, resep, dan di mana terakhir terlihat.
         </p>
         {/* Cari + pilih daerah dalam satu kotak (pengganti daftar tombol provinsi) */}

@@ -203,6 +203,10 @@ Catatan: jam untuk entri lama tidak tercatat, jadi hanya tanggal. Entri baru dit
 199. **2026-10-21 19:09** - Sidebar: semua font +5px (menu 1.3->1.578rem, Tentang kami 1.235->1.513rem, Kontribusi & logo 1.73->2.008rem), letter spacing menu +5% (0.05em), whitespace-nowrap, lebar sidebar 17.6->19.2rem agar Katalog Jajanan tidak turun baris.
 200. **2026-10-21 19:10** - Letter spacing menu sidebar -2 (0.05em -> 0.03em).
 201. **2026-10-21 19:14** - Commit + push feat/hapus-kontribusi (entri 186-200: hapus kontribusi sendiri, tombol Edit/Hapus di kartu Kontribusi, ukuran teks untuk lansia, beranda, navbar, sidebar), PR ke main lalu merge.
+202. **2026-10-21 21:19** - Beranda: semua teks yang diperbesar hari ini -10px persis (permintaan user, browser sebelumnya ter-zoom): tagline, judul, Arsip, Bagikan cerita, label statistik, kotak cari, Lihat semua, Balik ke atas. Ukuran dipindah ke kelas CSS (.tagline-beranda, .judul-beranda, .arsip-beranda, .bagikan-beranda).
+203. **2026-10-21 21:33** - Entri 202 dibatalkan (git restore page.tsx & globals.css): yang dimaksud user bukan font, tapi ukuran UI.
+204. **2026-10-21 21:37** - Sidebar seluruhnya -20% (CSS zoom 0.8, tinggi 125vh agar tetap setinggi layar; lebar tampil 345->276px). Beranda: tagline -5px (laptop 60.8->55.7px), judul -5px (64.8->59.8px), teks Arsip -2px (27.3->25.3px).
+205. **2026-10-21 22:01** - Sidebar diubah jadi -10% dari versi online (zoom 0.9, tinggi 111.12vh; lebar tampil 311px), bukan -20%. Web sudah online di Vercel (deploy dari main, otomatis tiap merge; PR dapat link Preview). Branch feat/ukuran-beranda-sidebar + PR untuk dites di Preview sebelum merge.
 
 ## Berikutnya
 - Review docs/06 model bisnis bersama tim, lalu buat slide
