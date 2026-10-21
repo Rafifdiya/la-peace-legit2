@@ -16,7 +16,7 @@ export function BottomNav() {
       <ul className="grid grid-cols-5">
         {items.map(({ href, label, Icon }) => (
           <li key={href}>
-            <Link href={href} className="flex flex-col items-center gap-0.5 py-2 text-[11px] text-ink-2 hover:text-brand">
+            <Link href={href} className="flex flex-col items-center gap-0.5 py-2 text-xs leading-tight text-ink-2 hover:text-brand">
               <Icon size={20} aria-hidden />
               {label}
             </Link>

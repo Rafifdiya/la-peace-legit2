@@ -21,9 +21,10 @@
 
   --font-display: var(--font-fraunces), Georgia, serif;
   --font-sans: var(--font-jakarta), system-ui, sans-serif;
-  /* Ukuran teks isi +10% dari bawaan Tailwind (xs-lg). Judul (xl ke atas) tidak berubah. */
-  --text-xs: 0.825rem;
-  --text-sm: 0.9625rem;
+  /* Ukuran teks isi lebih besar dari bawaan Tailwind (xs-lg) agar nyaman untuk orang tua:
+     teks terkecil (xs) minimal ~16px. Judul (xl ke atas) tidak berubah. */
+  --text-xs: 0.95rem;
+  --text-sm: 1rem;
   --text-base: 1.1rem;
   --text-lg: 1.2375rem;
 
@@ -147,8 +148,8 @@ textarea {
 
 /* Teks isi +10% (Pengaturan profil, Kelas) */
 .teks-110 {
-  --text-xs: 0.9075rem;
-  --text-sm: 1.05875rem;
+  --text-xs: 1.045rem;
+  --text-sm: 1.1rem;
   --text-base: 1.21rem;
   --text-lg: 1.36125rem;
   font-size: var(--text-base);
@@ -234,10 +235,44 @@ html.kurangi-animasi *::after {
   from { opacity: 0; transform: scale(0.85); }
 }
 
-/* Beranda layar lebar: teks kartu jajanan +20% mengikuti kartu yang lebih besar */
+/* Kotak jajanan: kategori, badge kelangkaan, deskripsi, Resep/Lokasi = 20px pada ukuran Normal
+   (dalam rem agar tetap ikut pengaturan ukuran teks); daerah +5%; nama jajanan tidak diubah */
+.kartu-jajanan .text-xs, .kartu-jajanan .kartu-deskripsi { font-size: 1.1765rem; } /* 20px dari 17px */
+.kartu-jajanan .text-sm { font-size: calc(var(--text-sm) * 1.05); }
+@media (min-width: 1024px) {
+  .kartu-jajanan .text-xs, .kartu-jajanan .kartu-deskripsi { font-size: 1.1111rem; } /* 20px dari 18px */
+}
+
+/* Beranda: label statistik (Jajanan, Provinsi, ...) = ukuran text-sm + 10px.
+   Kalau kotak terlalu sempit, mengecil sendiri (17cqi) agar "Kontributor" tidak meluber. */
+.label-statistik { font-size: min(calc(var(--text-sm) + 0.5882rem), 17cqi); line-height: 1.2; } /* +10px dari 17px */
+@media (min-width: 1024px) {
+  .label-statistik { font-size: min(calc(var(--text-sm) + 0.5556rem), 17cqi); } /* +10px dari 18px */
+}
+
+/* Navbar atas (sudah masuk): Keluar, profil, Pesan, Pengaturan, Admin +10% (tombol, ikon & teks) */
+.nav-besar { zoom: 1.1; }
+
+/* Beranda: kotak cari +5px (kolom cari dari 1.32rem, pilihan daerah & tombol dari 1.155rem) */
+.cari-teks { font-size: calc(1.32rem + 0.2941rem); }
+.cari-kecil { font-size: calc(1.155rem + 0.2941rem); }
+@media (min-width: 1024px) {
+  .cari-teks { font-size: calc(1.32rem + 0.2778rem); }
+  .cari-kecil { font-size: calc(1.155rem + 0.2778rem); }
+}
+
+/* Beranda: tombol "Lihat semua" (1.155rem + 6px) */
+.lihat-semua { font-size: calc(1.155rem + 0.3529rem); }
+@media (min-width: 1024px) {
+  .lihat-semua { font-size: calc(1.155rem + 0.3333rem); }
+}
+
+/* Beranda: "Balik ke atas" +15% */
+body:has(.beranda) .ke-atas { font-size: calc(var(--text-sm) * 1.15); }
+
+/* Beranda layar lebar: teks kartu jajanan +20% mengikuti kartu yang lebih besar (sudah termasuk +5%) */
 @media (min-width: 80rem) {
-  .kartu-besar .text-xs { font-size: 0.9rem; }
-  .kartu-besar .text-sm { font-size: 1.05rem; }
+  .kartu-besar .kartu-jajanan .text-sm { font-size: 1.155rem; }
   .kartu-besar .text-xl { font-size: 1.5rem; }
 }
 

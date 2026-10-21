@@ -10,7 +10,7 @@ Riwayat pengerjaan: docs/07-progress.md
 =================================================================
 1. Minta akses collaborator repo GitHub ke pemilik repo.
 2. Minta akses project Supabase (Dashboard > Organization > Members),
-   atau buat project Supabase sendiri lalu jalankan migration 0001-0020.
+   atau buat project Supabase sendiri lalu jalankan migration 0001-0021.
 3. Ikuti README bagian "Menjalankan web (lokal)":
    .env.example -> .env.local, npm install, npm run dev.
 4. Akun demo (admin, user gratis) diminta langsung ke tim,
@@ -22,7 +22,7 @@ Aturan kerja
   akun, nomor WA / kontak pribadi.
 - Setiap selesai satu pekerjaan, tambah entri di docs/07-progress.md
   (nomor, tanggal & jam, apa yang dilakukan).
-- Migration baru: file berikutnya supabase/migrations/0021_....sql,
+- Migration baru: file berikutnya supabase/migrations/0022_....sql,
   jalankan manual di SQL Editor, catat di docs/08 bagian 4.
 - Next.js 16: baca docs di node_modules/next/dist/docs/ sebelum
   menulis kode (API cache berbeda dari versi lama).
@@ -36,7 +36,7 @@ Aturan kerja
        - Konfirmasi memperbarui tanggal "terakhir dikonfirmasi"
        - Tanda lokasi lama (> 6 bulan) sudah ada, tinggal disambung
        - Lokasi baru masuk moderasi admin dulu
-       - Butuh migration baru (0021)
+       - Butuh migration baru (0022)
 [ ] 3. Isi 20-30 data jajanan asli (tim) + label "Teruji tim"
        untuk resep yang sudah dicoba tim
 [ ] 4. Deploy Vercel
