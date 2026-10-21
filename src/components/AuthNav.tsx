@@ -4,11 +4,12 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LogOut, Settings, UserRound } from "lucide-react";
+import { LogOut, Mail, Settings, UserRound } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { LoginButton } from "./LoginButton";
 import { EVENT_PREMIUM } from "./TanpaIklanPremium";
 import { EVENT_PENGATURAN, bacaPengaturan } from "@/lib/pengaturan";
+import { EVENT_PESAN, bacaDibaca, idPesan, keTanya } from "@/lib/pesan";
 
 type Status = { masuk: boolean; admin: boolean; avatar: string | null; premium: boolean } | null;
 
@@ -19,6 +20,7 @@ export const EVENT_PROFIL = "jj:profil-berubah";
 export function AuthNav() {
   const [status, setStatus] = useState<Status>(null);
   const [lencana, setLencana] = useState(true);
+  const [adaPesanBaru, setAdaPesanBaru] = useState(false);
   const diPengaturan = usePathname().startsWith("/profil/saya/pengaturan");
 
   useEffect(() => {
@@ -31,7 +33,27 @@ export function AuthNav() {
       // Admin otomatis Premium (migration 0012)
       const premium = admin || (!!data?.premium_sampai && new Date(data.premium_sampai) > new Date());
       setStatus({ masuk: true, admin, avatar: data?.avatar_url ?? null, premium });
+      cekPesan(userId, admin);
     }
+
+    // Titik merah: ada pesan yang belum pernah dilihat di halaman Pesan
+    let ids: string[] = [];
+    let uid = "";
+    async function cekPesan(userId: string, admin: boolean) {
+      const [{ data: milikku }, moderasi, { data: tanya }] = await Promise.all([
+        supabase.from("snacks").select("id, status").eq("created_by", userId),
+        admin ? supabase.from("snacks").select("id", { count: "exact", head: true }).eq("status", "pending") : null,
+        supabase.from("requests").select("id, judul, request_answers!request_answers_request_id_fkey(count)").eq("created_by", userId),
+      ]);
+      uid = userId;
+      ids = idPesan(milikku ?? [], moderasi?.count ?? 0, keTanya(tanya));
+      hitungPesan();
+    }
+    function hitungPesan() {
+      const dibaca = bacaDibaca(uid);
+      setAdaPesanBaru(ids.some((id) => !dibaca.has(id)));
+    }
+    window.addEventListener(EVENT_PESAN, hitungPesan);
 
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
       muat(session?.user.id);
@@ -48,6 +70,7 @@ export function AuthNav() {
       window.removeEventListener(EVENT_PROFIL, ulang);
       window.removeEventListener(EVENT_PREMIUM, ulang);
       window.removeEventListener(EVENT_PENGATURAN, cekLencana);
+      window.removeEventListener(EVENT_PESAN, hitungPesan);
     };
   }, []);
 
@@ -121,19 +144,29 @@ export function AuthNav() {
         </span>
       )}
       </div>
-      {/* Pengaturan fitur (khusus user): gear berputar pelan & tulisan terbuka ke kiri saat hover */}
-      {!status.admin && (
-        <Link
-          href="/pengaturan"
-          aria-label="Pengaturan"
-          className="group hidden h-[2.55rem] items-center rounded-full border border-line bg-surface px-[0.6rem] text-ink-2 hover:border-brand hover:text-brand md:flex"
-        >
-          <span className="buka-geser max-w-0 overflow-hidden whitespace-nowrap opacity-0 transition-[max-width,opacity,margin,padding] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:mr-1.5 group-hover:max-w-[8rem] group-hover:pl-1 group-hover:opacity-100 group-focus-visible:mr-1.5 group-focus-visible:max-w-[8rem] group-focus-visible:pl-1 group-focus-visible:opacity-100">
-            Pengaturan
-          </span>
-          <Settings size={22} aria-hidden className="gear-putar shrink-0" />
-        </Link>
-      )}
+      {/* Pesan: bentuk sama dengan tombol Pengaturan, tulisan terbuka ke kanan saat hover */}
+      <Link
+        href="/pesan"
+        aria-label={adaPesanBaru ? "Pesan (ada pesan baru)" : "Pesan"}
+        className="group relative hidden h-[2.55rem] items-center rounded-full border border-line bg-surface px-[0.6rem] text-ink-2 hover:border-brand hover:text-brand md:flex"
+      >
+        <Mail size={22} aria-hidden className="shrink-0" />
+        {adaPesanBaru && <span className="absolute -right-0.5 -top-0.5 h-3 w-3 rounded-full bg-red-600 ring-2 ring-page" aria-hidden />}
+        <span className="buka-geser max-w-0 overflow-hidden whitespace-nowrap opacity-0 transition-[max-width,opacity,margin,padding] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:ml-1.5 group-hover:max-w-[8rem] group-hover:pr-1 group-hover:opacity-100 group-focus-visible:ml-1.5 group-focus-visible:max-w-[8rem] group-focus-visible:pr-1 group-focus-visible:opacity-100">
+          Pesan
+        </span>
+      </Link>
+      {/* Pengaturan fitur: gear berputar pelan & tulisan terbuka ke kiri saat hover */}
+      <Link
+        href="/pengaturan"
+        aria-label="Pengaturan"
+        className="group hidden h-[2.55rem] items-center rounded-full border border-line bg-surface px-[0.6rem] text-ink-2 hover:border-brand hover:text-brand md:flex"
+      >
+        <span className="buka-geser max-w-0 overflow-hidden whitespace-nowrap opacity-0 transition-[max-width,opacity,margin,padding] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:mr-1.5 group-hover:max-w-[8rem] group-hover:pl-1 group-hover:opacity-100 group-focus-visible:mr-1.5 group-focus-visible:max-w-[8rem] group-focus-visible:pl-1 group-focus-visible:opacity-100">
+          Pengaturan
+        </span>
+        <Settings size={22} aria-hidden className="gear-putar shrink-0" />
+      </Link>
     </div>
   );
 }

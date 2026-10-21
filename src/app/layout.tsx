@@ -50,7 +50,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Sidebar />
         <div className="flex min-w-0 flex-1 flex-col">
           <Navbar />
-          <main className="mx-auto w-full max-w-[1200px] flex-1 px-4">{children}</main>
+          <main className="mx-auto w-full max-w-[1440px] flex-1 px-4">{children}</main>
           <Footer />
         </div>
         <BottomNav />

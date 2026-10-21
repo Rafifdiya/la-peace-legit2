@@ -1,0 +1,135 @@
+DAFTAR FITUR - JEJAK JAJAN
+=================================================================
+Update terakhir: 15 Oktober 2026
+Status:  [JALAN] sudah berfungsi
+         [DEMO]  berfungsi, tapi versi demo (bukan untuk rilis sungguhan)
+         [BELUM] tombol sementara / belum dibuat
+Detail riwayat pengerjaan: docs/07-progress.md
+
+
+=================================================================
+1. JELAJAH (TANPA LOGIN)
+=================================================================
+Beranda
+[JALAN] Hero + tagline animasi ketik, kotak cari + pilih daerah
+[JALAN] Statistik (jajanan, provinsi, kontributor, lokasi)
+[JALAN] "Hampir Punah": marquee bolak-balik otomatis (berhenti saat hover)
+[JALAN] "Baru Ditambahkan": baris geser manual
+[JALAN] Footer lengkap: tentang singkat, sitemap mini, kontak, legal,
+        ikon media sosial (redup sampai akun resmi dibuat)
+
+Katalog Jajanan
+[JALAN] Cari, filter provinsi & kategori, urutan, gulir tanpa batas
+[JALAN] Kartu iklan berlabel "Iklan" di sela kartu
+
+Halaman jajanan
+[JALAN] Foto, nama lain, asal daerah, cerita, resep, langkah, video
+[JALAN] Lokasi "Terakhir Terlihat di" + mini map + link Maps / Pesan online
+[JALAN] Tanda lokasi lama (> 6 bulan tanpa konfirmasi)
+[JALAN] "Sudah coba resep ini?": Berhasil / Kurang berhasil + catatan +
+        foto hasil, ringkasan "Dicoba X orang, Y berhasil"
+[JALAN] Simpan jajanan & koleksi (gratis maks. 3 koleksi)
+[JALAN] Unduh PDF (gratis 5x/minggu) & Mode masak (Premium)
+[BELUM] Vote kelangkaan (Umum / Mulai langka / Hampir punah / Punah)
+[BELUM] Masih ada / Sudah tidak ada, Saya lihat di tempat lain
+[BELUM] Bagikan, Lapor jajanan, Komentar
+
+Forum Jajanan (/request)
+[JALAN] Postingan dengan topik (Cari resep, Cari penjual/lokasi,
+        Sejarah & cerita, Tips memasak, Nostalgia & obrolan) + aturan forum
+[JALAN] Bagian "Postingan saya" (ada tombol Hapus) & "Postingan global"
+[JALAN] Tab Terbaru / Belum terjawab, status Terjawab otomatis
+[JALAN] Balasan (tautkan jajanan katalog), Balasan terbaik pilihan penanya
+[JALAN] Pemilik postingan baru bisa membalas setelah ada balasan orang lain
+[JALAN] Laporkan postingan / balasan, filter kata kasar
+[BELUM] Edit postingan / balasan
+
+Lainnya
+[JALAN] Kelas Bersama Penjual (segera hadir) + form minat
+[JALAN] Tentang kami: kriteria katalog, lisensi, kartu tim + sosial
+[JALAN] Syarat & Ketentuan, Kebijakan Privasi
+[JALAN] Tombol Kontak admin (melayang), Balik ke atas
+[JALAN] Motif batik kawung (beranda, footer, Tentang kami)
+
+
+=================================================================
+2. AKUN & KOMUNITAS (LOGIN)
+=================================================================
+[JALAN] Daftar & masuk email + password (konfirmasi email dimatikan)
+[DEMO]  Lupa password: muncul setelah 2x salah, langsung ganti tanpa email
+        (akun admin dikecualikan) -> ganti reset via email sebelum rilis
+[JALAN] Tombol mata tampilkan password, dialog konfirmasi Keluar
+[JALAN] Kontribusi 7 langkah (foto dikompres, video per langkah via link),
+        kriteria tampil di atas form
+[BELUM] Edit kontribusi yang sudah dikirim
+[JALAN] Profil: foto (bisa diperbesar), level kontributor (Pencicip,
+        Penjelajah, Penjaga Resep, Penjaga Warisan), kontribusi, simpanan,
+        status kiriman
+[JALAN] Pengaturan profil: foto, username (unik), email, password;
+        nama asli dikunci
+[JALAN] Pengaturan fitur (/pengaturan): teks lebih besar, kurangi animasi
+        (gratis); bebas iklan, layar menyala, lencana (Premium, terkunci
+        untuk akun gratis -> diarahkan ke /premium)
+[JALAN] Pesan (/pesan): status kiriman, balasan forum, selamat datang;
+        titik merah navbar, tandai semua dibaca, hapus semua
+[BELUM] Notifikasi jajanan baru (tertulis "segera hadir")
+
+Premium
+[DEMO]  Aktifkan / batalkan Premium tanpa pembayaran (rencana Rp15.000/bulan)
+[JALAN] Bebas iklan, mode masak, PDF tanpa batas, koleksi tanpa batas,
+        lencana "Prem" + bingkai mahkota, menu Premium hijau di sidebar
+[BELUM] Pembayaran asli (payment gateway)
+
+
+=================================================================
+3. ADMIN
+=================================================================
+[JALAN] Admin otomatis Premium & level tertinggi
+[JALAN] Kiriman: setujui (checklist kriteria wajib dicentang) / tolak +
+        alasan, admin boleh menyetujui kiriman sendiri
+[JALAN] Hapus jajanan (halaman jajanan & dashboard), ganti foto utama
+[JALAN] Laporan: buka, hapus konten forum, abaikan
+[JALAN] Iklan: unggah foto/GIF/video, aktif/nonaktif (maks. 6 aktif),
+        saklar "Tampilkan iklan / Pop-up iklan untuk saya"
+[JALAN] Statistik dashboard (menunggu, laporan, total jajanan, minat kelas)
+[BELUM] Tab Kategori (tambah / ubah kategori)
+[BELUM] Hapus konten selain forum dari tab Laporan
+
+Iklan (untuk pengguna gratis)
+[JALAN] Slide sidebar (6 detik), kartu di katalog, pop-up tengah layar
+        (tiap 50 detik, maks. 3x/hari)
+
+
+=================================================================
+4. MIGRATION SUPABASE (WAJIB DIJALANKAN BERURUTAN)
+=================================================================
+0001-0006  schema, data referensi, view katalog, data contoh, kirim &
+           moderasi, nama unik
+0007 admin setujui sendiri     0013 pengaturan profil + bucket avatar
+0008 minat kelas               0014 lupa password demo
+0009 iklan + bucket iklan      0015 sudah coba resep
+0010 premium + koleksi         0016 forum: terjawab otomatis, hapus milik sendiri
+0011 unduh PDF                 0017 forum: topik, balasan terbaik, laporan forum
+0012 admin otomatis premium    0018 admin ganti foto utama
+Opsional: supabase/data-iklan-demo.sql (3 iklan merek fiktif)
+
+
+=================================================================
+5. AKUN DEMO (TANPA EMAIL / PASSWORD, REPO PUBLIC)
+=================================================================
+- Admin        : 1 akun (moderasi, iklan, laporan)
+- User gratis  : 2 akun (rafif_user, kuropip) -> salah satunya bisa
+                 diaktifkan Premium untuk demo
+Kredensial disimpan di luar repo oleh tim.
+
+
+=================================================================
+6. SEBELUM EXPO / RILIS
+=================================================================
+- Isi 20-30 data jajanan asli (+ label "Teruji tim")
+- Selesaikan tombol [BELUM] yang penting: vote kelangkaan,
+  Masih ada / Sudah tidak ada
+- Iklan usaha sungguhan hanya dengan izin pemiliknya
+- Deploy Vercel + env NEXT_PUBLIC_KONTAK_ADMIN
+- Testing (Vitest, Playwright, UAT termasuk pengguna lansia)
+- Setelah expo: pembayaran asli, reset password via email

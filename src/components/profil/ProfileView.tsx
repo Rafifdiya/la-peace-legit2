@@ -3,6 +3,7 @@ import { Pencil, Settings } from "lucide-react";
 import { SnackCard } from "@/components/SnackCard";
 import { AvatarProfil } from "./AvatarProfil";
 import { KepalaHalaman } from "@/components/KepalaHalaman";
+import { LevelKontributor } from "./LevelKontributor";
 import { StatCard } from "@/components/StatCard";
 import { Tabs } from "@/components/Tabs";
 import { getCards } from "@/lib/data";
@@ -53,11 +54,9 @@ export async function ProfileView({ user, diriSendiri, tab, basePath, tersimpan 
             <Link href="/profil/saya/pengaturan" className="flex h-fit items-center gap-1.5 rounded-full border border-line bg-surface px-4 py-2 text-sm hover:border-brand">
               <Pencil size={14} aria-hidden /> Pengaturan profil
             </Link>
-            {user.role !== "admin" && (
-              <Link href="/pengaturan" className="flex h-fit items-center gap-1.5 rounded-full border border-line bg-surface px-4 py-2 text-sm hover:border-brand">
-                <Settings size={14} aria-hidden /> Pengaturan
-              </Link>
-            )}
+            <Link href="/pengaturan" className="flex h-fit items-center gap-1.5 rounded-full border border-line bg-surface px-4 py-2 text-sm hover:border-brand">
+              <Settings size={14} aria-hidden /> Pengaturan
+            </Link>
             {user.role === "admin" && (
               <Link href="/admin" className="h-fit rounded-full bg-brand px-4 py-2 text-sm text-white">Dashboard Moderasi</Link>
             )}
@@ -69,6 +68,8 @@ export async function ProfileView({ user, diriSendiri, tab, basePath, tersimpan 
         <StatCard label="Kontribusi" value={user.kontribusi.length} />
         <StatCard label="Lokasi" value={user.jumlahLokasi} />
       </div>
+
+      <LevelKontributor jumlah={user.kontribusi.length} diriSendiri={diriSendiri} admin={user.role === "admin"} />
 
       {moderasi}
 

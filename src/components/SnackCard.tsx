@@ -9,7 +9,7 @@ export function SnackCard({ snack, utama = false }: { snack: SnackCardData; utam
   return (
     <Link
       href={`/jajanan/${snack.slug}`}
-      className="cv-auto group block overflow-hidden rounded-lg border border-line bg-surface shadow-card hover:border-brand"
+      className="cv-auto group block overflow-hidden rounded-lg border-2 border-[#D9C4A3] bg-surface shadow-card hover:border-brand"
     >
       <SnackImage
         src={snack.cover}

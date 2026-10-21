@@ -5,13 +5,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Lock } from "lucide-react";
 import { EVENT_PREMIUM } from "@/components/TanpaIklanPremium";
+import { LihatIklanToggle } from "@/app/admin/LihatIklanToggle";
 import { bacaPengaturan, simpanPengaturan, type NamaPengaturan } from "@/lib/pengaturan";
 
 type Item = { nama?: NamaPengaturan; judul: string; ket: string; segera?: boolean };
 
 const GRATIS: Item[] = [
   { nama: "teksBesar", judul: "Teks lebih besar", ket: "Perbesar semua tulisan sekitar 12%, nyaman untuk membaca resep." },
-  { nama: "kurangiAnimasi", judul: "Kurangi animasi", ket: "Matikan efek ketik, kilau, dan pantul. Lebih hemat baterai." },
+  { nama: "kurangiAnimasi", judul: "Kurangi animasi", ket: "Matikan efek ketik, kilau, dan gerakan lain. Lebih hemat baterai." },
   { judul: "Notifikasi jajanan baru", ket: "Kabar saat ada jajanan baru dari daerahmu.", segera: true },
 ];
 
@@ -54,7 +55,7 @@ function Baris({ item, kunci, nyala, onKlik }: { item: Item; kunci?: boolean; ny
   );
 }
 
-export function PengaturanFitur({ premium }: { premium: boolean }) {
+export function PengaturanFitur({ premium, admin }: { premium: boolean; admin?: boolean }) {
   const router = useRouter();
   const [nilai, setNilai] = useState<Partial<Record<NamaPengaturan, boolean>>>({});
 
@@ -100,8 +101,20 @@ export function PengaturanFitur({ premium }: { premium: boolean }) {
             </Link>
           )}
         </div>
-        {daftar(PREMIUM, !premium)}
+        {/* Admin mengatur iklan lewat saklar khusus di bawah */}
+        {daftar(admin ? PREMIUM.filter((i) => i.nama !== "bebasIklan") : PREMIUM, !premium)}
       </section>
+
+      {admin && (
+        <section className="space-y-4 rounded-xl border border-line bg-surface p-5">
+          <div>
+            <h2 className="font-display text-2xl font-semibold">Admin</h2>
+            <p className="text-sm text-ink-2">Admin otomatis bebas iklan. Nyalakan untuk mengecek tampilan iklan di akunmu sendiri.</p>
+          </div>
+          <LihatIklanToggle />
+          <Link href="/admin" className="inline-block font-semibold text-brand underline">Buka Dashboard Moderasi</Link>
+        </section>
+      )}
     </div>
   );
 }

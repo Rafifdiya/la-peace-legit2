@@ -25,13 +25,13 @@ export default async function Beranda() {
   ] as const;
 
   return (
-    <div className="space-y-14 py-10">
+    <div className="space-y-12 py-10">
       {/* Motif kawung samar di belakang hero */}
       <section className="motif-kawung motif-pudar space-y-5 rounded-xl py-8 text-center">
         <p className="-rotate-2 font-hand text-[1.575rem] text-brand sm:text-[1.96875rem]">
           <span className="ketik">dari dapur nenek, untuk generasi berikutnya..</span>
         </p>
-        <h1 className="font-display text-4xl font-semibold sm:text-6xl">Jejak jajan yang hampir hilang</h1>
+        <h1 className="font-display text-4xl font-semibold sm:text-6xl xl:text-[4.5rem]">Jejak jajan yang hampir hilang</h1>
         <p className="mx-auto max-w-2xl text-[1.32rem] text-ink">
           Arsip jajanan tradisional Indonesia dari komunitas: cerita, resep, dan di mana terakhir terlihat.
         </p>
@@ -69,22 +69,22 @@ function Section({ judul, href, items, utama = false }: { judul: string; href: s
   return (
     <section className="space-y-4">
       <div className="flex items-end justify-between">
-        <h2 className="font-display text-2xl font-semibold">{judul}</h2>
+        <h2 className="font-display text-2xl font-semibold xl:text-[1.8rem]">{judul}</h2>
         <Link href={href} className="text-[1.155rem] font-semibold text-brand underline underline-offset-4 hover:text-brand-hover">Lihat semua</Link>
       </div>
       {items.length === 0 ? (
         <p className="text-ink-2">Belum ada jajanan.</p>
       ) : (
-        <Carousel label={judul}>
+        <Carousel label={judul} jalan={utama /* hanya "Hampir Punah" yang bergerak otomatis */}>
           {items.map((s, i) => (
-            <div key={s.slug} className="w-[78%] shrink-0 snap-start sm:w-[45%] lg:w-[31%]">
+            <div key={s.slug} className="kartu-besar w-[17rem] shrink-0 sm:w-[20rem] xl:w-[24rem]">
               <SnackCard snack={s} utama={utama && i < 3} />
             </div>
           ))}
           {/* Kartu terakhir: ajakan ke katalog */}
           <Link
             href={href}
-            className="flex w-[60%] shrink-0 snap-start flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed border-orange-500/40 bg-surface p-6 text-center font-semibold text-brand hover:bg-orange-500/10 sm:w-[30%] lg:w-[20%]"
+            className="flex w-[12rem] shrink-0 flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed border-orange-500/40 bg-surface p-6 text-center font-semibold text-brand hover:bg-orange-500/10"
           >
             <span className="rounded-full bg-brand p-3 text-white"><ArrowRight size={24} aria-hidden /></span>
             Buka Katalog
