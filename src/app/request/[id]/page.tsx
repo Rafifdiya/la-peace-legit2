@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { KepalaHalaman } from "@/components/KepalaHalaman";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
@@ -42,7 +43,7 @@ export default async function PostinganForum({ params }: PageProps<"/request/[id
         <Connection />
       </Suspense>
       <Link href="/request" className="inline-block pb-2 text-sm text-brand hover:underline">← Forum Jajanan</Link>
-      <div className="space-y-2">
+      <KepalaHalaman className="space-y-2">
         <p className="flex flex-wrap items-center gap-2 text-xs">
           <Link href={`/request?topik=${t.key}`} className="rounded-full bg-subtle px-2.5 py-0.5 font-semibold text-brand hover:underline">{t.emoji} {t.label}</Link>
           {t.mencari && (
@@ -58,7 +59,7 @@ export default async function PostinganForum({ params }: PageProps<"/request/[id
         </p>
         {r.isi && <p className="whitespace-pre-line pt-2 leading-relaxed">{r.isi}</p>}
         <AksiPostingan id={r.id} pemilikId={r.pemilikId} />
-      </div>
+      </KepalaHalaman>
 
       <section className="space-y-3">
         <h2 className="font-display text-xl font-semibold">{r.jawaban.length} Balasan</h2>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { KepalaHalaman } from "@/components/KepalaHalaman";
 import { Suspense } from "react";
 import { MessageCircle } from "lucide-react";
 import { Tabs } from "@/components/Tabs";
@@ -15,13 +16,13 @@ export default async function ForumPage({ searchParams }: PageProps<"/request">)
   const provinsi = await getProvinces();
   return (
     <div className="space-y-6 py-10">
-      <div className="flex flex-wrap items-end justify-between gap-4">
+      <KepalaHalaman className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="font-display text-4xl font-semibold">Forum Jajanan</h1>
           <p className="mt-1.5 text-ink-2">Tanya resep, cari penjual, berbagi cerita & tips seputar jajanan tradisional.</p>
         </div>
         <TombolTanya provinsi={provinsi} />
-      </div>
+      </KepalaHalaman>
       <Suspense fallback={<p className="text-ink-2">Memuat...</p>}>
         <DaftarPostingan searchParams={searchParams} />
       </Suspense>

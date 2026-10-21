@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { Check, X } from "lucide-react";
+import { KepalaHalaman } from "@/components/KepalaHalaman";
 import { LoginButton } from "@/components/LoginButton";
 import { formatTanggal } from "@/lib/format";
 import { getSesi } from "@/lib/kiriman";
@@ -33,13 +34,13 @@ function Sel({ v }: { v: boolean | string }) {
 export default function PremiumPage() {
   return (
     <div className="mx-auto max-w-3xl space-y-10 py-10">
-      <header className="space-y-3 text-center">
+      <KepalaHalaman className="space-y-3 text-center">
         <span className="inline-block rounded-full border border-orange-500/40 bg-orange-500/10 px-3 py-1 text-sm font-semibold text-brand">
           Mode demo · tanpa pembayaran
         </span>
         <h1 className="font-display text-4xl font-semibold sm:text-5xl">Jejak Jajan Premium</h1>
         <p className="font-hand text-2xl text-brand">arsip tetap gratis, premium untuk yang ingin lebih nyaman</p>
-      </header>
+      </KepalaHalaman>
 
       <div className="overflow-x-auto rounded-lg border border-line bg-surface">
         <table className="w-full text-left">

@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { connection } from "next/server";
 import { Suspense } from "react";
+import { KepalaHalaman } from "@/components/KepalaHalaman";
 import { LoginButton } from "@/components/LoginButton";
 import { StatCard } from "@/components/StatCard";
 import { Tabs } from "@/components/Tabs";
@@ -22,7 +23,9 @@ export const metadata: Metadata = { title: "Admin", robots: { index: false } };
 export default function AdminPage({ searchParams }: PageProps<"/admin">) {
   return (
     <div className="space-y-8 py-10">
-      <h1 className="font-display text-4xl font-semibold">Dashboard Moderasi</h1>
+      <KepalaHalaman>
+        <h1 className="font-display text-4xl font-semibold">Dashboard Moderasi</h1>
+      </KepalaHalaman>
       <Suspense fallback={<p className="text-ink-2">Memuat...</p>}>
         <Isi searchParams={searchParams} />
       </Suspense>

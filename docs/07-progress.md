@@ -185,3 +185,7 @@ Catatan: jam untuk entri lama tidak tercatat, jadi hanya tanggal. Entri baru dit
 - Isi 20-30 data awal
 - Sebelum expo: SMTP sendiri (mis. Resend) karena email bawaan Supabase dibatasi
 - Login Google (opsional, akhir)
+
+## Catatan dari branch lain (main, oleh anggota tim)
+- **2026-10-20 20:58** - Fix error Tanya Jajanan di main (relasi ganda requests-request_answers setelah migration 0017): relasi eksplisit request_answers!request_answers_request_id_fkey. Branch feat/perbaiki-tanya-jajanan (PR #10).
+- **2026-10-20 21:26** - Komponen `KepalaHalaman`: latar motif kawung samar di judul semua halaman (katalog, detail jajanan, forum, kelas, premium, profil, pengaturan, admin, form kontribusi, pesan tengah). Branch feat/latar-kepala-halaman (PR #11).

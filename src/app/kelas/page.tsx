@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { KepalaHalaman } from "@/components/KepalaHalaman";
 import { FormMinat } from "./FormMinat";
 
 export const metadata: Metadata = {
@@ -16,13 +17,13 @@ const langkah = [
 export default function KelasPage() {
   return (
     <div className="teks-110 mx-auto max-w-3xl space-y-10 py-10">
-      <header className="space-y-3 text-center">
+      <KepalaHalaman className="space-y-3 text-center">
         <span className="inline-block rounded-full border border-orange-500/40 bg-orange-500/10 px-3 py-1 text-sm font-semibold text-brand">
           Segera hadir
         </span>
         <h1 className="font-display text-4xl font-semibold sm:text-5xl">Kelas Bersama Penjual</h1>
         <p className="font-hand text-2xl text-brand">belajar langsung dari tangan yang membuatnya</p>
-      </header>
+      </KepalaHalaman>
 
       <ul className="grid gap-4 sm:grid-cols-3">
         {langkah.map(([judul, isi]) => (

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Pencil, Settings } from "lucide-react";
 import { SnackCard } from "@/components/SnackCard";
 import { AvatarProfil } from "./AvatarProfil";
+import { KepalaHalaman } from "@/components/KepalaHalaman";
 import { LevelKontributor } from "./LevelKontributor";
 import { StatCard } from "@/components/StatCard";
 import { Tabs } from "@/components/Tabs";
@@ -31,7 +32,7 @@ export async function ProfileView({ user, diriSendiri, tab, basePath, tersimpan 
 
   return (
     <div className="space-y-8 py-10">
-      <header className="flex flex-col gap-5 sm:flex-row sm:items-center">
+      <KepalaHalaman className="flex flex-col gap-5 sm:flex-row sm:items-center">
         <AvatarProfil nama={user.nama} premium={user.premium} src={user.avatarUrl} />
         <div className="flex-1 space-y-1">
           <h1 className="flex flex-wrap items-center gap-2 font-display text-3xl font-semibold">
@@ -61,7 +62,7 @@ export async function ProfileView({ user, diriSendiri, tab, basePath, tersimpan 
             )}
           </div>
         )}
-      </header>
+      </KepalaHalaman>
 
       <div className="grid grid-cols-2 gap-3">
         <StatCard label="Kontribusi" value={user.kontribusi.length} />
