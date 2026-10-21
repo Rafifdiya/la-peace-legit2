@@ -207,6 +207,15 @@ Catatan: jam untuk entri lama tidak tercatat, jadi hanya tanggal. Entri baru dit
 203. **2026-10-21 21:33** - Entri 202 dibatalkan (git restore page.tsx & globals.css): yang dimaksud user bukan font, tapi ukuran UI.
 204. **2026-10-21 21:37** - Sidebar seluruhnya -20% (CSS zoom 0.8, tinggi 125vh agar tetap setinggi layar; lebar tampil 345->276px). Beranda: tagline -5px (laptop 60.8->55.7px), judul -5px (64.8->59.8px), teks Arsip -2px (27.3->25.3px).
 205. **2026-10-21 22:01** - Sidebar diubah jadi -10% dari versi online (zoom 0.9, tinggi 111.12vh; lebar tampil 311px), bukan -20%. Web sudah online di Vercel (deploy dari main, otomatis tiap merge; PR dapat link Preview). Branch feat/ukuran-beranda-sidebar + PR untuk dites di Preview sebelum merge.
+206. **2026-10-21 22:08** - Loading saat masuk/daftar: dialog menampilkan ikon berputar "Sedang masuk... / Menyiapkan akunmu" sampai navbar siap (profil dimuat + foto profil di-preload maks. 2 detik), minimal 0,7 detik, maks. 6 detik, lalu dialog tertutup dan foto profil + tombol Keluar muncul bersamaan (event jj:sesi-siap). Spinner .putar-muat tetap berputar di mode kurangi animasi.
+207. **2026-10-21 22:12** - docs/10-business-model-canvas.txt: BMC 8 blok (Key Partners, Key Activities, Value Proposition, Customer Relationship, Customer Segments, Channel, Revenue Stream, Cost Structure) + Key Resources opsional, disesuaikan fitur terkini (vote, komentar, edit/hapus, ukuran teks lansia, web online).
+208. **2026-10-21 22:22** - BMC: Key Resources jadi blok utama no. 3 (fisik/teknologi, intelektual, manusia, finansial), urutan blok lain dinomori ulang (total 9 blok).
+209. **2026-10-21 22:34** - BMC blok Channel disusun ulang per 5 tahap (Awareness, Evaluation, Purchase/Sign up, Delivery, After sales).
+210. **2026-10-21 22:38** - BMC blok Cost Structure disusun ulang: cost-driven -> value-driven + 4 karakteristik (Fixed Costs, Variable Costs, Economies of Scale, Economies of Scope) + ringkasan estimasi.
+211. **2026-10-21 22:42** - BMC blok Customer Segments disusun ulang: jenis multi-sided platform + A. Segmen, B. Demografi, C. Geografi, D. Psikografi.
+212. **2026-10-21 22:48** - docs/10b-bmc-singkat.txt: versi singkat BMC 9 blok (poin pendek untuk slide).
+213. **2026-10-21 23:20** - Beranda & sidebar: sidebar -10% lagi (zoom 0.81, tinggi 123.46vh), tagline -10px (laptop 45.7px), judul -10px di tablet/laptop (laptop 49.8px; HP tetap 25.6px agar tidak lebih kecil dari teks isi), kotak cari & kotak statistik -10% (zoom 0.9), jarak vertikal beranda dirapatkan (space-y-12 py-10 -> space-y-6 py-4, hero space-y-5 py-8 -> space-y-3 py-4) agar foto kartu Hampir Punah mulai terlihat di layar laptop 1366x768.
+214. **2026-10-21 23:22** - Commit + push ke PR #14: loading login, sidebar -10% lagi, ukuran beranda, kotak cari & statistik -10%, jarak vertikal beranda.
 
 ## Berikutnya
 - Review docs/06 model bisnis bersama tim, lalu buat slide

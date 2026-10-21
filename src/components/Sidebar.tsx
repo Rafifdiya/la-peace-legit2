@@ -7,7 +7,7 @@ import { TanpaIklanPremium } from "./TanpaIklanPremium";
 // Navigasi kiri untuk layar md ke atas (mirip Cookpad). Mobile pakai BottomNav.
 export function Sidebar() {
   return (
-    <aside className="sticky top-0 hidden h-[111.12vh] w-[19.2rem] shrink-0 [zoom:0.9] flex-col gap-6 overflow-y-auto [scrollbar-width:thin] border-r border-line bg-surface px-4 py-6 md:flex">
+    <aside className="sticky top-0 hidden h-[123.46vh] w-[19.2rem] shrink-0 [zoom:0.81] flex-col gap-6 overflow-y-auto [scrollbar-width:thin] border-r border-line bg-surface px-4 py-6 md:flex">
       <Link href="/" className="px-3 font-display text-[2.008rem] font-semibold text-brand">
         Jejak Jajan
       </Link>

@@ -25,18 +25,18 @@ export default async function Beranda() {
   ] as const;
 
   return (
-    <div className="beranda space-y-12 py-10">
+    <div className="beranda space-y-6 py-4">
       {/* Motif kawung samar di belakang hero */}
-      <section className="motif-kawung motif-pudar space-y-5 rounded-xl py-8 text-center">
-        <p className="-rotate-2 font-hand text-[2.694rem] text-brand sm:text-[3.081rem] lg:text-[3.097rem]">
+      <section className="motif-kawung motif-pudar space-y-3 rounded-xl py-4 text-center">
+        <p className="-rotate-2 font-hand text-[2.106rem] text-brand sm:text-[2.493rem] lg:text-[2.541rem]">
           <span className="ketik">dari dapur nenek, untuk generasi berikutnya..</span>
         </p>
-        <h1 className="font-display text-[1.506rem] font-semibold sm:text-[2.706rem] lg:text-[2.722rem] xl:text-[3.322rem]">Jejak jajan yang hampir hilang</h1>
+        <h1 className="font-display text-[1.506rem] font-semibold sm:text-[2.118rem] lg:text-[2.166rem] xl:text-[2.766rem]">Jejak jajan yang hampir hilang</h1>
         <p className="mx-auto max-w-2xl text-[1.4rem] text-ink lg:text-[1.407rem]">
           Arsip jajanan tradisional Indonesia dari komunitas: cerita, resep, dan di mana terakhir terlihat.
         </p>
         {/* Cari + pilih daerah dalam satu kotak (pengganti daftar tombol provinsi) */}
-        <form action="/katalog" className="cari-beranda mx-auto flex max-w-[50.4rem] flex-wrap items-center gap-[0.6rem] rounded-3xl border border-line bg-surface px-[1.2rem] py-[0.9rem] sm:flex-nowrap sm:rounded-full">
+        <form action="/katalog" className="cari-beranda mx-auto flex [zoom:0.9] max-w-[50.4rem] flex-wrap items-center gap-[0.6rem] rounded-3xl border border-line bg-surface px-[1.2rem] py-[0.9rem] sm:flex-nowrap sm:rounded-full">
           <Search size={22} className="text-ink" aria-hidden />
           <input name="q" placeholder="Cari klepon, kue ape, lupis..." aria-label="Cari jajanan" className="cari-teks min-w-0 flex-1 bg-transparent outline-none placeholder:text-ink/80" />
           <select name="provinsi" aria-label="Daerah" defaultValue="" className="w-full rounded-full border border-line bg-surface px-[0.9rem] py-[0.45rem] cari-kecil sm:w-[13.2rem]">
@@ -47,7 +47,7 @@ export default async function Beranda() {
         </form>
       </section>
 
-      <section className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <section className="grid grid-cols-2 gap-4 [zoom:0.9] lg:grid-cols-4">
         {statList.map(([label, n]) => <StatCard key={label} label={label} value={n} labelClass="label-statistik text-ink-2" />)}
       </section>
 

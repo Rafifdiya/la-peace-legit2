@@ -107,7 +107,7 @@ body {
 
 /* Kecuali efek ketik (.ketik), kilau (.kilau), dan tombol Pengaturan navbar: gerakannya kecil, aman untuk mode kurangi animasi */
 @media (prefers-reduced-motion: reduce) {
-  *:not(.ketik, .kilau, .gear-putar, .buka-geser, .marquee__inner),
+  *:not(.ketik, .kilau, .gear-putar, .buka-geser, .marquee__inner, .putar-muat),
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
@@ -301,4 +301,12 @@ body:has(.beranda) .ke-atas { font-size: calc(var(--text-sm) * 1.15); }
   0%, 6% { transform: translateX(0); }
   44%, 56% { transform: translateX(var(--geser, 0)); }
   94%, 100% { transform: translateX(0); }
+}
+
+/* Ikon loading berputar (tetap jalan walau mode kurangi animasi: penanda proses penting) */
+.putar-muat { animation: putar-muat 0.9s linear infinite; }
+@keyframes putar-muat { to { transform: rotate(360deg); } }
+html.kurangi-animasi .putar-muat {
+  animation-duration: 0.9s !important;
+  animation-iteration-count: infinite !important;
 }

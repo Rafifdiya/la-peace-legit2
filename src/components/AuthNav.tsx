@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LogOut, Mail, Settings, UserRound } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { EVENT_SESI_SIAP } from "./LoginDialog";
 import { LoginButton } from "./LoginButton";
 import { EVENT_PREMIUM } from "./TanpaIklanPremium";
 import { EVENT_PENGATURAN, bacaPengaturan } from "@/lib/pengaturan";
@@ -32,7 +33,18 @@ export function AuthNav() {
       const admin = data?.role === "admin";
       // Admin otomatis Premium (migration 0012)
       const premium = admin || (!!data?.premium_sampai && new Date(data.premium_sampai) > new Date());
-      setStatus({ masuk: true, admin, avatar: data?.avatar_url ?? null, premium });
+      const avatar = data?.avatar_url ?? null;
+      // Muat foto profil dulu (maks. 2 detik) agar foto & tombol muncul bersamaan
+      if (avatar) {
+        await new Promise<void>((r) => {
+          const img = new window.Image();
+          img.onload = img.onerror = () => r();
+          img.src = avatar;
+          setTimeout(r, 2000);
+        });
+      }
+      setStatus({ masuk: true, admin, avatar, premium });
+      window.dispatchEvent(new Event(EVENT_SESI_SIAP));
       cekPesan(userId, admin);
     }
 
