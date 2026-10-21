@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
   partialPrefetching: true,
   // Hapus header "x-powered-by" (sedikit lebih hemat & aman)
   poweredByHeader: false,
+  // Build pengecekan bisa memakai folder lain (NEXT_DIST_DIR=.next-cek) agar tidak
+  // menimpa cache "npm run dev" yang sedang jalan
+  distDir: process.env.NEXT_DIST_DIR || ".next",
   images: {
     // AVIF paling kecil, WebP sebagai cadangan
     formats: ["image/avif", "image/webp"],

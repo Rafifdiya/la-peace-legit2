@@ -65,10 +65,13 @@ export async function ProfileView({ user, diriSendiri, tab, basePath, tersimpan 
         )}
       </KepalaHalaman>
 
-      <div className="grid grid-cols-2 gap-3">
-        <StatCard label="Kontribusi" value={user.kontribusi.length} />
-        <StatCard label="Lokasi" value={user.jumlahLokasi} />
-      </div>
+      {/* Profil sendiri: kotak Kontribusi & Lokasi disembunyikan (jumlah kontribusi sudah ada di Level profil) */}
+      {!diriSendiri && (
+        <div className="grid grid-cols-2 gap-3 [zoom:0.75]">
+          <StatCard label="Kontribusi" value={user.kontribusi.length} />
+          <StatCard label="Lokasi" value={user.jumlahLokasi} />
+        </div>
+      )}
 
       <LevelKontributor jumlah={user.kontribusi.length} diriSendiri={diriSendiri} admin={user.role === "admin"} />
 
@@ -87,7 +90,7 @@ async function CardGrid({ slugs, kosong, bisaHapus }: { slugs: string[]; kosong:
   const cards = await getCards(slugs);
   if (cards.length === 0) return <p className="text-ink-2">{kosong}</p>;
   return (
-    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {cards.map((s) =>
         bisaHapus ? (
           <div key={s.slug} className="relative">

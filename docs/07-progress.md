@@ -216,6 +216,32 @@ Catatan: jam untuk entri lama tidak tercatat, jadi hanya tanggal. Entri baru dit
 212. **2026-10-21 22:48** - docs/10b-bmc-singkat.txt: versi singkat BMC 9 blok (poin pendek untuk slide).
 213. **2026-10-21 23:20** - Beranda & sidebar: sidebar -10% lagi (zoom 0.81, tinggi 123.46vh), tagline -10px (laptop 45.7px), judul -10px di tablet/laptop (laptop 49.8px; HP tetap 25.6px agar tidak lebih kecil dari teks isi), kotak cari & kotak statistik -10% (zoom 0.9), jarak vertikal beranda dirapatkan (space-y-12 py-10 -> space-y-6 py-4, hero space-y-5 py-8 -> space-y-3 py-4) agar foto kartu Hampir Punah mulai terlihat di layar laptop 1366x768.
 214. **2026-10-21 23:22** - Commit + push ke PR #14: loading login, sidebar -10% lagi, ukuran beranda, kotak cari & statistik -10%, jarak vertikal beranda.
+215. **2026-10-21 23:26** - Sidebar -15% lagi (zoom 0.81 -> 0.6885, tinggi 145.24vh); lebar tampil laptop 280 -> 238px, tulisan menu tampil +/- 19.6px.
+216. **2026-10-21 23:29** - Kotak statistik beranda (Jajanan, Provinsi, Kontributor, Lokasi) -20% lagi (zoom 0.9 -> 0.72).
+217. **2026-10-21 23:30** - Tombol Lihat semua -3% (zoom 0.97), kotak cari -5% lagi (zoom 0.9 -> 0.855).
+218. **2026-10-21 23:32** - Tombol Lihat semua -5% lagi (zoom 0.97 -> 0.9215).
+219. **2026-10-21 23:34** - Penyebab cache npm run dev sering basi: build pengecekan menimpa folder .next yang dipakai dev server. next.config distDir bisa diganti lewat NEXT_DIST_DIR; build pengecekan kini ke .next-cek (di-.gitignore), dev server user tidak terganggu.
+220. **2026-10-21 23:37** - Tombol Lihat semua -5% lagi (zoom 0.9215 -> 0.8754).
+221. **2026-10-21 23:40** - Seluruh isi beranda (selain sidebar, navbar, footer) -10% rata (zoom 0.9 di div.beranda): teks, kotak, gambar, jarak mengecil proporsional.
+222. **2026-10-21 23:49** - Sidebar bisa ditutup/dibuka (TombolSidebar.tsx): tombol tutup di samping logo sidebar, tombol buka + logo muncul di navbar saat tertutup; default terbuka; status disimpan di localStorage dan diterapkan sebelum tampil (skrip kecil di layout, data-sidebar di <html>) agar tidak berkedip. Diuji di dev server: tutup, reload tetap tertutup, buka lagi. ESLint mengabaikan .next-cek.
+223. **2026-10-21 23:52** - Form kontribusi: kolom Kategori dihapus (juga dari ringkasan langkah akhir); kiriman baru tanpa kategori (category_id null).
+224. **2026-10-21 23:54** - Navbar: hover foto profil kini menampilkan email akun yang terbuka geser ke kiri (seperti tombol Pesan & Pengaturan), menggantikan tooltip "Profil akun"; tidak tampil di halaman Pengaturan profil.
+225. **2026-10-21 23:56** - Revisi hover profil: teks geser ke kiri jadi "Profil saya"; email akun tampil kecil di balon ala komik (ekor menunjuk ke foto) di bawah foto profil.
+226. **2026-10-21 23:57** - Balon email di bawah foto profil: latar hitam, teks putih, rata tengah di bawah foto, ukuran teks lebih kecil (0.75rem).
+227. **2026-10-22 00:00** - Kartu jajanan (card) di beranda (Hampir Punah & Baru Ditambahkan) -10% (zoom 0.9 di pembungkus .kartu-besar); katalog & profil belum diubah.
+228. **2026-10-22 00:05** - Profil: kartu kontribusi 4 per baris di layar >=1280px (lebih kecil); UI Level profil diperkecil tanpa mengubah font (padding, lingkaran 2rem->1.6rem, garis 3->2px, ikon centang); kotak Kontribusi & Lokasi -25% (zoom 0.75).
+229. **2026-10-22 00:05** - Level profil -10% lagi termasuk font (zoom 0.9).
+230. **2026-10-22 00:06** - Level profil: tahap 1 & 4 diberi jarak dari tepi kotak (px-3 HP, px-8 layar besar).
+231. **2026-10-22 00:18** - Fix: setelah kirim kontribusi lalu pindah halaman, tombol Kontribusi menampilkan lagi layar "Terkirim!" (Next.js menyimpan state halaman yang ditinggalkan). UploadForm kini mereset form saat halaman ditinggalkan setelah terkirim.
+232. **2026-10-22 00:20** - Fix ulang layar Terkirim: reset lewat cleanup tidak berhasil; kini efek tanpa dependensi yang jalan ulang saat halaman tampil kembali mereset form bila sebelumnya terkirim (dibuktikan dengan halaman uji sementara di dev server, lalu dihapus).
+233. **2026-10-22 00:32** - Katalog: kartu jajanan -10% (zoom 0.9 pada grid InfiniteList), tetap 3 kolom di laptop; percobaan 4 kolom + lebar 111% dibatalkan karena muncul scroll horizontal & badge terpotong.
+234. **2026-10-22 00:35** - Katalog: panel filter -15% (zoom 0.85), kolom filter 276->235px agar area kartu lebih lebar.
+235. **2026-10-22 00:42** - Katalog: grid kartu 4 per baris di laptop >=1340px (kelas CSS .grid-katalog: 1/2/3/4 kolom, zoom 0.9 -> 0.8 mulai 1280px) agar badge tidak terpotong; diuji lebar 800, 1100, 1280, 1366, 1920 (tanpa scroll samping, badge muat).
+236. **2026-10-22 00:44** - Forum Jajanan: kartu postingan diperkecil (kelas .grid-forum: zoom 0.9, 1/2 kolom; laptop >=1280px 3 kolom zoom 0.85).
+237. **2026-10-22 00:47** - Halaman Kelas: seluruh isi -15% (zoom 0.85) dan jarak antar bagian dirapatkan (space-y-10 py-10 -> space-y-7 py-6).
+238. **2026-10-22 00:48** - Profil saya: kotak statistik Kontribusi & Lokasi disembunyikan (profil orang lain tetap menampilkannya).
+239. **2026-10-22 00:50** - Navbar: tulisan "Pesan" kini terbuka ke kiri ikon amplop saat hover (sama seperti Pengaturan & Profil saya).
+240. **2026-10-22 01:43** - Commit + push semua perubahan 215-239 ke PR #14 lalu merge ke main (Vercel deploy otomatis).
 
 ## Berikutnya
 - Review docs/06 model bisnis bersama tim, lalu buat slide

@@ -12,7 +12,7 @@ import { EVENT_PREMIUM } from "./TanpaIklanPremium";
 import { EVENT_PENGATURAN, bacaPengaturan } from "@/lib/pengaturan";
 import { EVENT_PESAN, bacaDibaca, idPesan, keTanya } from "@/lib/pesan";
 
-type Status = { masuk: boolean; admin: boolean; avatar: string | null; premium: boolean } | null;
+type Status = { masuk: boolean; admin: boolean; avatar: string | null; premium: boolean; email?: string } | null;
 
 /** Dipicu halaman Pengaturan profil setelah foto diganti */
 export const EVENT_PROFIL = "jj:profil-berubah";
@@ -27,7 +27,7 @@ export function AuthNav() {
   useEffect(() => {
     const supabase = createClient();
 
-    async function muat(userId: string | undefined) {
+    async function muat(userId: string | undefined, email?: string) {
       if (!userId) return setStatus({ masuk: false, admin: false, avatar: null, premium: false });
       const { data } = await supabase.from("profiles").select("role, avatar_url, premium_sampai").eq("id", userId).single();
       const admin = data?.role === "admin";
@@ -43,7 +43,7 @@ export function AuthNav() {
           setTimeout(r, 2000);
         });
       }
-      setStatus({ masuk: true, admin, avatar, premium });
+      setStatus({ masuk: true, admin, avatar, premium, email });
       window.dispatchEvent(new Event(EVENT_SESI_SIAP));
       cekPesan(userId, admin);
     }
@@ -68,9 +68,9 @@ export function AuthNav() {
     window.addEventListener(EVENT_PESAN, hitungPesan);
 
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
-      muat(session?.user.id);
+      muat(session?.user.id, session?.user.email);
     });
-    const ulang = () => supabase.auth.getUser().then(({ data }) => muat(data.user?.id));
+    const ulang = () => supabase.auth.getUser().then(({ data }) => muat(data.user?.id, data.user?.email));
     window.addEventListener(EVENT_PROFIL, ulang);
     window.addEventListener(EVENT_PREMIUM, ulang); // Premium demo diaktifkan / dibatalkan
     // Lencana Prem bisa disembunyikan di /pengaturan
@@ -134,39 +134,53 @@ export function AuthNav() {
           </div>
         </div>
       </dialog>
-      <div className="nav-besar group relative hidden md:block">
-      <Link href="/profil/saya" aria-label="Profil akun" className="flex h-[2.55rem] w-[2.55rem] items-center justify-center overflow-hidden rounded-full bg-brand text-white ring-2 ring-orange-500/40 hover:bg-brand-hover">
-        {status.avatar ? (
-          // Foto tidak persegi dipotong jadi lingkaran: minta versi besar agar tetap tajam
-          <Image src={status.avatar} alt="" width={256} height={256} sizes="256px" quality={60} className="h-full w-full object-cover" />
-        ) : (
-          <UserRound size={22} />
+      {/* Profil: saat hover, "Profil saya" terbuka ke kiri (seperti Pesan & Pengaturan) dan
+          balon kecil berisi email muncul di bawah foto; keduanya tidak tampil di halaman Pengaturan profil */}
+      <Link
+        href="/profil/saya"
+        aria-label={status.email ? `Profil akun (${status.email})` : "Profil akun"}
+        className="nav-besar group hidden h-[2.55rem] items-center rounded-full border border-transparent hover:border-line hover:bg-surface md:flex"
+      >
+        {!diPengaturan && (
+          <span className="buka-geser max-w-0 overflow-hidden whitespace-nowrap text-ink-2 opacity-0 transition-[max-width,opacity,margin,padding] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:ml-3 group-hover:mr-2 group-hover:max-w-[18rem] group-hover:opacity-100 group-focus-visible:ml-3 group-focus-visible:mr-2 group-focus-visible:max-w-[18rem] group-focus-visible:opacity-100">
+            Profil saya
+          </span>
         )}
+        <span className="relative shrink-0">
+          <span className="flex h-[2.55rem] w-[2.55rem] items-center justify-center overflow-hidden rounded-full bg-brand text-white ring-2 ring-orange-500/40 group-hover:bg-brand-hover">
+            {status.avatar ? (
+              // Foto tidak persegi dipotong jadi lingkaran: minta versi besar agar tetap tajam
+              <Image src={status.avatar} alt="" width={256} height={256} sizes="256px" quality={60} className="h-full w-full object-cover" />
+            ) : (
+              <UserRound size={22} />
+            )}
+          </span>
+          {status.premium && lencana && (
+            // Lencana Premium di pojok kanan bawah avatar, teks berkilau seperti menu Premium di sidebar
+            <span className="pointer-events-none absolute -bottom-1.5 -right-3 rounded-full border border-amber-400 bg-surface px-1.5 py-px text-[0.75rem] leading-tight shadow-sm">
+              <span className="kilau font-bold">Prem</span>
+            </span>
+          )}
+          {!diPengaturan && status.email && (
+            // Balon seperti di komik: ekor kecil menunjuk ke foto profil
+            <span className="pointer-events-none absolute left-1/2 top-full z-50 mt-3 -translate-x-1/2 whitespace-nowrap rounded-xl bg-ink px-2.5 py-1 text-center text-[0.75rem] text-white opacity-0 shadow transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
+              <span className="absolute -top-1 left-1/2 h-2.5 w-2.5 -translate-x-1/2 rotate-45 bg-ink" aria-hidden />
+              {status.email}
+            </span>
+          )}
+        </span>
       </Link>
-      {status.premium && lencana && (
-        // Lencana Premium di pojok kanan bawah avatar, teks berkilau seperti menu Premium di sidebar
-        <span className="pointer-events-none absolute -bottom-1.5 -right-3 rounded-full border border-amber-400 bg-surface px-1.5 py-px text-[0.75rem] leading-tight shadow-sm">
-          <span className="kilau font-bold">Prem</span>
-        </span>
-      )}
-      {/* Tulisan saat hover (seperti tombol Kontak admin), kecuali di halaman Pengaturan profil */}
-      {!diPengaturan && (
-        <span className="pointer-events-none absolute left-1/2 top-full z-50 mt-2 -translate-x-1/2 whitespace-nowrap rounded-full bg-ink px-3 py-1.5 text-sm font-semibold text-page opacity-0 shadow transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
-          Profil akun
-        </span>
-      )}
-      </div>
-      {/* Pesan: bentuk sama dengan tombol Pengaturan, tulisan terbuka ke kanan saat hover */}
+      {/* Pesan: bentuk sama dengan tombol Pengaturan, tulisan terbuka ke kiri saat hover */}
       <Link
         href="/pesan"
         aria-label={adaPesanBaru ? "Pesan (ada pesan baru)" : "Pesan"}
         className="nav-besar group relative hidden h-[2.55rem] items-center rounded-full border border-line bg-surface px-[0.6rem] text-ink-2 hover:border-brand hover:text-brand md:flex"
       >
-        <Mail size={22} aria-hidden className="shrink-0" />
-        {adaPesanBaru && <span className="absolute -right-0.5 -top-0.5 h-3 w-3 rounded-full bg-red-600 ring-2 ring-page" aria-hidden />}
-        <span className="buka-geser max-w-0 overflow-hidden whitespace-nowrap opacity-0 transition-[max-width,opacity,margin,padding] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:ml-1.5 group-hover:max-w-[8rem] group-hover:pr-1 group-hover:opacity-100 group-focus-visible:ml-1.5 group-focus-visible:max-w-[8rem] group-focus-visible:pr-1 group-focus-visible:opacity-100">
+        <span className="buka-geser max-w-0 overflow-hidden whitespace-nowrap opacity-0 transition-[max-width,opacity,margin,padding] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:mr-1.5 group-hover:max-w-[8rem] group-hover:pl-1 group-hover:opacity-100 group-focus-visible:mr-1.5 group-focus-visible:max-w-[8rem] group-focus-visible:pl-1 group-focus-visible:opacity-100">
           Pesan
         </span>
+        <Mail size={22} aria-hidden className="shrink-0" />
+        {adaPesanBaru && <span className="absolute -right-0.5 -top-0.5 h-3 w-3 rounded-full bg-red-600 ring-2 ring-page" aria-hidden />}
       </Link>
       {/* Pengaturan fitur: gear berputar pelan & tulisan terbuka ke kiri saat hover */}
       <Link

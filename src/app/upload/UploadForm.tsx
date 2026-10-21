@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { CircleCheck, Plus, Trash2 } from "lucide-react";
 import { KepalaHalaman } from "@/components/KepalaHalaman";
@@ -54,15 +54,30 @@ const rarityPilihan = [
   ["punah", "Punah", "Sudah tidak pernah terlihat"],
 ] as const;
 
-type Props = { provinsi: { nama: string; slug: string }[]; kategori: string[] };
+type Props = { provinsi: { nama: string; slug: string }[] };
 
-export function UploadForm({ provinsi, kategori }: Props) {
+export function UploadForm({ provinsi }: Props) {
   const [masuk, setMasuk] = useState<boolean | null>(null);
   const [step, setStep] = useState(0);
   const [d, setD] = useState<Draft>(kosong);
   const [mirip, setMirip] = useState<SnackCardData[]>([]);
   const [error, setError] = useState<string>();
   const [kirim, setKirim] = useState<"idle" | "mengirim" | "terkirim">("idle");
+
+  // Next.js menyimpan halaman yang ditinggalkan (tersembunyi, bukan dihapus), jadi layar "Terkirim!"
+  // bisa muncul lagi saat membuka Kontribusi. Saat halaman ditinggalkan, siapkan form baru.
+  // Efek dijalankan ulang setiap halaman tampil lagi, jadi layar "Terkirim!" diganti form baru.
+  const sudahTerkirim = useRef(false);
+  useEffect(() => {
+    sudahTerkirim.current = kirim === "terkirim";
+  }, [kirim]);
+  useEffect(() => {
+    if (!sudahTerkirim.current) return;
+    sudahTerkirim.current = false;
+    setD(kosong);
+    setStep(0);
+    setKirim("idle");
+  }, []);
 
   // Cek status login (form hanya untuk user yang sudah masuk)
   useEffect(() => {
@@ -252,12 +267,6 @@ export function UploadForm({ provinsi, kategori }: Props) {
                 <input value={d.daerah} onChange={(e) => ubah({ daerah: e.target.value })} className={input} placeholder="mis. Bogor" />
               </Field>
             </div>
-            <Field label="Kategori">
-              <select value={d.kategori} onChange={(e) => ubah({ kategori: e.target.value })} className={input}>
-                <option value="">Pilih kategori</option>
-                {kategori.map((k) => <option key={k}>{k}</option>)}
-              </select>
-            </Field>
             <Field label="Deskripsi singkat">
               <input value={d.deskripsi} onChange={(e) => ubah({ deskripsi: e.target.value })} maxLength={200} className={input} placeholder="Satu kalimat, mis. Bola ketan isi gula merah." />
             </Field>
@@ -393,7 +402,6 @@ export function UploadForm({ provinsi, kategori }: Props) {
           <dl className="divide-y divide-line rounded-lg border border-line bg-surface text-sm">
             <Ringkas label="Nama">{d.nama || "-"}</Ringkas>
             <Ringkas label="Asal">{[d.daerah, namaProvinsi].filter(Boolean).join(", ") || "-"}</Ringkas>
-            <Ringkas label="Kategori">{d.kategori || "-"}</Ringkas>
             <Ringkas label="Foto utama">{d.cover ? "Ada" : "Belum"}</Ringkas>
             <Ringkas label="Cerita">{d.cerita ? `${d.cerita.slice(0, 80)}${d.cerita.length > 80 ? "..." : ""}` : "Dilewati"}</Ringkas>
             <Ringkas label="Resep">
