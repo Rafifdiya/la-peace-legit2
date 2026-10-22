@@ -19,8 +19,7 @@ export function SnackCard({ snack, utama = false }: { snack: SnackCardData; utam
         className="aspect-[4/3]"
       />
       <div className="space-y-2 p-4">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <span className="text-xs text-ink-2">{snack.kategori}</span>
+        <div className="flex">
           <RarityBadge rarity={snack.rarity} jumlahVote={snack.jumlahVote} />
         </div>
         <h3 className="font-display text-xl font-semibold group-hover:text-brand">{snack.nama}</h3>

@@ -38,27 +38,17 @@ export function SidebarLinks() {
                     ? "py-[0.69rem] text-[1.513rem]"
                     : "text-[1.578rem]"
               } ${
-                // Sudah Premium: menu Premium selalu berlatar hijau muda transparan
-                href === "/premium" && premium
-                  ? `bg-green-400/20 ${aktif ? "font-semibold" : ""}`
-                  : aktif
-                    ? "bg-subtle font-semibold text-brand"
-                    : "text-ink-2 hover:bg-subtle hover:text-ink"
+                aktif ? "bg-subtle font-semibold text-brand" : "text-ink-2 hover:bg-subtle hover:text-ink"
               }`}
             >
-              {/* Sudah Premium: mahkota & kilau jadi hijau */}
-              <Icon size={href === "/tentang" ? 24 : 25} aria-hidden className={href === "/premium" && premium ? "text-accent" : undefined} />
+              <Icon size={href === "/tentang" ? 24 : 25} aria-hidden />
               {/* Premium: teks berkilau kiri ke kanan supaya menarik perhatian */}
               {href === "/premium" ? (
-                // Belum Premium: teks berkilau menarik perhatian. Sudah Premium: tanpa kilau + label kecil "aktif"
-                premium ? (
-                  <span className="flex items-baseline gap-2 font-semibold">
-                    {label}
-                    <span className="rounded-full bg-green-500/15 px-1.5 py-px text-[0.7em] font-semibold text-green-700">aktif</span>
-                  </span>
-                ) : (
+                // Teks selalu berkilau; bila Premium aktif cukup ditandai label kecil hijau "aktif"
+                <span className="flex items-baseline gap-2">
                   <span className="kilau font-semibold">{label}</span>
-                )
+                  {premium && <span className="rounded-full bg-green-500/15 px-1.5 py-px text-[0.7em] font-semibold text-green-700">aktif</span>}
+                </span>
               ) : href === "/tentang" ? (
                 <span className="underline underline-offset-4">{label}</span>
               ) : (

@@ -247,3 +247,25 @@ export async function getCards(slugs: string[]): Promise<SnackCardData[]> {
   // Jaga urutan sesuai input
   return slugs.map((s) => rows.find((r) => r.slug === s)).filter((r): r is CardRow => !!r).map(toCard);
 }
+
+/**
+ * Beranda "Langka & Kritis": jajanan yang oleh PENGIRIMNYA sendiri divote Langka (hampir_punah)
+ * atau Kritis (punah) saat mengisi form kontribusi. Terbaru di depan.
+ */
+export async function getLangkaKritis(limit: number): Promise<SnackCardData[]> {
+  "use cache";
+  cacheLife("minutes");
+  cacheTag("jajanan");
+  const { data, error } = await createPublicClient()
+    .from("rarity_votes")
+    .select("user_id, snacks!inner (slug, created_by, created_at, status)")
+    .in("nilai", ["hampir_punah", "punah"])
+    .eq("snacks.status", "approved");
+  if (error || !data) return [];
+  type Row = { user_id: string; snacks: { slug: string; created_by: string | null; created_at: string } };
+  const slugs = (data as unknown as Row[])
+    .filter((r) => r.user_id === r.snacks.created_by)
+    .sort((a, b) => b.snacks.created_at.localeCompare(a.snacks.created_at))
+    .map((r) => r.snacks.slug);
+  return getCards([...new Set(slugs)].slice(0, limit));
+}

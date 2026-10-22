@@ -9,9 +9,9 @@ import { openLogin } from "./LoginDialog";
 
 const PILIHAN = [
   { nilai: "umum", label: "Umum" },
-  { nilai: "mulai_langka", label: "Mulai langka" },
-  { nilai: "hampir_punah", label: "Hampir punah" },
-  { nilai: "punah", label: "Punah" },
+  { nilai: "mulai_langka", label: "Jarang" },
+  { nilai: "hampir_punah", label: "Langka" },
+  { nilai: "punah", label: "Kritis" },
 ] as const;
 
 type Nilai = (typeof PILIHAN)[number]["nilai"];

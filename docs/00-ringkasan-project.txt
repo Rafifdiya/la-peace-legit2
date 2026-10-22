@@ -22,7 +22,7 @@ PEMBEDA (vs Cookpad / TikTok / blog resep)
 - Bukti komunitas "Sudah coba resep ini?" (Dicoba X orang, Y berhasil)
 
 FITUR (daftar lengkap + status di docs/08-daftar-fitur.txt)
-1. Beranda (marquee Hampir Punah, Baru Ditambahkan, footer lengkap),
+1. Beranda (marquee Jajanan Langka, Baru Ditambahkan, footer lengkap),
    katalog + cari + filter
 2. Halaman jajanan: cerita, resep, langkah, lokasi + mini map, Sudah coba
    resep ini?, simpan, unduh PDF (Premium)

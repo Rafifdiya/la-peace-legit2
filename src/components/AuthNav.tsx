@@ -101,7 +101,7 @@ export function AuthNav() {
   if (!status) return <span className="w-14" aria-hidden />;
 
   if (!status.masuk) {
-    return <LoginButton className="rounded-full border border-line bg-surface px-[1.155rem] py-[0.578rem] text-[1.155rem] hover:border-brand">Masuk</LoginButton>;
+    return <LoginButton className="nav-masuk rounded-full border border-line bg-surface px-[1.155rem] py-[0.578rem] text-[1.155rem] hover:border-brand">Masuk</LoginButton>;
   }
 
   return (
@@ -158,7 +158,7 @@ export function AuthNav() {
           {status.premium && lencana && (
             // Lencana Premium di pojok kanan bawah avatar, teks berkilau seperti menu Premium di sidebar
             <span className="pointer-events-none absolute -bottom-1.5 -right-3 rounded-full border border-amber-400 bg-surface px-1.5 py-px text-[0.75rem] leading-tight shadow-sm">
-              <span className="kilau font-bold">Prem</span>
+              <span className="kilau font-bold">{status.admin ? "Admin" : "Prem"}</span>
             </span>
           )}
           {!diPengaturan && status.email && (

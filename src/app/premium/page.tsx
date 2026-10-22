@@ -31,8 +31,8 @@ function Sel({ v }: { v: boolean | string }) {
 
 export default function PremiumPage() {
   return (
-    <div className="mx-auto max-w-3xl space-y-10 py-10">
-      <KepalaHalaman className="space-y-3 text-center">
+    <div className="mx-auto max-w-3xl space-y-6 pt-1 pb-8 [zoom:0.85]">
+      <KepalaHalaman className="space-y-3 py-4! text-center">
         <span className="inline-block rounded-full border border-orange-500/40 bg-orange-500/10 px-3 py-1 text-sm font-semibold text-brand">
           Mode demo · tanpa pembayaran
         </span>

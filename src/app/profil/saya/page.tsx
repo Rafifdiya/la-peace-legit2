@@ -125,7 +125,7 @@ async function Tersimpan({ semua }: { semua: string[] }) {
     return <p className="text-ink-2">Belum ada jajanan yang disimpan. Simpan dari halaman jajanan lewat tombol Simpan.</p>;
   }
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
       {cards.map((c) => <SnackCard key={c.slug} snack={c} />)}
     </div>
   );

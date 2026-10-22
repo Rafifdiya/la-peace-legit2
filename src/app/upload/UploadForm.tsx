@@ -43,16 +43,25 @@ const kosong: Draft = {
   rarity: "",
 };
 
-const LANGKAH = ["Info dasar", "Cerita", "Resep", "Langkah pembuatan", "Lokasi terlihat", "Vote kelangkaan"];
+// 3 langkah pertama wajib, 3 terakhir opsional
+const LANGKAH = ["Info dasar", "Cerita", "Vote kelangkaan", "Resep", "Langkah pembuatan", "Lokasi penjual"];
 const DRAFT_KEY = "jejak-jajan:draft-upload";
 const input = "w-full rounded-sm border border-line bg-surface px-3 py-2";
 
 const rarityPilihan = [
   ["umum", "Umum", "Masih mudah ditemukan"],
-  ["mulai_langka", "Mulai langka", "Perlu dicari dulu"],
-  ["hampir_punah", "Hampir punah", "Sangat jarang ada yang jual"],
-  ["punah", "Punah", "Sudah tidak pernah terlihat"],
+  ["mulai_langka", "Jarang", "Perlu dicari dulu"],
+  ["hampir_punah", "Langka", "Sangat jarang ada yang jual"],
+  ["punah", "Kritis", "Sudah tidak pernah terlihat"],
 ] as const;
+
+/** Warna kotak saat dipilih: hijau -> kuning -> oranye -> merah */
+const warnaKelangkaan: Record<string, { bg: string; teks: string }> = {
+  umum: { bg: "#2ECC71", teks: "#ffffff" },
+  mulai_langka: { bg: "#F1C40F", teks: "#3b2a00" },
+  hampir_punah: { bg: "#E67E22", teks: "#ffffff" },
+  punah: { bg: "#E74C3C", teks: "#ffffff" },
+};
 
 type Props = { provinsi: { nama: string; slug: string }[] };
 
@@ -115,6 +124,7 @@ export function UploadForm({ provinsi }: Props) {
   function infoDasarValid() {
     if (d.nama.trim().length < 2) return "Nama jajanan minimal 2 huruf.";
     if (!d.cover) return "Unggah foto utama.";
+    if (d.deskripsi.trim().length < 5) return "Isi deskripsi singkat.";
     return undefined;
   }
 
@@ -124,9 +134,9 @@ export function UploadForm({ provinsi }: Props) {
   const errInfo = infoDasarValid();
   if (errInfo) kurang.push({ step: 0, pesan: `Info dasar: ${errInfo}` });
   if (d.cerita.trim().length < MIN_CERITA) kurang.push({ step: 1, pesan: `Cerita: tulis minimal ${MIN_CERITA} karakter.` });
-  if (!d.rarity) kurang.push({ step: 5, pesan: "Vote kelangkaan: pilih salah satu." });
+  if (!d.rarity) kurang.push({ step: 2, pesan: "Vote kelangkaan: pilih salah satu." });
   const bisaKirim = kurang.length === 0;
-  const WAJIB = new Set([0, 1, 5]);
+  const WAJIB = new Set([0, 1, 2]);
 
   // Bebas pindah langkah: isi dari mana saja
   function lanjut() {
@@ -220,15 +230,20 @@ export function UploadForm({ provinsi }: Props) {
 
   return (
     <div className="mx-auto grid max-w-5xl gap-8 py-10 lg:grid-cols-[200px_1fr_230px]">
-      <ol className="flex gap-2 overflow-x-auto text-sm lg:block lg:space-y-2">
+      <ol className="langkah-kontribusi flex gap-2 overflow-x-auto lg:block lg:space-y-2">
         {LANGKAH.map((l, i) => (
           <li key={l} className="shrink-0">
+            {(i === 0 || i === 3) && (
+              <p className={`mb-1.5 mt-2 hidden rounded-md px-3 py-1.5 text-xs font-semibold uppercase tracking-wide lg:block ${i === 0 ? "bg-orange-500/15 text-brand" : "bg-line/70 font-bold text-ink-2/[0.56]"}`}>
+                {i === 0 ? "Formulir wajib" : "Opsional"}
+              </p>
+            )}
             <button
               type="button"
               onClick={() => { setError(undefined); setStep(i); }}
-              className={`flex w-full items-center gap-1.5 rounded-sm px-3 py-2 text-left ${i === step ? "bg-brand font-semibold text-white" : "text-ink-2 hover:bg-subtle"}`}
+              className={`flex w-full items-center gap-1.5 rounded-sm px-3 py-2 text-left ${i === step ? "bg-brand font-semibold text-white" : "font-medium text-ink hover:bg-subtle"}`}
             >
-              <span>{i + 1}. {l}</span>
+              <span>• {l}</span>
               {/* Langkah wajib: tanda centang bila sudah terisi, "wajib" bila belum */}
               {WAJIB.has(i) &&
                 (kurang.some((k) => k.step === i) ? (
@@ -242,7 +257,8 @@ export function UploadForm({ provinsi }: Props) {
       </ol>
 
       <form onSubmit={(e) => { e.preventDefault(); if (step < LANGKAH.length - 1) lanjut(); }} className="space-y-5">
-        <KepalaHalaman>
+        {/* Judul langkah: padding tipis supaya tidak ada ruang kosong besar di atas & bawahnya */}
+        <KepalaHalaman className="py-3!">
           <h1 className="font-display text-3xl font-semibold">{LANGKAH[step]}</h1>
         </KepalaHalaman>
 
@@ -264,8 +280,8 @@ export function UploadForm({ provinsi }: Props) {
                 <p className="mt-1 text-ink-2">Kalau jajanannya sama, cukup tambah lokasi atau resep di halamannya.</p>
               </div>
             )}
-            <Field label="Nama lain (pisahkan dengan koma)">
-              <input value={d.namaLain} onChange={(e) => ubah({ namaLain: e.target.value })} className={input} placeholder="mis. Sagu Rangi" />
+            <Field label="Nama lain (jika ada)">
+              <input value={d.namaLain} onChange={(e) => ubah({ namaLain: e.target.value })} className={input} placeholder="mis. Kue Bugis, Lapek Bugih, Kue Mendut.." />
             </Field>
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Provinsi asal (opsional)">
@@ -274,15 +290,15 @@ export function UploadForm({ provinsi }: Props) {
                   {provinsi.map((p) => <option key={p.slug} value={p.slug}>{p.nama}</option>)}
                 </select>
               </Field>
-              <Field label="Daerah (kota/kabupaten)">
+              <Field label="Daerah (opsional)">
                 <input value={d.daerah} onChange={(e) => ubah({ daerah: e.target.value })} className={input} placeholder="mis. Bogor" />
               </Field>
             </div>
-            <Field label="Deskripsi singkat">
+            <Field label="Deskripsi singkat *">
               <input value={d.deskripsi} onChange={(e) => ubah({ deskripsi: e.target.value })} maxLength={200} className={input} placeholder="Satu kalimat, mis. Bola ketan isi gula merah." />
             </Field>
             <div className="space-y-1.5">
-              <span className="font-semibold">Foto utama *</span>
+              <span className="font-semibold">Foto utama <span className="text-danger">*</span></span>
               <PhotoInput tempel value={d.cover} onChange={(cover) => ubah({ cover })} />
             </div>
           </>
@@ -290,7 +306,7 @@ export function UploadForm({ provinsi }: Props) {
 
         {step === 1 && (
           <>
-            <Field label="Cerita / asal-usul">
+            <Field label="Cerita / asal-usul *">
               <textarea value={d.cerita} onChange={(e) => ubah({ cerita: e.target.value })} rows={8} className={input} placeholder="Dari mana asalnya, kapan biasa disajikan, kenangan tentang jajanan ini..." />
             </Field>
             <Field label="Sumber informasi">
@@ -299,7 +315,7 @@ export function UploadForm({ provinsi }: Props) {
           </>
         )}
 
-        {step === 2 && (
+        {step === 3 && (
           <>
             <Field label="Nama versi resep">
               <input value={d.resep.judulVersi} onChange={(e) => ubahResep({ judulVersi: e.target.value })} className={input} placeholder="mis. Versi Mbah Sri" />
@@ -332,7 +348,7 @@ export function UploadForm({ provinsi }: Props) {
           </>
         )}
 
-        {step === 3 && (
+        {step === 4 && (
           <>
             <p className="text-sm text-ink-2">Resep baru tersimpan jika minimal satu langkah diisi. Foto dan video per langkah boleh dikosongkan.</p>
             <ol className="space-y-4">
@@ -360,7 +376,7 @@ export function UploadForm({ provinsi }: Props) {
           </>
         )}
 
-        {step === 4 && (
+        {step === 5 && (
           <>
             <p className="text-sm text-ink-2">Cukup tempat usaha atau area umum, bukan rumah pribadi.</p>
             <Field label="Nama tempat">
@@ -396,15 +412,22 @@ export function UploadForm({ provinsi }: Props) {
           </>
         )}
 
-        {step === 5 && (
+        {step === 2 && (
           <fieldset className="grid gap-3 sm:grid-cols-2">
-            <legend className="mb-3 text-ink-2">Menurutmu seberapa langka jajanan ini sekarang?</legend>
+            <legend className="mb-3 text-ink-2">Menurutmu seberapa langka jajanan ini sekarang? <span className="font-semibold text-danger">*</span> <span className="text-sm">(klik lagi untuk membatalkan)</span></legend>
             {rarityPilihan.map(([v, l, ket]) => (
-              <label key={v} className={`cursor-pointer rounded-lg border p-4 ${d.rarity === v ? "border-brand bg-subtle" : "border-line bg-surface"}`}>
-                <input type="radio" name="rarity" value={v} checked={d.rarity === v} onChange={() => ubah({ rarity: v })} className="sr-only" />
+              <button
+                type="button"
+                key={v}
+                aria-pressed={d.rarity === v}
+                // Klik pilihan yang sama sekali lagi = batalkan pilihan
+                onClick={() => ubah({ rarity: d.rarity === v ? "" : v })}
+                style={d.rarity === v ? { backgroundColor: warnaKelangkaan[v].bg, borderColor: warnaKelangkaan[v].bg, color: warnaKelangkaan[v].teks } : undefined}
+                className={`cursor-pointer rounded-lg border-2 p-4 text-left transition-colors ${d.rarity === v ? "shadow" : "border-line bg-surface hover:border-ink-2"}`}
+              >
                 <span className="block font-semibold">{l}</span>
-                <span className="text-sm text-ink-2">{ket}</span>
-              </label>
+                <span className={`text-sm ${d.rarity === v ? "opacity-90" : "text-ink-2"}`}>{ket}</span>
+              </button>
             ))}
           </fieldset>
         )}
@@ -442,6 +465,7 @@ export function UploadForm({ provinsi }: Props) {
             <Send size={16} aria-hidden /> {kirim === "mengirim" ? "Mengirim..." : "Kirim"}
           </button>
         </div>
+        <p className="text-sm font-bold italic text-danger">* Kolom bertanda bintang wajib diisi sebelum mengirim.</p>
         {!bisaKirim && (
           <p className="text-sm text-ink-2">
             Wajib diisi sebelum kirim: <b className="text-ink">{kurang.map((k) => LANGKAH[k.step]).join(", ")}</b>. Langkah lain boleh diisi kapan saja atau dilewati.
@@ -496,7 +520,20 @@ export function UploadForm({ provinsi }: Props) {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block space-y-1.5">
-      <span className="font-semibold">{label}</span>
+      <span className="font-semibold">
+        {/* Penanda "(opsional)" / "(jika ada)": tebal tapi lebih pudar dari label */}
+        {label.endsWith(" *") ? (
+          <>
+            {label.slice(0, -2)} <span className="text-danger">*</span>
+          </>
+        ) : /\((opsional|jika ada)\)$/.test(label) ? (
+          <>
+            {label.replace(/ \((opsional|jika ada)\)$/, "")} <span className="font-bold opacity-[0.56]">{label.match(/\((opsional|jika ada)\)$/)?.[0]}</span>
+          </>
+        ) : (
+          label
+        )}
+      </span>
       {children}
     </label>
   );

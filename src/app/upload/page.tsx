@@ -12,7 +12,7 @@ export default async function UploadPage() {
   const provinsi = await getProvinces();
   return (
     // Seluruh halaman kontribusi diperkecil agar tidak terasa terlalu besar di layar 100%
-    <div className="[zoom:0.85]">
+    <div className="halaman-kontribusi [zoom:0.85]">
       {/* Kriteria ditampilkan sebelum mengisi, supaya kontributor tahu yang dicek admin */}
       <details className="mx-auto mt-8 max-w-3xl rounded-xl border border-line bg-surface p-4 text-sm" open>
         <summary className="flex cursor-pointer items-center gap-2 font-semibold">

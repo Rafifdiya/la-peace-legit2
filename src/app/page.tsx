@@ -4,7 +4,7 @@ import { Carousel } from "@/components/Carousel";
 import { SnackCard } from "@/components/SnackCard";
 import { StatCard } from "@/components/StatCard";
 import type { SnackCardData } from "@/lib/types";
-import { getProvinces, getSnackPage, getStats } from "@/lib/data";
+import { getLangkaKritis, getProvinces, getSnackPage, getStats } from "@/lib/data";
 
 // Maksimal kartu per carousel beranda; sisanya di katalog
 const CAROUSEL = 8;
@@ -13,9 +13,14 @@ export default async function Beranda() {
   const [stats, provinsi, langka, baru] = await Promise.all([
     getStats(),
     getProvinces(),
-    getSnackPage({ urut: "langka" }, 1, CAROUSEL),
-    getSnackPage({ urut: "terbaru" }, 1, CAROUSEL),
+    getLangkaKritis(CAROUSEL),
+    // Ambil lebih banyak, lalu buang yang sudah tampil di "Jajanan Langka"
+    getSnackPage({ urut: "terbaru" }, 1, CAROUSEL * 2),
   ]);
+
+  // Jajanan yang sudah ada di "Jajanan Langka" tidak diulang di "Baru Ditambahkan"
+  const slugLangka = new Set(langka.map((s) => s.slug));
+  const baruTanpaLangka = baru.items.filter((s) => !slugLangka.has(s.slug)).slice(0, CAROUSEL);
 
   const statList = [
     ["Jajanan", stats.jajanan],
@@ -25,7 +30,7 @@ export default async function Beranda() {
   ] as const;
 
   return (
-    <div className="beranda space-y-6 py-4 [zoom:0.9]">
+    <div className="beranda space-y-6 py-4 [zoom:0.85] lg:px-6">
       {/* Motif kawung samar di belakang hero */}
       <section className="motif-kawung motif-pudar space-y-3 rounded-xl py-4 text-center">
         <p className="-rotate-2 font-hand text-[2.106rem] text-brand sm:text-[2.493rem] lg:text-[2.541rem]">
@@ -51,8 +56,8 @@ export default async function Beranda() {
         {statList.map(([label, n]) => <StatCard key={label} label={label} value={n} labelClass="label-statistik text-ink-2" />)}
       </section>
 
-      <Section judul="Hampir Punah" href="/katalog?urut=langka" items={langka.items} utama />
-      <Section judul="Baru Ditambahkan" href="/katalog" items={baru.items} />
+      <Section judul="Jajanan Langka" href="/katalog?urut=langka" items={langka} utama />
+      <Section judul="Baru Ditambahkan" href="/katalog" items={baruTanpaLangka} />
 
       <section className="rounded-xl bg-brand p-8 text-center text-white">
         <h2 className="font-display text-2xl font-semibold">Tahu jajanan yang belum ada?</h2>
@@ -75,9 +80,9 @@ function Section({ judul, href, items, utama = false }: { judul: string; href: s
       {items.length === 0 ? (
         <p className="text-ink-2">Belum ada jajanan.</p>
       ) : (
-        <Carousel label={judul} jalan={utama /* hanya "Hampir Punah" yang bergerak otomatis */}>
+        <Carousel label={judul} jalan={utama /* hanya "Jajanan Langka" yang bergerak otomatis */}>
           {items.map((s, i) => (
-            <div key={s.slug} className="kartu-besar w-[17rem] shrink-0 [zoom:0.9] sm:w-[20rem] xl:w-[24rem]">
+            <div key={s.slug} className="kartu-besar w-[12.5rem] shrink-0 [zoom:0.9] sm:w-[20rem] xl:w-[24rem]">
               <SnackCard snack={s} utama={utama && i < 3} />
             </div>
           ))}
