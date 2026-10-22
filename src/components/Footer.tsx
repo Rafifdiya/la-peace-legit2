@@ -19,7 +19,7 @@ export function Footer() {
           Indonesia dari komunitas.
         </p>
         <p>
-          © 2026 Jejak Jajan · Konten komunitas berlisensi CC BY-SA 4.0 ·{" "}
+          © 2026 Jejak Jajan ·{" "}
           <Link href="/syarat-ketentuan" className="underline">Syarat</Link> · <Link href="/kebijakan-privasi" className="underline">Privasi</Link>
         </p>
       </div>

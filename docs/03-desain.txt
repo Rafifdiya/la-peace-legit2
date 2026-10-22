@@ -112,7 +112,7 @@ Detail -> section "Terakhir Terlihat di"
 
 Flow D - Vote kelangkaan
 Detail -> panel "Menurutmu seberapa langka?"
--> Umum / Mulai langka / Hampir punah / Punah
+-> Umum / Jarang / Langka / Kritis (sebelumnya Umum / Mulai langka / Hampir punah / Punah)
 -> 1 user 1 suara, bisa diganti; label tampil setelah min. 3 suara
 -> seri -> pilih yang lebih langka
 
@@ -137,7 +137,7 @@ Navbar desktop: logo, Beranda, Katalog, Request, Tentang, search kecil,
 
 [BERANDA]
 Hero (tagline + search + saran "Coba: ..."), 4 StatCard (jajanan,
-provinsi, kontributor, lokasi), Hampir Punah, Jelajahi per Daerah (chip
+provinsi, kontributor, lokasi), Jajanan Langka, Jelajahi per Daerah (chip
 provinsi -> /katalog?provinsi=), Baru Ditambahkan, Baru Terlihat, CTA.
 
 [KATALOG]
@@ -181,11 +181,12 @@ ini), tab Kiriman | Laporan | Kategori, tabel dengan Setujui/Tolak/Lihat.
 Tentang project, aturan kontribusi, kriteria masuk katalog, lisensi
 (CC BY-SA 4.0), kontak.
 Kriteria masuk katalog:
-- Jajanan tradisional Indonesia (bukan kreasi modern / fusion)
-- Ada nama dan asal daerah
-- Foto milik sendiri atau berlisensi bebas (cantumkan kredit)
-- Tidak mengandung kata kasar, SARA, atau promosi berlebihan
-- Lokasi hanya tempat usaha / publik
+- Jajanan tradisional Indonesia (kreasi modern / fusion boleh)
+- Ada nama jajanan (asal daerah bila diketahui)
+- Resep: bahan lengkap dengan takaran (gram, sdm, butir, dll.)
+- Langkah pembuatan jelas, berurutan, dan bisa diikuti pemula
+- Lokasi hanya tempat usaha atau tempat umum
+- Tanpa kata kasar, SARA, atau promosi berlebihan
 
 
 =================================================================

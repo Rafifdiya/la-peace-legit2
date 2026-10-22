@@ -8,12 +8,14 @@ import { getCategories, getProvinces, getSnackPage, type SnackFilter } from "@/l
 import { getIklanAktif } from "@/lib/iklan";
 import { InfiniteList } from "./InfiniteList";
 import { FilterOtomatis } from "./FilterOtomatis";
+import { FilterLain } from "./FilterLain";
 
 export const metadata: Metadata = { title: "Katalog Jajanan" };
 
 export default function KatalogPage({ searchParams }: PageProps<"/katalog">) {
   return (
-    <div className="py-10">
+    // Sedikit jarak kiri-kanan di layar lebar agar tidak menempel ke sidebar & pinggir
+    <div className="py-10 lg:px-6">
       <KepalaHalaman>
         <h1 className="font-display text-4xl font-semibold">Katalog Jajanan</h1>
       </KepalaHalaman>
@@ -51,30 +53,32 @@ async function Katalog({ searchParams }: Pick<PageProps<"/katalog">, "searchPara
           </div>
           <FilterOtomatis />
         </Field>
-        <Field label="Provinsi">
-          <select name="provinsi" defaultValue={filter.provinsi ?? ""} className="w-full rounded-sm border border-line px-[0.8625rem] py-[0.575rem]">
-            <option value="">Semua provinsi</option>
-            {provinsi.map((p) => <option key={p.slug} value={p.slug}>{p.nama}</option>)}
-          </select>
-        </Field>
-        <Field label="Kategori">
-          <select name="kategori" defaultValue={filter.kategori ?? ""} className="w-full rounded-sm border border-line px-[0.8625rem] py-[0.575rem]">
-            <option value="">Semua kategori</option>
-            {kategori.map((k) => <option key={k}>{k}</option>)}
-          </select>
-        </Field>
-        <Field label="Urutkan">
-          <select name="urut" defaultValue={filter.urut ?? "terbaru"} className="w-full rounded-sm border border-line px-[0.8625rem] py-[0.575rem]">
-            <option value="terbaru">Terbaru</option>
-            <option value="terlama">Terlama</option>
-            <option value="az">A-Z</option>
-            <option value="langka">Paling langka</option>
-          </select>
-        </Field>
-        <div className="flex gap-2">
-          <button className="flex-1 rounded-full bg-brand py-[0.575rem] font-semibold text-white hover:bg-brand-hover">Terapkan</button>
-          <Link href="/katalog" className="rounded-full border border-line px-[1.15rem] py-[0.575rem]">Reset</Link>
-        </div>
+        <FilterLain>
+          <Field label="Provinsi">
+            <select name="provinsi" defaultValue={filter.provinsi ?? ""} className="w-full rounded-sm border border-line px-[0.8625rem] py-[0.575rem]">
+              <option value="">Semua provinsi</option>
+              {provinsi.map((p) => <option key={p.slug} value={p.slug}>{p.nama}</option>)}
+            </select>
+          </Field>
+          <Field label="Kategori">
+            <select name="kategori" defaultValue={filter.kategori ?? ""} className="w-full rounded-sm border border-line px-[0.8625rem] py-[0.575rem]">
+              <option value="">Semua kategori</option>
+              {kategori.map((k) => <option key={k}>{k}</option>)}
+            </select>
+          </Field>
+          <Field label="Urutkan">
+            <select name="urut" defaultValue={filter.urut ?? "terbaru"} className="w-full rounded-sm border border-line px-[0.8625rem] py-[0.575rem]">
+              <option value="terbaru">Terbaru</option>
+              <option value="terlama">Terlama</option>
+              <option value="az">A-Z</option>
+              <option value="langka">Paling langka</option>
+            </select>
+          </Field>
+          <div className="flex gap-2">
+            <button className="flex-1 rounded-full bg-brand py-[0.575rem] font-semibold text-white hover:bg-brand-hover">Terapkan</button>
+            <Link href="/katalog" className="rounded-full border border-line px-[1.15rem] py-[0.575rem]">Reset</Link>
+          </div>
+        </FilterLain>
       </Form>
 
       <section className="space-y-4">

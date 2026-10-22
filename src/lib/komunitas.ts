@@ -158,8 +158,11 @@ export type ProfilUser = {
   role: "user" | "admin";
   kontribusi: string[]; // slug jajanan yang sudah disetujui
   jumlahLokasi: number;
+  jumlahDicoba: number; // laporan "Sudah coba resep ini?"
+  jumlahForum: number; // postingan + balasan Forum Jajanan
   premium: boolean; // tampilkan lencana Premium di avatar
   avatarUrl: string | null;
+  bergabung: string; // tanggal akun dibuat
 };
 
 type ProfilRow = {
@@ -170,15 +173,20 @@ type ProfilRow = {
   bio: string | null;
   role: "user" | "admin";
   avatar_url: string | null;
+  created_at: string;
 };
 
 async function lengkapiProfil(p: ProfilRow): Promise<ProfilUser> {
   const supabase = createPublicClient();
-  const [snacks, lokasi, premium] = await Promise.all([
+  const hitung = { count: "exact", head: true } as const;
+  const [snacks, lokasi, premium, dicoba, postingan, balasan] = await Promise.all([
     supabase.from("snacks").select("slug").eq("created_by", p.id).eq("status", "approved").order("created_at", { ascending: false }),
     supabase.from("sightings").select("id", { count: "exact", head: true }).eq("created_by", p.id).eq("status", "approved"),
     // Fungsi dari migration 0010; bila belum dijalankan, anggap bukan premium
     supabase.rpc("is_premium", { uid: p.id }),
+    supabase.from("resep_dicoba").select("id", hitung).eq("user_id", p.id),
+    supabase.from("requests").select("id", hitung).eq("created_by", p.id),
+    supabase.from("request_answers").select("id", hitung).eq("user_id", p.id),
   ]);
   return {
     id: p.id,
@@ -189,12 +197,15 @@ async function lengkapiProfil(p: ProfilRow): Promise<ProfilUser> {
     role: p.role,
     kontribusi: cek<{ slug: string }[]>(snacks).map((s) => s.slug),
     jumlahLokasi: lokasi.count ?? 0,
+    jumlahDicoba: dicoba.count ?? 0,
+    jumlahForum: (postingan.count ?? 0) + (balasan.count ?? 0),
     premium: premium.data === true,
     avatarUrl: p.avatar_url,
+    bergabung: p.created_at,
   };
 }
 
-const PROFIL_KOLOM = "id, username, nama_tampil, daerah, bio, role, avatar_url";
+const PROFIL_KOLOM = "id, username, nama_tampil, daerah, bio, role, avatar_url, created_at";
 
 /** Profil publik berdasarkan username. */
 export async function getProfil(username: string): Promise<ProfilUser | undefined> {

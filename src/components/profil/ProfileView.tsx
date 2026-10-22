@@ -5,7 +5,7 @@ import { HapusJajanan } from "@/app/admin/HapusJajanan";
 import { AvatarProfil } from "./AvatarProfil";
 import { KepalaHalaman } from "@/components/KepalaHalaman";
 import { LevelKontributor } from "./LevelKontributor";
-import { StatCard } from "@/components/StatCard";
+import { formatTanggal } from "@/lib/format";
 import { Tabs } from "@/components/Tabs";
 import { getCards } from "@/lib/data";
 import type { ProfilUser } from "@/lib/komunitas";
@@ -32,7 +32,7 @@ export async function ProfileView({ user, diriSendiri, tab, basePath, tersimpan 
   const active = tabs.some((t) => t.key === tab) ? tab : "kontribusi";
 
   return (
-    <div className="space-y-8 py-10">
+    <div className="profil-halaman space-y-8 py-10">
       <KepalaHalaman className="flex flex-col gap-5 sm:flex-row sm:items-center">
         <AvatarProfil nama={user.nama} premium={user.premium} src={user.avatarUrl} />
         <div className="flex-1 space-y-1">
@@ -40,8 +40,8 @@ export async function ProfileView({ user, diriSendiri, tab, basePath, tersimpan 
             {user.nama}
             {user.premium && (
               <span className="rounded-full bg-amber-500/15 px-2.5 py-0.5 font-sans text-sm">
-                {/* Teks berkilau seperti menu Premium di sidebar */}
-                <span className="kilau font-semibold">Premium</span>
+                {/* Teks berkilau seperti menu Premium di sidebar; admin ditandai "Admin" */}
+                <span className="kilau font-semibold">{user.role === "admin" ? "Admin" : "Premium"}</span>
               </span>
             )}
           </h1>
@@ -65,15 +65,28 @@ export async function ProfileView({ user, diriSendiri, tab, basePath, tersimpan 
         )}
       </KepalaHalaman>
 
-      {/* Profil sendiri: kotak Kontribusi & Lokasi disembunyikan (jumlah kontribusi sudah ada di Level profil) */}
-      {!diriSendiri && (
-        <div className="grid grid-cols-2 gap-3 [zoom:0.75]">
-          <StatCard label="Kontribusi" value={user.kontribusi.length} />
-          <StatCard label="Lokasi" value={user.jumlahLokasi} />
-        </div>
-      )}
-
-      <LevelKontributor jumlah={user.kontribusi.length} diriSendiri={diriSendiri} admin={user.role === "admin"} />
+      {/* Dua kotak sebaris: level kontributor (kiri) dan ringkasan aktivitas (kanan) */}
+      <div className="profil-baris gap-3">
+        <LevelKontributor jumlah={user.kontribusi.length} diriSendiri={diriSendiri} admin={user.role === "admin"} />
+        <section aria-label="Ringkasan aktivitas" className="profil-ringkas rounded-xl border border-line bg-surface p-3 [zoom:0.9]">
+          {(
+            [
+              [user.kontribusi.length, "Kontribusi"],
+              [user.jumlahDicoba, "Resep dicoba"],
+              [user.jumlahForum, "Postingan forum"],
+            ] as const
+          ).map(([n, l]) => (
+            <p key={l}>
+              <span className="block font-display text-2xl font-semibold text-brand">{n}</span>
+              <span className="whitespace-nowrap text-sm text-ink-2">{l}</span>
+            </p>
+          ))}
+          <p>
+            <span className="block whitespace-nowrap font-semibold text-ink">{formatTanggal(user.bergabung)}</span>
+            <span className="whitespace-nowrap text-sm text-ink-2">Bergabung sejak</span>
+          </p>
+        </section>
+      </div>
 
       {moderasi}
 
@@ -90,7 +103,7 @@ async function CardGrid({ slugs, kosong, bisaHapus }: { slugs: string[]; kosong:
   const cards = await getCards(slugs);
   if (cards.length === 0) return <p className="text-ink-2">{kosong}</p>;
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
       {cards.map((s) =>
         bisaHapus ? (
           <div key={s.slug} className="relative">

@@ -13,7 +13,9 @@ Detail riwayat pengerjaan: docs/07-progress.md
 Beranda
 [JALAN] Hero + tagline animasi ketik, kotak cari + pilih daerah
 [JALAN] Statistik (jajanan, provinsi, kontributor, lokasi)
-[JALAN] "Hampir Punah": marquee bolak-balik otomatis (berhenti saat hover)
+[JALAN] "Jajanan Langka": jajanan yang divote Langka/Kritis oleh pengirimnya
+        (tidak diulang di "Baru Ditambahkan");
+        marquee bolak-balik otomatis (berhenti saat hover)
 [JALAN] "Baru Ditambahkan": baris geser manual
 [JALAN] Footer lengkap: tentang singkat, sitemap mini, kontak, legal,
         ikon media sosial (redup sampai akun resmi dibuat)
@@ -31,7 +33,7 @@ Halaman jajanan
         foto hasil, ringkasan "Dicoba X orang, Y berhasil"
 [JALAN] Simpan jajanan (tampil di tab Tersimpan profil)
 [JALAN] Unduh resep PDF (khusus Premium); mode masak dihapus
-[JALAN] Vote kelangkaan (Umum / Mulai langka / Hampir punah / Punah):
+[JALAN] Vote kelangkaan (Umum / Jarang / Langka / Kritis):
         1 akun 1 suara, bisa diganti/dibatalkan, label tampil min. 3 suara
 [JALAN] Bagikan (salin link)
 [JALAN] Komentar + balasan 1 tingkat (semua yang masuk, termasuk

@@ -13,7 +13,7 @@ export const metadata: Metadata = { title: "Forum Jajanan" };
 
 export default function ForumPage({ searchParams }: PageProps<"/request">) {
   return (
-    <div className="space-y-4 pt-1 pb-8">
+    <div className="forum-halaman space-y-4 pt-1 pb-8">
       <KepalaHalaman className="flex flex-wrap items-end justify-between gap-4 py-4!">
         <div>
           <h1 className="font-display text-4xl font-semibold">Forum Jajanan</h1>

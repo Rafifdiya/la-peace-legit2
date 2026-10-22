@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 
 const KECEPATAN = 46.2; // piksel per detik, pelan
-const MULAI = 2; // mulai bergerak 2 detik setelah halaman dimuat
+const MULAI = 1; // mulai bergerak 1 detik setelah halaman dimuat
 
 /**
  * Marquee bolak-balik (diadaptasi dari infinite marquee Uiverse.io, PriyanshuGupta28):
@@ -26,7 +26,7 @@ export function Carousel({ label, children, jalan = true }: { label: string; chi
       // Jarak pergi + pulang ditempuh dalam ~76% durasi; sisanya jeda di kedua ujung
       const durasi = Math.max((jarak * 2) / KECEPATAN / 0.76, 6);
       d.style.animationDuration = `${durasi}s`;
-      // Jeda awal di keyframe = 6% durasi; dipotong supaya mulai bergerak 2 detik setelah halaman dimuat
+      // Jeda awal di keyframe = 6% durasi; dipotong supaya mulai bergerak MULAI detik setelah halaman dimuat
       if (!d.style.animationDelay) d.style.animationDelay = `${MULAI - durasi * 0.06}s`;
       d.classList.toggle("marquee__inner", jarak > 0);
     };

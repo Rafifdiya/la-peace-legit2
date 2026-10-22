@@ -27,7 +27,7 @@ const SOSIAL: { label: string; href?: string; ikon: React.ReactNode }[] = [
 const PETA: [string, [string, string][]][] = [
   ["Jelajahi", [["/", "Beranda"], ["/katalog", "Katalog Jajanan"], ["/request", "Forum Jajanan"], ["/kelas", "Kelas"]]],
   ["Komunitas", [["/upload", "Kontribusi"], ["/premium", "Premium"], ["/profil/saya", "Profil saya"], ["/tentang", "Tentang kami"]]],
-  ["Kebijakan & Legal", [["/syarat-ketentuan", "Syarat & Ketentuan"], ["/kebijakan-privasi", "Kebijakan Privasi"], ["/tentang", "Aturan kontribusi"], ["https://creativecommons.org/licenses/by-sa/4.0/deed.id", "Lisensi CC BY-SA 4.0"]]],
+  ["Kebijakan & Legal", [["/syarat-ketentuan", "Syarat & Ketentuan"], ["/kebijakan-privasi", "Kebijakan Privasi"], ["/tentang", "Aturan kontribusi"]]],
 ];
 
 const kontakAdmin = process.env.NEXT_PUBLIC_KONTAK_ADMIN || "/tentang#kontak";

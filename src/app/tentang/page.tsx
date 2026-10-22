@@ -23,7 +23,7 @@ const kontakTim = "email / Instagram tim (segera)";
 export default function TentangPage() {
   // Motif kawung samar di belakang halaman, sama seperti hero beranda
   return (
-    <article className="motif-kawung motif-pudar mx-auto max-w-3xl space-y-6 rounded-xl px-4 py-10 leading-relaxed sm:px-8">
+    <article className="halaman-tentang motif-kawung motif-pudar mx-auto max-w-3xl space-y-6 rounded-xl px-4 py-10 leading-relaxed sm:px-8">
       <h1 className="font-display text-4xl font-semibold">Tentang Jejak Jajan</h1>
       <p>
         Banyak jajanan tradisional makin sulit ditemukan karena penjualnya makin sedikit dan tidak punya penerus.

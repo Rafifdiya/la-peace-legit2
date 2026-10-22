@@ -2,9 +2,9 @@ import type { Rarity } from "@/lib/types";
 
 const label: Record<Rarity, string> = {
   umum: "Umum",
-  mulai_langka: "Mulai langka",
-  hampir_punah: "Hampir punah",
-  punah: "Punah",
+  mulai_langka: "Jarang",
+  hampir_punah: "Langka",
+  punah: "Kritis",
   unknown: "Belum cukup suara",
 };
 

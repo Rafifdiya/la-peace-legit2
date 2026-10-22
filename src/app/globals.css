@@ -323,10 +323,77 @@ html[data-sidebar="tutup"] .sidebar-utama { display: none; }
 .grid-katalog { grid-template-columns: 1fr; zoom: 0.9; }
 @media (min-width: 640px) { .grid-katalog { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (min-width: 1280px) { .grid-katalog { grid-template-columns: repeat(3, minmax(0, 1fr)); zoom: 0.8; } }
-@media (min-width: 1340px) { .grid-katalog { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (min-width: 1340px) { .grid-katalog { grid-template-columns: repeat(4, minmax(0, 1fr)); zoom: 0.74; } }
 
 /* Forum Jajanan: kartu postingan lebih kecil. 1 kolom (HP) -> 2 -> 4 (laptop >= 1280px) */
 .grid-forum { grid-template-columns: 1fr; zoom: 0.9; }
 @media (min-width: 768px) { .grid-forum { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (min-width: 1280px) { .grid-forum { grid-template-columns: repeat(4, minmax(0, 1fr)); zoom: 0.8; } }
 
+
+/* Daftar langkah form Kontribusi: ukuran text-sm + 3px */
+.langkah-kontribusi button { font-size: calc(var(--text-sm) + 0.1765rem); }
+@media (min-width: 1024px) {
+  .langkah-kontribusi button { font-size: calc(var(--text-sm) + 0.1667rem); }
+}
+
+/* Kelas: tagline "belajar langsung..." = text-2xl + 5px (halaman Kelas di-zoom 0.85, jadi dikompensasi) */
+.tagline-kelas { font-size: calc(1.5rem + 0.346rem); }
+@media (min-width: 1024px) {
+  .tagline-kelas { font-size: calc(1.5rem + 0.327rem); }
+}
+
+/* Profil: kotak Level (kiri) & ringkasan aktivitas (kanan) sama lebar, bersebelahan; di HP bertumpuk */
+.profil-baris { display: grid; grid-template-columns: 1fr; align-items: stretch; }
+.profil-ringkas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem 0.5rem; align-items: center; text-align: center; }
+@media (min-width: 1024px) { .profil-ringkas { grid-template-columns: repeat(4, auto); justify-content: space-evenly; } }
+@media (min-width: 768px) {
+  .profil-baris { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* ===== HP (< 640px): lebih ringkas, kartu 2 per baris ===== */
+@media (max-width: 639px) {
+  html { font-size: 93.75%; } /* 15px: semua halaman sedikit lebih zoom out di HP */
+  .grid-katalog { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; zoom: 1; }
+  .kartu-jajanan > div { padding: 0.6rem; }
+  .kartu-jajanan .text-xs, .kartu-jajanan .kartu-deskripsi, .kartu-jajanan .text-sm { font-size: 0.8rem; }
+  .kartu-jajanan .text-xl { font-size: 1.05rem; }
+  /* Judul & teks besar di HP */
+  main h1 { font-size: 1.75rem !important; line-height: 1.2; }
+  main h2.font-display { font-size: 1.25rem !important; }
+  .beranda .font-hand { font-size: 1.5rem !important; }
+  .beranda h1 { font-size: 1.35rem !important; }
+  .beranda section > p.text-ink { font-size: 1.1rem !important; }
+  .cari-teks, .cari-kecil { font-size: 1.1rem; }
+  .label-statistik { font-size: 1.05rem; }
+  .lihat-semua { font-size: 0.9rem; }
+  .beranda .grid-cols-2.gap-4 { gap: 0.5rem; }
+  /* Forum di HP: seluruh isi diperkecil, kartu 2 per baris */
+  .forum-halaman { zoom: 0.85; }
+  .forum-halaman h1 { font-size: 1.6rem !important; }
+  .grid-forum { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem; zoom: 1; }
+  .grid-forum li > a { padding: 0.65rem; }
+  .grid-forum li p.font-semibold { font-size: 1rem; line-height: 1.3; }
+  /* Profil di HP: isi diperkecil, avatar + nama sebaris */
+  .profil-halaman { zoom: 0.85; padding-top: 0.5rem; }
+  .profil-halaman > header { flex-direction: row; align-items: center; gap: 0.9rem; padding-top: 1rem; padding-bottom: 1rem; }
+  .profil-halaman > header > :first-child { zoom: 0.65; }
+  .profil-halaman h1 { font-size: 1.45rem !important; }
+  /* Halaman jajanan di HP: jarak atas tipis, foto lebih pendek, isi sedikit diperkecil */
+  .halaman-jajanan { zoom: 0.9; padding-top: 0.5rem; }
+  .halaman-jajanan > header { padding-top: 0.75rem; padding-bottom: 0.75rem; gap: 1rem; }
+  .halaman-jajanan > header .aspect-\[4\/3\] { aspect-ratio: 16 / 10; }
+  /* Form Kontribusi di HP: diperkecil, daftar langkah & judul lebih ringkas */
+  .halaman-kontribusi { zoom: 0.8; }
+  .halaman-kontribusi h1 { font-size: 1.5rem !important; }
+  .halaman-kontribusi .py-10 { padding-top: 1rem; padding-bottom: 1.5rem; }
+  .langkah-kontribusi button { font-size: 1rem; padding: 0.4rem 0.75rem; }
+  /* Tombol Kontak admin di HP lebih kecil */
+  /* Navbar atas di HP: tombol Admin, Keluar, Masuk lebih kecil */
+  .nav-besar, .nav-masuk { zoom: 0.8; }
+  /* Tentang kami di HP: isi diperkecil, jarak atas tipis */
+  .halaman-tentang { zoom: 0.82; padding-top: 1.25rem; }
+  .halaman-tentang h1 { font-size: 1.75rem !important; }
+  .tombol-kontak { zoom: 0.72; bottom: 8.5rem; } /* nilai bottom ikut di-zoom: +-6rem dari bawah, di atas menu bawah */
+  .bagikan-beranda, .beranda .font-hand.text-white\/90 { font-size: 1.2rem !important; }
+}

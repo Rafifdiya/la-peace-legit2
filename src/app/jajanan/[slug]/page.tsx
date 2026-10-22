@@ -52,7 +52,7 @@ export default async function DetailPage({ params }: PageProps<"/jajanan/[slug]"
     .map((s) => ({ id: s.id, lat: s.lat!, lng: s.lng!, label: s.tempat }));
 
   return (
-    <div className="space-y-12 py-10">
+    <div className="halaman-jajanan space-y-12 py-10">
       <Suspense>
         <Connection />
       </Suspense>
@@ -62,7 +62,6 @@ export default async function DetailPage({ params }: PageProps<"/jajanan/[slug]"
           <GantiFotoJajanan slug={snack.slug} />
         </div>
         <div className="space-y-4">
-          <p className="text-sm text-ink-2">{snack.kategori}</p>
           <h1 className="font-display text-5xl font-semibold">{snack.nama}</h1>
           {snack.namaLain.length > 0 && <p className="text-ink-2">Juga dikenal: {snack.namaLain.join(", ")}</p>}
           <p className="flex items-center gap-1"><MapPin size={16} aria-hidden /> {snack.provinsi}</p>

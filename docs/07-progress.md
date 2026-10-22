@@ -264,6 +264,39 @@ Catatan: jam untuk entri lama tidak tercatat, jadi hanya tanggal. Entri baru dit
 260. **2026-10-22 04:13** - Premium: unduh resep PDF kini khusus Premium (akun gratis diarahkan ke /premium, tanpa kuota mingguan); Mode masak dihapus (komponen ModeMasak & pengaturan "layar tetap menyala"); tabel Premium: kolom gratis Kelas Bersama Penjual jadi "-", baris Mode masak dihapus. docs/00, 06, 08, BMC disesuaikan.
 261. **2026-10-22 04:13** - Tabel Premium: teks keterangan (mis. "Diskon 20% + daftar lebih dulu") diperkecil (text-sm).
 262. **2026-10-22 04:15** - Commit + push branch feat/iklan-tiap-6 (entri 241-261), PR ke main lalu merge (Vercel deploy otomatis). Migration baru: 0022, 0023.
+263. **2026-10-22 09:55** - Sidebar menu Premium saat aktif: latar hijau & mahkota hijau dihapus, tulisan Premium kembali berkilau (sama seperti akun gratis), indikator hanya label kecil hijau "aktif". File 0023 lokal yang tertimpa teks nyasar dikembalikan ke versi repo. Branch feat/premium-sidebar.
+264. **2026-10-22 10:12** - Label "aktif" Premium di sidebar diberi latar hijau muda berbentuk kapsul.
+265. **2026-10-22 11:04** - Kriteria masuk katalog diganti jadi 6 poin (kreasi modern / fusion boleh; nama jajanan; bahan bertakaran; langkah jelas; lokasi tempat usaha/umum; tanpa kata kasar/SARA/promosi). Kriteria tentang salinan resep & lisensi foto dihapus. Berlaku di Tentang kami, checklist admin, ringkasan di Kontribusi, docs/03.
+266. **2026-10-22 11:04** - Footer: tulisan "Konten komunitas berlisensi CC BY-SA 4.0" dan link "Lisensi CC BY-SA 4.0" dihapus (Tentang kami & Syarat tetap menyebut lisensi).
+267. **2026-10-22 11:07** - Form Kontribusi diurutkan ulang: Formulir wajib (1. Info dasar, 2. Cerita, 3. Vote kelangkaan) lalu Opsional (Resep, Langkah pembuatan, Lokasi penjual), dengan judul kelompok di daftar langkah; "Lokasi terlihat" jadi "Lokasi penjual".
+268. **2026-10-22 11:08** - Judul kelompok di daftar langkah Kontribusi diberi kotak berwarna: "Formulir wajib" oranye muda (teks cokelat), "Opsional" abu-abu krem.
+269. **2026-10-22 11:08** - Daftar langkah Kontribusi: langkah wajib juga memakai bullet (•), tanpa nomor.
+270. **2026-10-22 11:10** - Form Kontribusi: label "Daerah (kota/kabupaten)" jadi "Daerah (opsional)"; tulisan "(opsional)" di label & judul kelompok "Opsional" dibuat tebal dengan warna 30% lebih pudar.
+271. **2026-10-22 11:11** - Form Kontribusi: penanda "(opsional)" & judul "Opsional" 20% lebih pudar lagi (opacity 0.56); label "Nama lain" jadi "Nama lain (jika ada)" dengan gaya penanda yang sama.
+272. **2026-10-22 11:12** - Contoh isian kolom Nama lain diganti "mis. Kue Bugis, Lapek Bugih, Kue Mendut..".
+273. **2026-10-22 11:14** - Form Kontribusi: tanda * merah pada Nama jajanan, Foto utama, Cerita, dan Vote kelangkaan; catatan merah tebal miring di bawah tombol: "* Kolom bertanda bintang wajib diisi sebelum mengirim."
+274. **2026-10-22 11:14** - Form Kontribusi: Deskripsi singkat kini wajib (* merah, minimal 5 karakter) sebagai bagian Info dasar.
+275. **2026-10-22 11:17** - Form Kontribusi, langkah Vote kelangkaan: kotak yang dipilih berwarna sesuai tingkat (Umum #2ECC71, Mulai langka #F1C40F, Hampir punah #E67E22, Punah #E74C3C).
+276. **2026-10-22 11:20** - Label kelangkaan diganti di semua tampilan: Umum / Jarang / Langka / Kritis (sebelumnya Umum / Mulai langka / Hampir punah / Punah; nilai di database tetap). Judul beranda "Hampir Punah" jadi "Langka & Kritis". docs/00, 03, 08 disesuaikan.
+277. **2026-10-22 11:23** - Daftar langkah form Kontribusi: tulisan +3px dan warna hitam pekat (sebelumnya abu-abu); langkah aktif tetap putih di latar cokelat.
+278. **2026-10-22 11:25** - Vote kelangkaan di form Kontribusi: klik pilihan yang sama untuk kedua kalinya membatalkan pilihan (radio diganti tombol toggle), ada keterangan "(klik lagi untuk membatalkan)". Vote di halaman jajanan sudah berperilaku sama.
+279. **2026-10-22 11:27** - Halaman Kelas lebih naik (pt-1, judul py-4, jarak antar bagian dirapatkan); tagline "belajar langsung dari tangan yang membuatnya" +5px (.tagline-kelas).
+280. **2026-10-22 11:31** - Katalog sedikit lebih ke tengah (jarak kiri-kanan lg:px-6); kartu 4 kolom di-zoom 0.74 agar badge tetap muat (diuji 1100-1920px). Halaman Premium -15% (zoom 0.85) dan lebih naik (pt-1, judul py-4, jarak dirapatkan).
+281. **2026-10-22 11:38** - Profil: kotak Level (kiri) & kotak ringkasan aktivitas (kanan: Kontribusi, Lokasi, Bergabung sejak) sama lebar dan bersebelahan (kelas CSS .profil-baris/.profil-ringkas; di HP bertumpuk). Kotak statistik lama diganti; profil membaca tanggal dibuat akun (profiles.created_at). Diverifikasi di build terpisah (.next-cek).
+282. **2026-10-22 11:42** - Kotak ringkasan profil berisi 4 data: Kontribusi, Resep dicoba (resep_dicoba), Postingan forum (postingan + balasan), Bergabung sejak; Lokasi dihapus. Semua label satu baris (tanpa turun baris), 4 kolom berjajar di laptop, 2x2 di HP.
+283. **2026-10-22 11:43** - Akun admin: badge di profil & lencana di avatar navbar bertuliskan "Admin" (bukan "Premium"/"Prem"), tetap berkilau.
+284. **2026-10-22 11:44** - Beranda: isi -5% lagi (zoom 0.9 -> 0.85) dan sedikit lebih ke tengah (jarak kiri-kanan lg:px-6).
+285. **2026-10-22 11:46** - Kategori jajanan (mis. Dodol, Kue kering) tidak lagi ditampilkan di kartu jajanan dan halaman jajanan (data lama tetap di database).
+286. **2026-10-22 11:47** - Carousel "Langka & Kritis" mulai bergerak 1 detik setelah halaman dimuat (sebelumnya 2 detik); kecepatan geser tetap.
+287. **2026-10-22 11:50** - Beranda "Langka & Kritis" hanya menampilkan jajanan yang divote Langka atau Kritis oleh pengirimnya sendiri (getLangkaKritis di lib/data.ts: rarity_votes user_id = snacks.created_by, nilai hampir_punah/punah); Umum & Jarang tidak tampil. Diuji di dev server (saat ini hanya Kue Rangi).
+288. **2026-10-22 12:10** - Beranda: judul "Langka & Kritis" jadi "Jajanan Langka"; jajanan yang sudah tampil di sana tidak diulang di "Baru Ditambahkan" (ambil 16 terbaru lalu disaring, maks. 8).
+289. **2026-10-22 12:18** - Tampilan HP (<640px) diringkas: ukuran dasar 100% (sebelumnya 106%), kartu katalog 2 per baris dengan teks lebih kecil, kartu profil 2 per baris, kartu carousel beranda lebih sempit (12.5rem), filter Katalog (Provinsi/Kategori/Urutkan) dilipat di balik tombol "Filter & urutkan" (FilterLain.tsx), judul halaman, tagline, teks hero, kotak cari, statistik, Lihat semua diperkecil. Tampilan laptop tidak berubah. Diuji pada ukuran Samsung A35 (412x892).
+290. **2026-10-22 12:26** - HP lebih zoom out: ukuran dasar 15px (93.75%) di semua halaman; Forum -15% + kartu 2 per baris; Profil -15%, avatar & nama sebaris dan avatar diperkecil; halaman jajanan -10%, jarak atas tipis, foto 16:10. Laptop tidak berubah. Diuji pada 412x892 (Samsung A35) via build terpisah.
+291. **2026-10-22 12:29** - Form Kontribusi di HP: seluruh halaman (kriteria + form) diperkecil lagi (zoom 0.8 dari total), judul langkah 1.5rem, jarak atas-bawah dipersempit, tombol daftar langkah lebih ringkas.
+292. **2026-10-22 12:30** - Form Kontribusi: ruang kosong di atas & bawah judul langkah (Info dasar, Vote kelangkaan, dll.) diperkecil (padding judul py-8 -> py-3), di HP & laptop.
+293. **2026-10-22 12:31** - Tombol melayang Kontak admin di HP diperkecil (zoom 0.72, +-40px).
+294. **2026-10-22 12:35** - HP: tombol Kontak admin dinaikkan agar tidak menempel menu bawah; tombol Admin, Keluar, Masuk, Pesan, Pengaturan & profil di navbar atas -20%; halaman Tentang kami -18% dengan jarak atas tipis. Laptop tidak berubah.
+295. **2026-10-22 12:36** - Commit + push branch feat/premium-sidebar (entri 263-294), PR ke main lalu merge (Vercel deploy otomatis).
 
 ## Berikutnya
 - Review docs/06 model bisnis bersama tim, lalu buat slide
