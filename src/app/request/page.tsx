@@ -4,7 +4,7 @@ import { KepalaHalaman } from "@/components/KepalaHalaman";
 import { Suspense } from "react";
 import { MessageCircle } from "lucide-react";
 import { Tabs } from "@/components/Tabs";
-import { getRequests } from "@/lib/komunitas";
+import { getRequests, kelasNama } from "@/lib/komunitas";
 import { formatTanggal } from "@/lib/format";
 import { cariTopik, topikValid } from "@/lib/forum";
 import { BagianForum, TombolTanya } from "./FormTanya";
@@ -60,7 +60,7 @@ async function DaftarPostingan({ searchParams }: Pick<PageProps<"/request">, "se
                 {r.isi && <p className="line-clamp-2 text-[1.11rem] text-ink/85">{r.isi}</p>}
                 <p className="flex flex-wrap items-center gap-3 text-[0.953rem] text-ink/75">
                   {r.daerah && <span>{r.daerah}</span>}
-                  <span className={r.olehPremium ? "kilau font-semibold" : undefined}>{r.olehUsername ? `@${r.oleh}` : r.oleh}</span>
+                  <span className={kelasNama(r)}>{r.olehUsername ? `@${r.oleh}` : r.oleh}</span>
                   <span className="flex items-center gap-1"><MessageCircle size={13} aria-hidden /> {r.jawaban.length} balasan</span>
                 </p>
               </Link>

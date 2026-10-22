@@ -297,6 +297,10 @@ Catatan: jam untuk entri lama tidak tercatat, jadi hanya tanggal. Entri baru dit
 293. **2026-10-22 12:31** - Tombol melayang Kontak admin di HP diperkecil (zoom 0.72, +-40px).
 294. **2026-10-22 12:35** - HP: tombol Kontak admin dinaikkan agar tidak menempel menu bawah; tombol Admin, Keluar, Masuk, Pesan, Pengaturan & profil di navbar atas -20%; halaman Tentang kami -18% dengan jarak atas tipis. Laptop tidak berubah.
 295. **2026-10-22 12:36** - Commit + push branch feat/premium-sidebar (entri 263-294), PR ke main lalu merge (Vercel deploy otomatis).
+296. **2026-10-22 12:48** - Forum: username admin berkilau hijau (kilau-hijau), pengguna Premium tetap berkilau emas; berlaku di kartu, postingan, dan balasan (helper kelasNama di lib/komunitas.ts). Branch feat/admin-hijau.
+297. **2026-10-22 12:53** - Forum: username pengguna biasa (bukan Premium/admin) tampil hitam, tebal, miring.
+298. **2026-10-22 12:53** - Username pengguna biasa di forum jadi biru tua (text-blue-900), tetap tebal miring.
+299. **2026-10-22 12:56** - Commit + push feat/admin-hijau (entri 296-298), PR ke main lalu merge.
 
 ## Berikutnya
 - Review docs/06 model bisnis bersama tim, lalu buat slide

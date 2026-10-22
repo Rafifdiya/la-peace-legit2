@@ -6,7 +6,7 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 import { ArrowLeft, Award } from "lucide-react";
 import { getSnackPage } from "@/lib/data";
-import { getRequest, getRequestIds } from "@/lib/komunitas";
+import { getRequest, getRequestIds, kelasNama } from "@/lib/komunitas";
 import { formatTanggal } from "@/lib/format";
 import { cariTopik } from "@/lib/forum";
 import { AksiBalasan, AksiPostingan, FormJawab } from "../FormTanya";
@@ -60,7 +60,7 @@ export default async function PostinganForum({ params }: PageProps<"/request/[id
         </p>
         <h1 className="font-display text-3xl font-semibold">{r.judul}</h1>
         <p className="text-sm text-ink">
-          {r.olehUsername ? <Link href={`/profil/${r.olehUsername}`} className={r.olehPremium ? "kilau font-semibold" : "hover:text-brand"}>@{r.oleh}</Link> : r.oleh}
+          {r.olehUsername ? <Link href={`/profil/${r.olehUsername}`} className={kelasNama(r, "hover:text-brand")}>@{r.oleh}</Link> : r.oleh}
           {r.daerah && ` · ${r.daerah}`} · {formatTanggal(r.tanggal)}
         </p>
         {r.isi && <p className="whitespace-pre-line pt-2 leading-relaxed">{r.isi}</p>}
@@ -77,7 +77,7 @@ export default async function PostinganForum({ params }: PageProps<"/request/[id
                 <p className="flex items-center gap-1 text-xs font-semibold text-accent"><Award size={14} aria-hidden /> Balasan terbaik pilihan penanya</p>
               )}
               <p className="text-sm text-ink">
-                {j.olehUsername ? <Link href={`/profil/${j.olehUsername}`} className={j.olehPremium ? "kilau font-semibold" : "hover:text-brand"}>@{j.oleh}</Link> : j.oleh} · {formatTanggal(j.tanggal)}
+                {j.olehUsername ? <Link href={`/profil/${j.olehUsername}`} className={kelasNama(j, "hover:text-brand")}>@{j.oleh}</Link> : j.oleh} · {formatTanggal(j.tanggal)}
               </p>
               <p className="whitespace-pre-line">{j.isi}</p>
               {j.slug && <Link href={`/jajanan/${j.slug}`} className="text-sm text-brand underline">Lihat jajanan</Link>}
