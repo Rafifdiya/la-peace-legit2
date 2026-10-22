@@ -21,6 +21,7 @@ export type Balasan = {
   oleh: string;
   olehUsername: string | null;
   olehPremium: boolean;
+  olehAdmin: boolean;
   isi: string;
   slug?: string;
   tanggal: string;
@@ -38,11 +39,19 @@ export type RequestItem = {
   oleh: string;
   olehUsername: string | null;
   olehPremium: boolean;
+  olehAdmin: boolean;
   tanggal: string;
   jawaban: Balasan[];
 };
 
 type Profil = { username: string | null; nama_tampil: string | null; role?: string | null; premium_sampai?: string | null } | null;
+
+/** Kelas nama pengirim di forum: admin berkilau hijau, Premium berkilau emas, lainnya biru tua tebal miring */
+export function kelasNama(x: { olehAdmin: boolean; olehPremium: boolean }, tambahan = "") {
+  if (x.olehAdmin) return "kilau kilau-hijau font-semibold";
+  if (x.olehPremium) return "kilau font-semibold";
+  return `font-bold italic text-blue-900 ${tambahan}`.trim();
+}
 
 /** Premium aktif (admin otomatis Premium, migration 0012) */
 const premiumAktif = (p: Profil) => !!p && (p.role === "admin" || (!!p.premium_sampai && new Date(p.premium_sampai) > new Date()));
@@ -83,6 +92,7 @@ function toRequest(r: RequestRow): RequestItem {
     oleh: namaUser(r.profiles),
     olehUsername: r.profiles?.username ?? null,
     olehPremium: premiumAktif(r.profiles),
+    olehAdmin: r.profiles?.role === "admin",
     tanggal: r.created_at,
     jawaban: [...r.request_answers]
       .sort((a, b) => a.created_at.localeCompare(b.created_at))
@@ -92,6 +102,7 @@ function toRequest(r: RequestRow): RequestItem {
         oleh: namaUser(j.profiles),
         olehUsername: j.profiles?.username ?? null,
         olehPremium: premiumAktif(j.profiles),
+        olehAdmin: j.profiles?.role === "admin",
         isi: j.isi,
         slug: j.snacks?.slug,
         tanggal: j.created_at,
